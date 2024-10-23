@@ -67,9 +67,3 @@ extension UIView {
                                               multiplier: 1, constant: margins))
     }
 }
-
-extension EnterMobileNumberViewController:UIGestureRecognizerDelegate {
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return true
-    }
-}

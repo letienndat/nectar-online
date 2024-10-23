@@ -7,6 +7,12 @@
 
 import UIKit
 
+class CustomNavigationController: UINavigationController {
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return topViewController?.supportedInterfaceOrientations ?? .portrait
+    }
+}
+
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
@@ -24,8 +30,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         
         // Tạo ViewController đầu tiên và gán làm rootViewController
-        let rootViewController = WelcomeViewController() // Đặt ViewController đầu tiên của bạn
-        let navigationController = UINavigationController(rootViewController: rootViewController)
+        let rootViewController = OnbordingViewController() // Đặt ViewController đầu tiên của bạn
+        let navigationController = CustomNavigationController(rootViewController: rootViewController)
         
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()

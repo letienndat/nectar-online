@@ -1,12 +1,25 @@
 import UIKit
 
-class LoginViewController: UIViewController {
+class SignInViewController: UIViewController, UIGestureRecognizerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        removeViewBefore()
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
         
         view.backgroundColor = UIColor(hex: "#FCFCFC")
     
         configView()
+    }
+    
+    func removeViewBefore() {
+        if var viewControllers = self.navigationController?.viewControllers {
+            if viewControllers.count > 1 {
+                viewControllers.removeAll { $0 is OnbordingViewController }
+                self.navigationController?.viewControllers = viewControllers
+            }
+        }
+            
     }
     
     func configView() {
@@ -23,8 +36,8 @@ class LoginViewController: UIViewController {
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
         ])
         
         let backgroundBlurView = BackgroundBlur()
@@ -135,7 +148,6 @@ class LoginViewController: UIViewController {
         countryIcon.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             countryIcon.widthAnchor.constraint(equalToConstant: 33.97),
-            countryIcon.heightAnchor.constraint(equalToConstant: 23.7),
             countryIcon.topAnchor.constraint(equalTo: phoneNumberView.topAnchor),
             countryIcon.bottomAnchor.constraint(equalTo: phoneNumberView.bottomAnchor, constant: -15),
             countryIcon.leadingAnchor.constraint(equalTo: phoneNumberView.leadingAnchor)
@@ -240,9 +252,15 @@ class LoginViewController: UIViewController {
         ])
     }
     
+    // Hàm được gọi khi ViewController xuất hiện
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.setNavigationBarHidden(true, animated: true)
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
+    }
+    
+    // Hàm được gọi trước khi ViewController biến mất
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
     }
     
     @objc func handleSiginWithGoogle() {
@@ -254,7 +272,11 @@ class LoginViewController: UIViewController {
     }
     
     @objc func handleTapPhoneNumberView() {
-        let enterMobileNumberViewController = EnterMobileNumberViewController()
-        self.navigationController?.pushViewController(enterMobileNumberViewController, animated: true)
+        let numberViewController = NumberViewController()
+        self.navigationController?.pushViewController(numberViewController, animated: true)
+    }
+    
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return [.portrait, .landscapeRight, .landscapeLeft]
     }
 }

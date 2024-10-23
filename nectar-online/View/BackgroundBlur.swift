@@ -23,7 +23,7 @@ class BackgroundBlur: UIView {
         
         let imageBackgroundTopView = UIImageView()
         imageBackgroundTopView.image = UIImage(named: "background-top-blur")
-        imageBackgroundTopView.alpha = 1
+        imageBackgroundTopView.alpha = 0.25
         addSubview(imageBackgroundTopView)
 
         imageBackgroundTopView.translatesAutoresizingMaskIntoConstraints = false
@@ -36,7 +36,7 @@ class BackgroundBlur: UIView {
         ])
 
         let backgoundTopView = UIView()
-        backgoundTopView.backgroundColor = UIColor(hex: "#FCFCFC", alpha: 0.6)
+        backgoundTopView.backgroundColor = UIColor(hex: "#FCFCFC", alpha: 0.85)
         addSubview(backgoundTopView)
 
         // Tạo một hiệu ứng mờ
@@ -61,7 +61,7 @@ class BackgroundBlur: UIView {
         
         let imageBackgroundBottomView = UIImageView()
         imageBackgroundBottomView.image = UIImage(named: "background-bottom-blur")
-        imageBackgroundBottomView.alpha = 1
+        imageBackgroundBottomView.alpha = 0.75
         addSubview(imageBackgroundBottomView)
         
         imageBackgroundBottomView.translatesAutoresizingMaskIntoConstraints = false

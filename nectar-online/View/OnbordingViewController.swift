@@ -1,5 +1,5 @@
 //
-//  WelcomeViewController.swift
+//  OnbordingViewController.swift
 //  nectar-online
 //
 //  Created by Macbook on 19/10/2024.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class WelcomeViewController: UIViewController {
+class OnbordingViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,9 +40,8 @@ class WelcomeViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             subView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -90.84),
-            subView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30.5),
-            subView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30.5),
-            subView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
+            subView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 30.5),
+            subView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -30.5)
         ])
         
         let imageViewIcon: UIImageView = UIImageView()
@@ -70,7 +69,6 @@ class WelcomeViewController: UIViewController {
         subView.addSubview(textWelcomeLine)
 
         NSLayoutConstraint.activate([
-            textWelcomeLine.centerXAnchor.constraint(equalTo: subView.centerXAnchor),
             textWelcomeLine.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 73.5),
             textWelcomeLine.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -74.5),
             textWelcomeLine.topAnchor.constraint(equalTo: imageViewIcon.bottomAnchor, constant: 35.66),
@@ -117,11 +115,25 @@ class WelcomeViewController: UIViewController {
     }
     
     @objc func handleButton() {
-        let loginView = LoginViewController()
-        self.navigationController?.pushViewController(loginView, animated: true)
+        let signInViewController = SignInViewController()
+        self.navigationController?.pushViewController(signInViewController, animated: true)
+    }
+    
+    // Hàm được gọi khi ViewController xuất hiện
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+    }
+    
+    // Hàm được gọi trước khi ViewController biến mất
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
     }
     
     override var prefersStatusBarHidden: Bool {
         return true
+    }
+    
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return [.portrait, .landscapeLeft, .landscapeRight]
     }
 }

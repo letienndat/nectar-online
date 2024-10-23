@@ -1,5 +1,5 @@
 //
-//  EnterMobileNumberViewController.swift
+//  NumberViewController.swift
 //  nectar-online
 //
 //  Created by Macbook on 20/10/2024.
@@ -7,12 +7,18 @@
 
 import UIKit
 
-class EnterMobileNumberViewController: UIViewController, UITextFieldDelegate {
+class NumberViewController: UIViewController, UITextFieldDelegate {
     
     private let backgroundBlurView = BackgroundBlur()
     private let inputCodeCountry = UITextField()
     private let inputMobileNumber = DeletableTextField()
     private var beforeMobileNumber: String! = ""
+    private let scrollView = UIScrollView()
+    private let viewEmptyTop = UIView()
+    private let viewContent = UIView()
+    private var scrollViewBottomConstraint: NSLayoutConstraint?
+    private var viewEmptyTopBottonConstraint: NSLayoutConstraint?
+    private var viewContentHeightAnchorConstraint: NSLayoutConstraint?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,6 +27,12 @@ class EnterMobileNumberViewController: UIViewController, UITextFieldDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
 
+        // Tạo UITapGestureRecognizer để phát hiện người dùng bấm ra ngoài view
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeybroad))
+        
+        // Thêm gesture vào view cha
+        self.view.addGestureRecognizer(tapGesture)
+        
         // Do any additional setup after loading the view.
         configNav()
         configView()
@@ -51,8 +63,10 @@ class EnterMobileNumberViewController: UIViewController, UITextFieldDelegate {
 
         // Xóa tiêu đề của nút quay lại
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        
-        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+    }
+    
+    @objc func hideKeybroad() {
+        self.view.endEditing(true)
     }
     
     // Hàm quay lại
@@ -64,20 +78,31 @@ class EnterMobileNumberViewController: UIViewController, UITextFieldDelegate {
         // Lấy thông tin về bàn phím
         if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
             let keyboardHeight = keyboardFrame.cgRectValue.height
-
-            // Cập nhật kích thước của stackView
+            // Cập nhật kích thước của scrollView
             UIView.animate(withDuration: 0.3) {
-                self.view.frame.size.height = self.view.frame.height - keyboardHeight
-                self.view.layoutIfNeeded()
+                // Gỡ bỏ ràng buộc cũ nếu có
+                if let oldConstraint = self.scrollViewBottomConstraint {
+                    oldConstraint.isActive = false
+                }
+
+                // Tạo và lưu ràng buộc mới
+                self.scrollViewBottomConstraint = self.scrollView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -keyboardHeight)
+                self.scrollViewBottomConstraint?.isActive = true
             }
         }
     }
     
     @objc func keyboardWillHide(notification: NSNotification) {
-        // Khôi phục kích thước ban đầu cho stackView
+        // Khôi phục kích thước ban đầu cho scrollView
         UIView.animate(withDuration: 0.3) {
-            self.view.frame.size.height = self.view.frame.height
-            self.view.layoutIfNeeded()
+            // Gỡ bỏ ràng buộc cũ nếu có
+            if let oldConstraint = self.scrollViewBottomConstraint {
+                oldConstraint.isActive = false
+            }
+
+            // Tạo và lưu ràng buộc mới
+            self.scrollViewBottomConstraint = self.scrollView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+            self.scrollViewBottomConstraint?.isActive = true
         }
     }
     
@@ -85,24 +110,48 @@ class EnterMobileNumberViewController: UIViewController, UITextFieldDelegate {
         view.backgroundColor = UIColor(hex: "#FCFCFC")
         
         backgroundBlurView.frame = view.bounds // Đặt kích thước cho blur background
-//        backgroundBlurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        backgroundBlurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.addSubview(backgroundBlurView)
         
-        let scrollView = UIScrollView()
-        scrollView.frame = view.frame
         view.addSubview(scrollView)
         
-        let stackViewContent = UIStackView()
-        stackViewContent.axis = .vertical
-        stackViewContent.alignment = .leading
-        scrollView.addSubview(stackViewContent)
-        
-        stackViewContent.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.delaysContentTouches = false
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollViewBottomConstraint = scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         NSLayoutConstraint.activate([
-            stackViewContent.topAnchor.constraint(equalTo: view.topAnchor, constant: 140.02),
-            stackViewContent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
-            stackViewContent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
-            stackViewContent.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollViewBottomConstraint!,
+            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+        ])
+        
+        scrollView.addSubview(viewEmptyTop)
+        
+        viewEmptyTop.translatesAutoresizingMaskIntoConstraints = false
+        viewEmptyTopBottonConstraint = viewEmptyTop.heightAnchor.constraint(equalToConstant: 65.19)
+        NSLayoutConstraint.activate([
+            viewEmptyTop.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            viewEmptyTop.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            viewEmptyTop.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            
+            viewEmptyTop.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            viewEmptyTopBottonConstraint!
+        ])
+        
+        scrollView.addSubview(viewContent)
+        
+        viewContent.translatesAutoresizingMaskIntoConstraints = false
+        viewContentHeightAnchorConstraint = viewContent.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.safeAreaLayoutGuide.heightAnchor, constant: -65.19)
+        NSLayoutConstraint.activate([
+            viewContent.topAnchor.constraint(equalTo: viewEmptyTop.bottomAnchor),
+            viewContent.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 25),
+            viewContent.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -25),
+            viewContent.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            
+            viewContent.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -50),
+            viewContentHeightAnchorConstraint!
         ])
         
         let labelTitle = UILabel()
@@ -110,46 +159,59 @@ class EnterMobileNumberViewController: UIViewController, UITextFieldDelegate {
         labelTitle.textColor = UIColor(hex: "#181725")
         labelTitle.font = UIFont(name: "Gilroy-Semibold", size: 26)
         labelTitle.numberOfLines = 0
-        stackViewContent.addSubview(labelTitle)
-        
+        viewContent.addSubview(labelTitle)
+
         labelTitle.translatesAutoresizingMaskIntoConstraints = false
-        labelTitle.heightAnchor.constraint(equalToConstant: 29).isActive = true
-        
+        NSLayoutConstraint.activate([
+            labelTitle.topAnchor.constraint(equalTo: viewContent.topAnchor),
+            labelTitle.leadingAnchor.constraint(equalTo: viewContent.leadingAnchor),
+            labelTitle.trailingAnchor.constraint(equalTo: viewContent.trailingAnchor),
+            
+            labelTitle.heightAnchor.constraint(equalToConstant: 29),
+        ])
+
         let labelTitleInput = UILabel()
         labelTitleInput.text = "Mobile Number"
         labelTitleInput.textColor = UIColor(hex: "#7C7C7C")
         labelTitleInput.font = UIFont(name: "Gilroy-Semibold", size: 16)
-        stackViewContent.addSubview(labelTitleInput)
+        viewContent.addSubview(labelTitleInput)
 
         labelTitleInput.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            labelTitleInput.topAnchor.constraint(equalTo: labelTitle.bottomAnchor, constant: 27.58)
+            labelTitleInput.topAnchor.constraint(equalTo: labelTitle.bottomAnchor, constant: 27.58),
+            labelTitleInput.leadingAnchor.constraint(equalTo: viewContent.leadingAnchor),
+            labelTitleInput.trailingAnchor.constraint(equalTo: viewContent.trailingAnchor),
+            
+            labelTitleInput.heightAnchor.constraint(equalToConstant: 29)
         ])
-        
+
         let viewEnterMobilePhone = UIStackView()
         viewEnterMobilePhone.axis = .horizontal
         viewEnterMobilePhone.alignment = .top
         viewEnterMobilePhone.addBottomBorder(color: UIColor(hex: "#E2E2E2"), borderLineSize: 1)
-        stackViewContent.addSubview(viewEnterMobilePhone)
-        
+        viewContent.addSubview(viewEnterMobilePhone)
+
         viewEnterMobilePhone.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             viewEnterMobilePhone.topAnchor.constraint(equalTo: labelTitleInput.bottomAnchor, constant: 10),
-            viewEnterMobilePhone.widthAnchor.constraint(equalTo: stackViewContent.widthAnchor),
+            viewEnterMobilePhone.leadingAnchor.constraint(equalTo: viewContent.leadingAnchor),
+            viewEnterMobilePhone.trailingAnchor.constraint(equalTo: viewContent.trailingAnchor),
+            
+            viewEnterMobilePhone.widthAnchor.constraint(equalTo: viewContent.widthAnchor),
             viewEnterMobilePhone.heightAnchor.constraint(equalToConstant: 39.55)
         ])
-        
+
         let iconCountry = UIImageView()
         iconCountry.image = UIImage(named: "icon-country")
         viewEnterMobilePhone.addSubview(iconCountry)
-        
+
         iconCountry.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             iconCountry.leadingAnchor.constraint(equalTo: viewEnterMobilePhone.leadingAnchor),
             iconCountry.widthAnchor.constraint(equalToConstant: 33.97),
             iconCountry.heightAnchor.constraint(equalToConstant: 23.7)
         ])
-        
+
         inputCodeCountry.font = UIFont(name: "Gilroy-Medium", size: 18)
         inputCodeCountry.textColor = UIColor(hex: "#181725")
         inputCodeCountry.text = "+880"
@@ -157,56 +219,123 @@ class EnterMobileNumberViewController: UIViewController, UITextFieldDelegate {
         inputCodeCountry.placeholder = "+000"
         inputCodeCountry.delegate = self
         viewEnterMobilePhone.addSubview(inputCodeCountry)
-        
+
         inputCodeCountry.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             inputCodeCountry.leadingAnchor.constraint(equalTo: iconCountry.trailingAnchor, constant: 12.02),
             inputCodeCountry.widthAnchor.constraint(equalToConstant: 45),
             inputCodeCountry.heightAnchor.constraint(equalToConstant: 29)
         ])
-        
+
         inputMobileNumber.font = UIFont(name: "Gilroy-Medium", size: 18)
         inputMobileNumber.textColor = UIColor(hex: "#181725")
         inputMobileNumber.keyboardType = .numberPad
         inputMobileNumber.delegate = self
         inputMobileNumber.placeholder = "Your mobile number"
         viewEnterMobilePhone.addSubview(inputMobileNumber)
-        
+
         inputMobileNumber.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             inputMobileNumber.leadingAnchor.constraint(equalTo: inputCodeCountry.trailingAnchor, constant: 2),
             inputMobileNumber.trailingAnchor.constraint(equalTo: viewEnterMobilePhone.trailingAnchor),
             inputMobileNumber.heightAnchor.constraint(equalToConstant: 29)
         ])
-        
+
         inputMobileNumber.onDeleteBackward = {
             // Nếu inputMobileNumber không có giá trị thì chuyển focus sang inputCodeCountry
             if self.inputMobileNumber.text?.isEmpty == true && self.beforeMobileNumber.isEmpty {
                 self.inputCodeCountry.becomeFirstResponder()
                 self.moveCursorToEnd(textField: self.inputCodeCountry)
             }
-            
+
             if self.beforeMobileNumber.count == 1 {
                 self.beforeMobileNumber = ""
             }
         }
-        
+
+        let viewEmpty = UIView()
+        viewContent.addSubview(viewEmpty)
+
+        viewEmpty.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            viewEmpty.topAnchor.constraint(equalTo: viewEnterMobilePhone.bottomAnchor),
+            viewEmpty.leadingAnchor.constraint(equalTo: viewContent.leadingAnchor),
+            viewEmpty.trailingAnchor.constraint(equalTo: viewContent.trailingAnchor),
+
+            viewEmpty.widthAnchor.constraint(equalTo: viewContent.widthAnchor),
+        ])
+
+        let viewOption = UIView()
+        viewContent.addSubview(viewOption)
+
+        viewOption.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            viewOption.topAnchor.constraint(equalTo: viewEmpty.bottomAnchor),
+            viewOption.bottomAnchor.constraint(equalTo: viewContent.bottomAnchor),
+            viewOption.leadingAnchor.constraint(equalTo: viewContent.leadingAnchor),
+            viewOption.trailingAnchor.constraint(equalTo: viewContent.trailingAnchor),
+
+            viewOption.widthAnchor.constraint(equalTo: viewContent.widthAnchor),
+            viewOption.heightAnchor.constraint(equalToConstant: 67 + 30.3 + 20)
+        ])
+
         let iconNextScreen = UIImageView()
+        iconNextScreen.isUserInteractionEnabled = true
         iconNextScreen.image = UIImage(named: "icon-next-screen-enter-number-phone")
-        stackViewContent.addSubview(iconNextScreen)
-        
+        viewOption.addSubview(iconNextScreen)
+
         iconNextScreen.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            iconNextScreen.trailingAnchor.constraint(equalTo: stackViewContent.trailingAnchor),
-            iconNextScreen.bottomAnchor.constraint(equalTo: stackViewContent.bottomAnchor, constant: -30.3),
+            iconNextScreen.topAnchor.constraint(equalTo: viewOption.topAnchor, constant: 20),
+            iconNextScreen.trailingAnchor.constraint(equalTo: viewOption.trailingAnchor),
+            iconNextScreen.bottomAnchor.constraint(equalTo: viewOption.bottomAnchor, constant: -30.3),
+            
             iconNextScreen.widthAnchor.constraint(equalToConstant: 67),
             iconNextScreen.heightAnchor.constraint(equalToConstant: 67)
         ])
+        
+        iconNextScreen.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapContinue(_:))))
     }
     
+    @objc func tapContinue(_ sender: UITapGestureRecognizer) {
+        let verificationViewController = VerificationViewController()
+        self.navigationController?.pushViewController(verificationViewController, animated: true)
+    }
+    
+    // Hàm được gọi ngay trước khi ViewController xuất hiện
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: true)
+        
+        // Kiểm tra hướng ban đầu khi view được tải
+        if UIDevice.current.orientation.isLandscape {
+            // Thiết bị đang xoay ngang
+            setupLandscapeLayout()
+        } else {
+            // Thiết bị đang xoay dọc
+            setupPortraitLayout()
+        }
+        
+        inputMobileNumber.becomeFirstResponder()
+    }
+    
+    // Hàm được gọi ngay sau khi view đã được hiển thị trên màn hình
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // Kiểm tra hướng ban đầu khi view được tải
+        if UIDevice.current.orientation.isLandscape {
+            // Thiết bị đang xoay ngang
+            setupLandscapeLayout()
+        } else {
+            // Thiết bị đang xoay dọc
+            setupPortraitLayout()
+        }
+    }
+    
+    // Hàm được gọi ngay sau khi ViewController biến mất
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
     }
     
     // Phương thức delegate để xử lý xóa ký tự
@@ -284,21 +413,60 @@ class EnterMobileNumberViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
+    func setupLandscapeLayout() {
+        if let oldConstraintViewEmptyTopBotton = viewEmptyTopBottonConstraint {
+            oldConstraintViewEmptyTopBotton.isActive = false
+        }
+        viewEmptyTopBottonConstraint = viewEmptyTop.heightAnchor.constraint(equalToConstant: 20)
+        viewEmptyTopBottonConstraint?.isActive = true
+        
+        if let oldConstraintViewContentHeightAnchor = viewContentHeightAnchorConstraint {
+            oldConstraintViewContentHeightAnchor.isActive = false
+        }
+        viewContentHeightAnchorConstraint = viewContent.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.safeAreaLayoutGuide.heightAnchor, constant: -20)
+        viewContentHeightAnchorConstraint?.isActive = true
+    }
+    
+    func setupPortraitLayout() {
+        if let oldConstraintViewEmptyTopBotton = viewEmptyTopBottonConstraint {
+            oldConstraintViewEmptyTopBotton.isActive = false
+        }
+        viewEmptyTopBottonConstraint = viewEmptyTop.heightAnchor.constraint(equalToConstant: 65.19)
+        viewEmptyTopBottonConstraint?.isActive = true
+        
+        if let oldConstraintViewContentHeightAnchor = viewContentHeightAnchorConstraint {
+            oldConstraintViewContentHeightAnchor.isActive = false
+        }
+        viewContentHeightAnchorConstraint = viewContent.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.safeAreaLayoutGuide.heightAnchor, constant: -65.19)
+        viewContentHeightAnchorConstraint?.isActive = true
+    }
+    
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return [.portrait, .landscapeRight, .landscapeLeft]
+    }
+    
+    // Sửa layout lại khi quay ngang màn hình
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        coordinator.animate(alongsideTransition: { context in
+            // Kiểm tra nếu xoay sang ngang hay dọc
+            if size.width > size.height {
+                // Xoay ngang
+                self.setupLandscapeLayout()
+            } else {
+                // Xoay dọc
+                self.setupPortraitLayout()
+            }
+        })
+    }
+    
     deinit {
         // Loại bỏ observer khi không còn cần thiết để tránh leak bộ nhớ
         NotificationCenter.default.removeObserver(self, name: UITextField.textDidChangeNotification, object: inputMobileNumber)
-    }
-}
-
-class DeletableTextField: UITextField {
-
-    // Closure để bắt sự kiện xóa
-    var onDeleteBackward: (() -> Void)?
-
-    override func deleteBackward() {
-        super.deleteBackward()
-
-        // Gọi closure khi người dùng nhấn nút xóa
-        onDeleteBackward?()
+        
+        // Hủy đăng ký thông báo khi không còn sử dụng
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 }
