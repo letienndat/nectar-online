@@ -66,4 +66,16 @@ extension UIView {
                                               attribute: .trailing,
                                               multiplier: 1, constant: margins))
     }
+    
+    func findFirstResponder() -> UIView? {
+        if self.isFirstResponder {
+            return self
+        }
+        for subview in self.subviews {
+            if let firstResponder = subview.findFirstResponder() {
+                return firstResponder
+            }
+        }
+        return nil
+    }
 }

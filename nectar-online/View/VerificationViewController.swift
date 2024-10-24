@@ -7,16 +7,18 @@
 
 import UIKit
 
-class VerificationViewController: UIViewController {
+class VerificationViewController: UIViewController, UITextFieldDelegate {
     
-    private let backgroundBlurView = BackgroundBlur()
+    private let (blurTop, blurBottom) = Blur.getBlur()
     private let inputCode = UITextField()
     private let scrollView = UIScrollView()
     private let viewEmptyTop = UIView()
     private let viewContent = UIView()
     private var scrollViewBottomConstraint: NSLayoutConstraint?
     private var viewEmptyTopBottonConstraint: NSLayoutConstraint?
-    private var viewContentHeightAnchorConstraint: NSLayoutConstraint?
+    private var inputCodes: [CustomTextField] = []
+    private let inputsCount = 4
+    private let iconNextScreen = UIImageView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,12 +33,11 @@ class VerificationViewController: UIViewController {
         // Thêm gesture vào view cha
         self.view.addGestureRecognizer(tapGesture)
         
-        // Do any additional setup after loading the view.
-        configNav()
-        configView()
+        setupNav()
+        setupView()
     }
     
-    func configNav() {
+    func setupNav() {
         // Tạo UIImage cho icon quay lại
         let backIcon = UIImage(named: "icon-back-nav")?.withRenderingMode(.alwaysTemplate)
         
@@ -104,19 +105,17 @@ class VerificationViewController: UIViewController {
         }
     }
     
-    func configView() {
+    func setupView() {
         view.backgroundColor = UIColor(hex: "#FCFCFC")
-        
-        backgroundBlurView.frame = view.bounds // Đặt kích thước cho blur background
-        backgroundBlurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        view.addSubview(backgroundBlurView)
         
         view.addSubview(scrollView)
         
+        scrollView.bounces = false
         scrollView.delaysContentTouches = false
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
+        
         scrollViewBottomConstraint = scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -125,31 +124,64 @@ class VerificationViewController: UIViewController {
             scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
         ])
         
-        scrollView.addSubview(viewEmptyTop)
+        scrollView.insertSubview(blurTop, at: 0)
+        blurTop.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            blurTop.topAnchor.constraint(equalTo: view.topAnchor),
+            blurTop.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            blurTop.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            blurTop.widthAnchor.constraint(equalTo: view.widthAnchor)
+        ])
+        
+        scrollView.insertSubview(blurBottom, at: 1)
+        blurBottom.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            blurBottom.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            blurBottom.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            blurBottom.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            blurBottom.widthAnchor.constraint(equalTo: view.widthAnchor)
+        ])
+        
+        let subView = UIView()
+        subView.backgroundColor = .clear
+        scrollView.addSubview(subView)
+        
+        subView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            subView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            subView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            subView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            subView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            
+            subView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            subView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.frameLayoutGuide.heightAnchor)
+        ])
+        
+        subView.addSubview(viewEmptyTop)
         
         viewEmptyTop.translatesAutoresizingMaskIntoConstraints = false
         viewEmptyTopBottonConstraint = viewEmptyTop.heightAnchor.constraint(equalToConstant: 65.19)
         NSLayoutConstraint.activate([
-            viewEmptyTop.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            viewEmptyTop.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            viewEmptyTop.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            viewEmptyTop.topAnchor.constraint(equalTo: subView.topAnchor),
+            viewEmptyTop.leadingAnchor.constraint(equalTo: subView.leadingAnchor),
+            viewEmptyTop.trailingAnchor.constraint(equalTo: subView.trailingAnchor),
             
-            viewEmptyTop.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            viewEmptyTop.widthAnchor.constraint(equalTo: subView.widthAnchor),
             viewEmptyTopBottonConstraint!
         ])
         
-        scrollView.addSubview(viewContent)
+        subView.addSubview(viewContent)
         
         viewContent.translatesAutoresizingMaskIntoConstraints = false
-        viewContentHeightAnchorConstraint = viewContent.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.safeAreaLayoutGuide.heightAnchor, constant: -65.19)
         NSLayoutConstraint.activate([
             viewContent.topAnchor.constraint(equalTo: viewEmptyTop.bottomAnchor),
-            viewContent.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 25),
-            viewContent.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -25),
-            viewContent.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            viewContent.leadingAnchor.constraint(equalTo: subView.leadingAnchor, constant: 25),
+            viewContent.trailingAnchor.constraint(equalTo: subView.trailingAnchor, constant: -25),
+            viewContent.bottomAnchor.constraint(equalTo: subView.bottomAnchor),
             
-            viewContent.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -50),
-            viewContentHeightAnchorConstraint!
+            viewContent.widthAnchor.constraint(equalTo: subView.widthAnchor, constant: -50),
         ])
         
         let labelTitle = UILabel()
@@ -186,6 +218,8 @@ class VerificationViewController: UIViewController {
         let viewEnterCode = UIStackView()
         viewEnterCode.axis = .horizontal
         viewEnterCode.alignment = .top
+        viewEnterCode.distribution = .fill
+        viewEnterCode.spacing = 5
         viewEnterCode.addBottomBorder(color: UIColor(hex: "#E2E2E2"), borderLineSize: 1)
         viewContent.addSubview(viewEnterCode)
 
@@ -199,18 +233,64 @@ class VerificationViewController: UIViewController {
             viewEnterCode.heightAnchor.constraint(equalToConstant: 39.55)
         ])
         
-        inputCode.font = UIFont(name: "Gilroy-Medium", size: 18)
-        inputCode.textColor = UIColor(hex: "#181725")
-        inputCode.keyboardType = .phonePad
-        inputCode.placeholder = "- - - -"
-        viewEnterCode.addSubview(inputCode)
+        for i in 0..<inputsCount {
+            inputCodes.append(CustomTextField())
+            inputCodes[i].font = UIFont(name: "Gilroy-Medium", size: 18)
+            inputCodes[i].textColor = UIColor(hex: "#181725")
+            inputCodes[i].keyboardType = .phonePad
+            inputCodes[i].placeholder = "-"
+            inputCodes[i].textAlignment = .center
+            inputCodes[i].delegate = self
+            viewEnterCode.addArrangedSubview(inputCodes[i])
+            
+            if i == 0 {
+                inputCodes[i].isUserInteractionEnabled = true
+            } else {
+                inputCodes[i].isUserInteractionEnabled = false
+            }
+            
+            inputCodes[i].tintColor = .clear
 
-        inputCode.translatesAutoresizingMaskIntoConstraints = false
+            inputCodes[i].translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                inputCodes[i].widthAnchor.constraint(equalToConstant: 20),
+                inputCodes[i].heightAnchor.constraint(equalToConstant: 29)
+            ])
+            
+            inputCodes[i].onDeleteBackward = {
+                self.hideButtonNextScreen()
+                if i == 0 {
+                    print("Cleared")
+                } else {
+                    self.inputCodes[i].isUserInteractionEnabled = false
+                    self.inputCodes[i - 1].isUserInteractionEnabled = true
+                    self.inputCodes[i - 1].becomeFirstResponder()
+                }
+            }
+        }
+        
+        inputCodes.first?.becomeFirstResponder()
+        
+        let viewEmptyStackViewCode = UIView()
+        viewEmptyStackViewCode.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        viewEmptyStackViewCode.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        viewEnterCode.addArrangedSubview(viewEmptyStackViewCode)
+        
+        viewEmptyStackViewCode.translatesAutoresizingMaskIntoConstraints = false
+        viewEmptyStackViewCode.heightAnchor.constraint(equalTo: viewEnterCode.heightAnchor).isActive = true
+        
+        let viewOverlay = UIView()
+        viewEnterCode.addSubview(viewOverlay)
+        
+        viewOverlay.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            inputCode.leadingAnchor.constraint(equalTo: viewEnterCode.leadingAnchor),
-            inputCode.widthAnchor.constraint(equalTo: viewEnterCode.widthAnchor),
-            inputCode.heightAnchor.constraint(equalToConstant: 29)
+            viewOverlay.centerXAnchor.constraint(equalTo: viewEnterCode.centerXAnchor),
+            viewOverlay.centerYAnchor.constraint(equalTo: viewEnterCode.centerYAnchor),
+            viewOverlay.heightAnchor.constraint(equalTo: viewEnterCode.heightAnchor),
+            viewOverlay.widthAnchor.constraint(equalTo: viewEnterCode.widthAnchor)
         ])
+        
+        viewOverlay.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapViewOverlayInputCode(_:))))
 
         let viewEmpty = UIView()
         viewContent.addSubview(viewEmpty)
@@ -224,7 +304,10 @@ class VerificationViewController: UIViewController {
             viewEmpty.widthAnchor.constraint(equalTo: viewContent.widthAnchor),
         ])
 
-        let viewOption = UIView()
+        let viewOption = UIStackView()
+        viewOption.axis = .horizontal
+        viewOption.alignment = .center
+        viewOption.distribution = .fill
         viewContent.addSubview(viewOption)
 
         viewOption.translatesAutoresizingMaskIntoConstraints = false
@@ -242,35 +325,111 @@ class VerificationViewController: UIViewController {
         labelResendCode.text = "Resend Code"
         labelResendCode.textColor = UIColor(hex: "#53B175")
         labelResendCode.font = UIFont(name: "Gilroy-Medium", size: 18)
-        viewOption.addSubview(labelResendCode)
+        viewOption.addArrangedSubview(labelResendCode)
         
-        labelResendCode.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            labelResendCode.leadingAnchor.constraint(equalTo: viewOption.leadingAnchor),
-            labelResendCode.centerYAnchor.constraint(equalTo: viewOption.centerYAnchor)
-        ])
+        labelResendCode.isUserInteractionEnabled = true
+        labelResendCode.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleResendCode(_:))))
+        
+        let viewEmptyOption = UIView()
+        viewOption.addArrangedSubview(viewEmptyOption)
+        
+        viewEmptyOption.backgroundColor = .brown
+        
+        viewEmptyOption.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        viewEmptyOption.setContentHuggingPriority(.defaultLow, for: .horizontal)
 
-        let iconNextScreen = UIImageView()
         iconNextScreen.isUserInteractionEnabled = true
         iconNextScreen.image = UIImage(named: "icon-next-screen-enter-number-phone")
-        viewOption.addSubview(iconNextScreen)
+        viewOption.addArrangedSubview(iconNextScreen)
+        
+        iconNextScreen.isHidden = true
 
         iconNextScreen.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            iconNextScreen.topAnchor.constraint(equalTo: viewOption.topAnchor, constant: 20),
-            iconNextScreen.trailingAnchor.constraint(equalTo: viewOption.trailingAnchor),
-            iconNextScreen.bottomAnchor.constraint(equalTo: viewOption.bottomAnchor, constant: -30.3),
-            
             iconNextScreen.widthAnchor.constraint(equalToConstant: 67),
             iconNextScreen.heightAnchor.constraint(equalToConstant: 67)
         ])
         
-//        iconNextScreen.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapContinue(_:))))
+        iconNextScreen.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapContinue(_:))))
     }
     
-    @objc func tapContinue(_ sender: UITapGestureRecognizer) {
-        let verificationViewController = VerificationViewController()
-        self.navigationController?.pushViewController(verificationViewController, animated: true)
+    // Hàm xử lý gửi lại code
+    @objc func handleResendCode(_ sender: UITapGestureRecognizer) {
+        // Xử lý gửi lại code
+    }
+    
+    // Xử lý sự kiện khi bấm vào overlay của view input code
+    @objc func tapViewOverlayInputCode(_ gesture: UITapGestureRecognizer) {
+        if let _ = view.findFirstResponder() {
+            // Pass
+        } else {
+            for input in inputCodes {
+                if input.isUserInteractionEnabled {
+                    input.becomeFirstResponder()
+                    break
+                }
+            }
+        }
+    }
+    
+    // Xử lý chuyển sang màn hình tiếp theo
+    @objc func tapContinue(_ gesture: UITapGestureRecognizer) {
+        // Viết code ở đây
+        self.navigationController?.pushViewController(SelectLocationViewController(), animated: true)
+    }
+    
+    // Hàm được gọi khi input có sự thay đổi ký tự
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        // Lấy nội dung sau khi thay đổi
+        let currentText = textField.text ?? ""
+        let _ = (currentText as NSString).replacingCharacters(in: range, with: string)
+        if !string.isEmpty {
+            if let number = Int(string) {
+                let index = inputCodes.firstIndex(of: textField as! CustomTextField)
+                if index! == inputsCount - 1 {
+                    // Nhập xong code
+                    showButtonNextScreen()
+                    inputCodes[index!].resignFirstResponder()
+                } else {
+                    textField.isUserInteractionEnabled = false
+                    inputCodes[index! + 1].isUserInteractionEnabled = true
+                    inputCodes[index! + 1].becomeFirstResponder()
+                }
+                
+                if textField.text!.count == 1 && Int(textField.text!) != nil {
+                    if index! == inputsCount - 1 {
+                        // Nhập xong code
+                    } else {
+                        inputCodes[index! + 1].text = number.description
+                        
+                        if index! + 1 == inputsCount - 1 {
+                            // Nhập xong code
+                            inputCodes[index! + 1].resignFirstResponder()
+                            showButtonNextScreen()
+                        }
+                    }
+                } else if textField.text!.count == 0 && textField.text!.isEmpty {
+                    textField.text = number.description
+                }
+            } else {
+                return false
+            }
+        }
+
+        return true
+    }
+    
+    func hideButtonNextScreen() {
+        iconNextScreen.isHidden = true
+    }
+    
+    func showButtonNextScreen() {
+        iconNextScreen.isHidden = false
+    }
+    
+    // Hàm được gọi khi người dùng nhập vào input
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        textField.selectedTextRange = nil // Hủy chọn khi bắt đầu nhập
     }
     
     // Hàm được gọi ngay trước khi ViewController xuất hiện
@@ -315,12 +474,6 @@ class VerificationViewController: UIViewController {
         }
         viewEmptyTopBottonConstraint = viewEmptyTop.heightAnchor.constraint(equalToConstant: 20)
         viewEmptyTopBottonConstraint?.isActive = true
-        
-        if let oldConstraintViewContentHeightAnchor = viewContentHeightAnchorConstraint {
-            oldConstraintViewContentHeightAnchor.isActive = false
-        }
-        viewContentHeightAnchorConstraint = viewContent.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.safeAreaLayoutGuide.heightAnchor, constant: -20)
-        viewContentHeightAnchorConstraint?.isActive = true
     }
     
     func setupPortraitLayout() {
@@ -329,12 +482,6 @@ class VerificationViewController: UIViewController {
         }
         viewEmptyTopBottonConstraint = viewEmptyTop.heightAnchor.constraint(equalToConstant: 65.19)
         viewEmptyTopBottonConstraint?.isActive = true
-        
-        if let oldConstraintViewContentHeightAnchor = viewContentHeightAnchorConstraint {
-            oldConstraintViewContentHeightAnchor.isActive = false
-        }
-        viewContentHeightAnchorConstraint = viewContent.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.safeAreaLayoutGuide.heightAnchor, constant: -65.19)
-        viewContentHeightAnchorConstraint?.isActive = true
     }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {

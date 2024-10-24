@@ -1,5 +1,5 @@
 //
-//  BackgroundBlur.swift
+//  Blur.swift
 //  nectar-online
 //
 //  Created by Macbook on 20/10/2024.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class BackgroundBlur: UIView {
+class BlurTop: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -56,8 +56,26 @@ class BackgroundBlur: UIView {
             backgoundTopView.heightAnchor.constraint(equalToConstant: 233.1),
             backgoundTopView.leadingAnchor.constraint(equalTo: leadingAnchor),
             backgoundTopView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            backgoundTopView.topAnchor.constraint(equalTo: topAnchor)
+            backgoundTopView.topAnchor.constraint(equalTo: topAnchor),
+            
+            heightAnchor.constraint(equalTo: backgoundTopView.heightAnchor)
         ])
+    }
+}
+
+class BlurBottom: UIView {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        setupView()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupView() {
+        backgroundColor = .clear
         
         let imageBackgroundBottomView = UIImageView()
         imageBackgroundBottomView.image = UIImage(named: "background-bottom-blur")
@@ -94,7 +112,15 @@ class BackgroundBlur: UIView {
             backgoundBottomView.heightAnchor.constraint(equalToConstant: 302.76),
             backgoundBottomView.leadingAnchor.constraint(equalTo: leadingAnchor),
             backgoundBottomView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            backgoundBottomView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            backgoundBottomView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            heightAnchor.constraint(equalTo: backgoundBottomView.heightAnchor)
         ])
+    }
+}
+
+class Blur {
+    static func getBlur() -> (BlurTop, BlurBottom) {
+        return (BlurTop(), BlurBottom())
     }
 }

@@ -13,10 +13,10 @@ class OnbordingViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        configView()
+        setupView()
     }
 
-    func configView() {
+    func setupView() {
         let imageView: UIImageView = UIImageView()
         imageView.image = UIImage(named: "background-welcome-screen.png")
         imageView.contentMode = .scaleAspectFill
@@ -30,10 +30,10 @@ class OnbordingViewController: UIViewController {
             imageView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
         ])
         
-        configContentView()
+        setupContentView()
     }
     
-    func configContentView() {
+    func setupContentView() {
         let subView: UIView = UIView()
         subView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(subView)

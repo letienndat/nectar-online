@@ -1,6 +1,9 @@
 import UIKit
 
 class SignInViewController: UIViewController, UIGestureRecognizerDelegate {
+    
+    private let (blurTop, blurBottom) = Blur.getBlur()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -9,7 +12,7 @@ class SignInViewController: UIViewController, UIGestureRecognizerDelegate {
         
         view.backgroundColor = UIColor(hex: "#FCFCFC")
     
-        configView()
+        setupView()
     }
     
     func removeViewBefore() {
@@ -22,7 +25,9 @@ class SignInViewController: UIViewController, UIGestureRecognizerDelegate {
             
     }
     
-    func configView() {
+    func setupView() {
+        view.backgroundColor = UIColor(hex: "#FCFCFC")
+        
         let scrollView = UIScrollView()
         scrollView.contentInsetAdjustmentBehavior = .never
         scrollView.bounces = false
@@ -40,12 +45,26 @@ class SignInViewController: UIViewController, UIGestureRecognizerDelegate {
             scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
         ])
         
-        let backgroundBlurView = BackgroundBlur()
-        backgroundBlurView.backgroundColor = UIColor(hex: "#FCFCFC")
-        backgroundBlurView.frame = scrollView.bounds // Đặt kích thước cho blur background
-        backgroundBlurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        scrollView.addSubview(backgroundBlurView)
-
+        scrollView.insertSubview(blurTop, at: 0)
+        blurTop.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            blurTop.topAnchor.constraint(equalTo: view.topAnchor),
+            blurTop.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            blurTop.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            blurTop.widthAnchor.constraint(equalTo: view.widthAnchor)
+        ])
+        
+        scrollView.insertSubview(blurBottom, at: 1)
+        blurBottom.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            blurBottom.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            blurBottom.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            blurBottom.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            blurBottom.widthAnchor.constraint(equalTo: view.widthAnchor)
+        ])
+        
         let subView = UIView()
         subView.backgroundColor = .clear
         scrollView.addSubview(subView)
@@ -53,10 +72,12 @@ class SignInViewController: UIViewController, UIGestureRecognizerDelegate {
         subView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             subView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            subView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             subView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             subView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            subView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            
             subView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            subView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.frameLayoutGuide.heightAnchor)
         ])
         
         let imageTop = UIImageView()
@@ -70,20 +91,8 @@ class SignInViewController: UIViewController, UIGestureRecognizerDelegate {
             imageTop.topAnchor.constraint(equalTo: subView.topAnchor),
             imageTop.leadingAnchor.constraint(equalTo: subView.leadingAnchor),
             imageTop.trailingAnchor.constraint(equalTo: subView.trailingAnchor),
+                
             imageTop.heightAnchor.constraint(equalTo: imageTop.widthAnchor, multiplier: (imageTop.image?.size.height ?? 1.0) / (imageTop.image?.size.width ?? 1.0))
-        ])
-        
-        let viewEmpty = UIView()
-        viewEmpty.backgroundColor = .clear
-        subView.addSubview(viewEmpty)
-        viewEmpty.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            viewEmpty.topAnchor.constraint(equalTo: imageTop.bottomAnchor),
-            viewEmpty.leadingAnchor.constraint(equalTo: subView.leadingAnchor),
-            viewEmpty.trailingAnchor.constraint(equalTo: subView.trailingAnchor),
-            viewEmpty.widthAnchor.constraint(equalTo: subView.widthAnchor),
-            viewEmpty.heightAnchor.constraint(greaterThanOrEqualToConstant: 49.18)
         ])
         
         let contentView = UIView()
@@ -92,8 +101,7 @@ class SignInViewController: UIViewController, UIGestureRecognizerDelegate {
 
         contentView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            contentView.topAnchor.constraint(equalTo: viewEmpty.bottomAnchor),
-            contentView.bottomAnchor.constraint(equalTo: subView.bottomAnchor, constant: -90.42),
+            contentView.topAnchor.constraint(equalTo: imageTop.bottomAnchor),
             contentView.leadingAnchor.constraint(equalTo: subView.leadingAnchor, constant: 24.53),
             contentView.trailingAnchor.constraint(equalTo: subView.trailingAnchor, constant: -24.53)
         ])
@@ -102,7 +110,7 @@ class SignInViewController: UIViewController, UIGestureRecognizerDelegate {
         labelTitle.text = "Get your groceries with nectar"
         labelTitle.font = UIFont(name: "Gilroy-SemiBold", size: 26)
         labelTitle.textColor = UIColor(hex: "#030303")
-        labelTitle.numberOfLines = 0
+        labelTitle.numberOfLines = 2
 
         // Tạo NSMutableParagraphStyle để cài đặt line height
         let paragraphStyle = NSMutableParagraphStyle()
@@ -121,7 +129,9 @@ class SignInViewController: UIViewController, UIGestureRecognizerDelegate {
         NSLayoutConstraint.activate([
             labelTitle.topAnchor.constraint(equalTo: contentView.topAnchor),
             labelTitle.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            labelTitle.trailingAnchor.constraint(equalTo: subView.trailingAnchor, constant: -167.3)
+            labelTitle.trailingAnchor.constraint(equalTo: subView.trailingAnchor, constant: -167.3),
+            
+            labelTitle.heightAnchor.constraint(equalToConstant: 63)
         ])
 
         let phoneNumberView = UIView()
@@ -175,7 +185,9 @@ class SignInViewController: UIViewController, UIGestureRecognizerDelegate {
         labelOrConnect.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             labelOrConnect.topAnchor.constraint(equalTo: phoneNumberView.bottomAnchor, constant: 40),
-            labelOrConnect.centerXAnchor.constraint(equalTo: phoneNumberView.centerXAnchor)
+            labelOrConnect.centerXAnchor.constraint(equalTo: phoneNumberView.centerXAnchor),
+            
+            labelOrConnect.heightAnchor.constraint(equalToConstant: 17)
         ])
 
         let buttonContinueWithGoogle = UIButton(type: .system)
@@ -245,15 +257,30 @@ class SignInViewController: UIViewController, UIGestureRecognizerDelegate {
         buttonContinueWithFacebook.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             buttonContinueWithFacebook.topAnchor.constraint(equalTo: buttonContinueWithGoogle.bottomAnchor, constant: 20),
+            buttonContinueWithFacebook.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -90.42),
             buttonContinueWithFacebook.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             buttonContinueWithFacebook.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            buttonContinueWithFacebook.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            
             buttonContinueWithFacebook.heightAnchor.constraint(equalToConstant: 67)
+        ])
+        
+        let viewEmptyEnd = UIView()
+        subView.addSubview(viewEmptyEnd)
+
+        viewEmptyEnd.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            viewEmptyEnd.topAnchor.constraint(equalTo: contentView.bottomAnchor),
+            viewEmptyEnd.bottomAnchor.constraint(equalTo: subView.bottomAnchor),
+            viewEmptyEnd.leadingAnchor.constraint(equalTo: subView.leadingAnchor),
+            viewEmptyEnd.trailingAnchor.constraint(equalTo: subView.trailingAnchor),
+
+            viewEmptyEnd.widthAnchor.constraint(equalTo: subView.widthAnchor),
         ])
     }
     
-    // Hàm được gọi khi ViewController xuất hiện
-    override func viewWillAppear(_ animated: Bool) {
+    // Hàm được gọi trước khi ViewController xuất hiện
+    override func viewDidAppear(_ animated: Bool) {
+        
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: false)
     }
@@ -263,17 +290,18 @@ class SignInViewController: UIViewController, UIGestureRecognizerDelegate {
         super.viewDidDisappear(animated)
     }
     
+    // Hàm xử lý đăng nhập bằng tài khoản Google
     @objc func handleSiginWithGoogle() {
 //        print("Login with Google")
     }
     
+    // Hàm xử lý đăng nhập bằng tài khoản Facebook
     @objc func handleSiginWithFacebook() {
 //        print("Login with Facebook")
     }
     
     @objc func handleTapPhoneNumberView() {
-        let numberViewController = NumberViewController()
-        self.navigationController?.pushViewController(numberViewController, animated: true)
+        self.navigationController?.pushViewController(NumberViewController(), animated: true)
     }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {

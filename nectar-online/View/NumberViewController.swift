@@ -9,8 +9,8 @@ import UIKit
 
 class NumberViewController: UIViewController, UITextFieldDelegate {
     
-    private let backgroundBlurView = BackgroundBlur()
-    private let inputCodeCountry = UITextField()
+    private let (blurTop, blurBottom) = Blur.getBlur()
+    private let inputCodeCountry = DeletableTextField()
     private let inputMobileNumber = DeletableTextField()
     private var beforeMobileNumber: String! = ""
     private let scrollView = UIScrollView()
@@ -18,7 +18,7 @@ class NumberViewController: UIViewController, UITextFieldDelegate {
     private let viewContent = UIView()
     private var scrollViewBottomConstraint: NSLayoutConstraint?
     private var viewEmptyTopBottonConstraint: NSLayoutConstraint?
-    private var viewContentHeightAnchorConstraint: NSLayoutConstraint?
+    private let iconNextScreen = UIImageView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,11 +34,11 @@ class NumberViewController: UIViewController, UITextFieldDelegate {
         self.view.addGestureRecognizer(tapGesture)
         
         // Do any additional setup after loading the view.
-        configNav()
-        configView()
+        setupNav()
+        setupView()
     }
     
-    func configNav() {
+    func setupNav() {
         // Tạo UIImage cho icon quay lại
         let backIcon = UIImage(named: "icon-back-nav")?.withRenderingMode(.alwaysTemplate)
         
@@ -106,19 +106,17 @@ class NumberViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    func configView() {
+    func setupView() {
         view.backgroundColor = UIColor(hex: "#FCFCFC")
-        
-        backgroundBlurView.frame = view.bounds // Đặt kích thước cho blur background
-        backgroundBlurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        view.addSubview(backgroundBlurView)
         
         view.addSubview(scrollView)
         
+        scrollView.bounces = false
         scrollView.delaysContentTouches = false
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
+        
         scrollViewBottomConstraint = scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -127,31 +125,64 @@ class NumberViewController: UIViewController, UITextFieldDelegate {
             scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
         ])
         
-        scrollView.addSubview(viewEmptyTop)
+        scrollView.insertSubview(blurTop, at: 0)
+        blurTop.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            blurTop.topAnchor.constraint(equalTo: view.topAnchor),
+            blurTop.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            blurTop.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            blurTop.widthAnchor.constraint(equalTo: view.widthAnchor)
+        ])
+        
+        scrollView.insertSubview(blurBottom, at: 1)
+        blurBottom.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            blurBottom.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            blurBottom.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            blurBottom.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            blurBottom.widthAnchor.constraint(equalTo: view.widthAnchor)
+        ])
+        
+        let subView = UIView()
+        subView.backgroundColor = .clear
+        scrollView.addSubview(subView)
+        
+        subView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            subView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            subView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            subView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            subView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            
+            subView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            subView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.frameLayoutGuide.heightAnchor)
+        ])
+        
+        subView.addSubview(viewEmptyTop)
         
         viewEmptyTop.translatesAutoresizingMaskIntoConstraints = false
         viewEmptyTopBottonConstraint = viewEmptyTop.heightAnchor.constraint(equalToConstant: 65.19)
         NSLayoutConstraint.activate([
-            viewEmptyTop.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            viewEmptyTop.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            viewEmptyTop.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            viewEmptyTop.topAnchor.constraint(equalTo: subView.topAnchor),
+            viewEmptyTop.leadingAnchor.constraint(equalTo: subView.leadingAnchor),
+            viewEmptyTop.trailingAnchor.constraint(equalTo: subView.trailingAnchor),
             
-            viewEmptyTop.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            viewEmptyTop.widthAnchor.constraint(equalTo: subView.widthAnchor),
             viewEmptyTopBottonConstraint!
         ])
         
-        scrollView.addSubview(viewContent)
+        subView.addSubview(viewContent)
         
         viewContent.translatesAutoresizingMaskIntoConstraints = false
-        viewContentHeightAnchorConstraint = viewContent.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.safeAreaLayoutGuide.heightAnchor, constant: -65.19)
         NSLayoutConstraint.activate([
             viewContent.topAnchor.constraint(equalTo: viewEmptyTop.bottomAnchor),
-            viewContent.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 25),
-            viewContent.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -25),
-            viewContent.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            viewContent.leadingAnchor.constraint(equalTo: subView.leadingAnchor, constant: 25),
+            viewContent.trailingAnchor.constraint(equalTo: subView.trailingAnchor, constant: -25),
+            viewContent.bottomAnchor.constraint(equalTo: subView.bottomAnchor),
             
-            viewContent.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -50),
-            viewContentHeightAnchorConstraint!
+            viewContent.widthAnchor.constraint(equalTo: subView.widthAnchor, constant: -50),
         ])
         
         let labelTitle = UILabel()
@@ -215,7 +246,7 @@ class NumberViewController: UIViewController, UITextFieldDelegate {
         inputCodeCountry.font = UIFont(name: "Gilroy-Medium", size: 18)
         inputCodeCountry.textColor = UIColor(hex: "#181725")
         inputCodeCountry.text = "+880"
-        inputCodeCountry.keyboardType = .phonePad
+        inputCodeCountry.keyboardType = .numberPad
         inputCodeCountry.placeholder = "+000"
         inputCodeCountry.delegate = self
         viewEnterMobilePhone.addSubview(inputCodeCountry)
@@ -226,6 +257,7 @@ class NumberViewController: UIViewController, UITextFieldDelegate {
             inputCodeCountry.widthAnchor.constraint(equalToConstant: 45),
             inputCodeCountry.heightAnchor.constraint(equalToConstant: 29)
         ])
+        inputCodeCountry.addTarget(self, action: #selector(handleInput(_:)), for: .editingChanged)
 
         inputMobileNumber.font = UIFont(name: "Gilroy-Medium", size: 18)
         inputMobileNumber.textColor = UIColor(hex: "#181725")
@@ -240,6 +272,8 @@ class NumberViewController: UIViewController, UITextFieldDelegate {
             inputMobileNumber.trailingAnchor.constraint(equalTo: viewEnterMobilePhone.trailingAnchor),
             inputMobileNumber.heightAnchor.constraint(equalToConstant: 29)
         ])
+        
+        inputMobileNumber.addTarget(self, action: #selector(handleInput(_:)), for: .editingChanged)
 
         inputMobileNumber.onDeleteBackward = {
             // Nếu inputMobileNumber không có giá trị thì chuyển focus sang inputCodeCountry
@@ -264,8 +298,11 @@ class NumberViewController: UIViewController, UITextFieldDelegate {
 
             viewEmpty.widthAnchor.constraint(equalTo: viewContent.widthAnchor),
         ])
-
-        let viewOption = UIView()
+        
+        let viewOption = UIStackView()
+        viewOption.axis = .horizontal
+        viewOption.alignment = .center
+        viewOption.distribution = .fill
         viewContent.addSubview(viewOption)
 
         viewOption.translatesAutoresizingMaskIntoConstraints = false
@@ -278,18 +315,21 @@ class NumberViewController: UIViewController, UITextFieldDelegate {
             viewOption.widthAnchor.constraint(equalTo: viewContent.widthAnchor),
             viewOption.heightAnchor.constraint(equalToConstant: 67 + 30.3 + 20)
         ])
+        
+        let viewEmptyOption = UIView()
+        viewOption.addArrangedSubview(viewEmptyOption)
+        
+        viewEmptyOption.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        viewEmptyOption.setContentHuggingPriority(.defaultLow, for: .horizontal)
 
-        let iconNextScreen = UIImageView()
         iconNextScreen.isUserInteractionEnabled = true
         iconNextScreen.image = UIImage(named: "icon-next-screen-enter-number-phone")
-        viewOption.addSubview(iconNextScreen)
+        viewOption.addArrangedSubview(iconNextScreen)
+        
+        iconNextScreen.isHidden = true
 
         iconNextScreen.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            iconNextScreen.topAnchor.constraint(equalTo: viewOption.topAnchor, constant: 20),
-            iconNextScreen.trailingAnchor.constraint(equalTo: viewOption.trailingAnchor),
-            iconNextScreen.bottomAnchor.constraint(equalTo: viewOption.bottomAnchor, constant: -30.3),
-            
             iconNextScreen.widthAnchor.constraint(equalToConstant: 67),
             iconNextScreen.heightAnchor.constraint(equalToConstant: 67)
         ])
@@ -297,9 +337,26 @@ class NumberViewController: UIViewController, UITextFieldDelegate {
         iconNextScreen.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapContinue(_:))))
     }
     
+    // Hàm xử lý sự kiện text của input bị thay đổi
+    @objc func handleInput(_ sender: DeletableTextField) {
+        if !inputCodeCountry.text!.replacingOccurrences(of: "+", with: "").isEmpty && !inputMobileNumber.text!.isEmpty {
+            showButtonNextScreen()
+        } else {
+            hideButtonNextScreen()
+        }
+    }
+    
+    // Hàm xử lý khi chuyển màn hình mới khi bấm vào iconNextScreen
     @objc func tapContinue(_ sender: UITapGestureRecognizer) {
-        let verificationViewController = VerificationViewController()
-        self.navigationController?.pushViewController(verificationViewController, animated: true)
+        self.navigationController?.pushViewController(VerificationViewController(), animated: true)
+    }
+    
+    func hideButtonNextScreen() {
+        iconNextScreen.isHidden = true
+    }
+    
+    func showButtonNextScreen() {
+        iconNextScreen.isHidden = false
     }
     
     // Hàm được gọi ngay trước khi ViewController xuất hiện
@@ -385,17 +442,20 @@ class NumberViewController: UIViewController, UITextFieldDelegate {
                     // Chuyển focus sang input số điện thoại
                     inputMobileNumber.becomeFirstResponder()
                     
+                    handleInput(inputMobileNumber)
+                    
                     return false // Ngăn không cho nhập thêm vào input mã quốc gia
                 }
                 
-                return !updatedText.isEmpty
+                // Chỉ cho phép nhập số (0-9) và không cho phép dấu '+'
+                let allowedCharacters = CharacterSet(charactersIn: "0123456789")
+                let characterSet = CharacterSet(charactersIn: string)
+                return allowedCharacters.isSuperset(of: characterSet) && !updatedText.isEmpty
             }
         }
         if textField == inputMobileNumber {
             // Lấy chuỗi hiện tại của textField
             beforeMobileNumber = textField.text ?? ""
-            
-            return true
         }
 
         // Chỉ cho phép nhập số (0-9) và không cho phép dấu '+'
@@ -419,12 +479,6 @@ class NumberViewController: UIViewController, UITextFieldDelegate {
         }
         viewEmptyTopBottonConstraint = viewEmptyTop.heightAnchor.constraint(equalToConstant: 20)
         viewEmptyTopBottonConstraint?.isActive = true
-        
-        if let oldConstraintViewContentHeightAnchor = viewContentHeightAnchorConstraint {
-            oldConstraintViewContentHeightAnchor.isActive = false
-        }
-        viewContentHeightAnchorConstraint = viewContent.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.safeAreaLayoutGuide.heightAnchor, constant: -20)
-        viewContentHeightAnchorConstraint?.isActive = true
     }
     
     func setupPortraitLayout() {
@@ -433,12 +487,6 @@ class NumberViewController: UIViewController, UITextFieldDelegate {
         }
         viewEmptyTopBottonConstraint = viewEmptyTop.heightAnchor.constraint(equalToConstant: 65.19)
         viewEmptyTopBottonConstraint?.isActive = true
-        
-        if let oldConstraintViewContentHeightAnchor = viewContentHeightAnchorConstraint {
-            oldConstraintViewContentHeightAnchor.isActive = false
-        }
-        viewContentHeightAnchorConstraint = viewContent.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.safeAreaLayoutGuide.heightAnchor, constant: -65.19)
-        viewContentHeightAnchorConstraint?.isActive = true
     }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
