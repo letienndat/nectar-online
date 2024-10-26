@@ -22,6 +22,6 @@ class HomeScreenViewController: UIViewController {
     }
     
     private func setupView() {
-        self.view.backgroundColor = UIColor(hex: "#E5E5E5", alpha: 1)
+        self.view.backgroundColor = UIColor(hex: "#E5E5E5")
     }
 }
