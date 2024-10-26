@@ -38,40 +38,8 @@ class NumberViewController: UIViewController, UITextFieldDelegate {
         setupView()
     }
     
-    func setupNav() {
-        // Tạo UIImage cho icon quay lại
-        let backIcon = UIImage(named: "icon-back-nav")?.withRenderingMode(.alwaysTemplate)
-        
-        // Tùy chỉnh màu sắc cho icon
-        self.navigationController?.navigationBar.tintColor = UIColor(hex: "#181725")
-
-        // Tạo UIButton cho nút quay lại tùy chỉnh
-        let backButton = UIButton(type: .custom)
-        backButton.setImage(backIcon, for: .normal)
-        backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
-        backButton.frame = CGRect(x: 0, y: 0, width: 10, height: 18) // Kích thước icon
-
-        // Tạo UIBarButtonItem từ UIButton
-        let customBackButtonItem = UIBarButtonItem(customView: backButton)
-        
-        // Tạo UIBarButtonItem cho khoảng cách
-        let spacer = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-        spacer.width = 25.0 - 10
-
-        // Thiết lập item trái cho navigation bar
-        self.navigationItem.leftBarButtonItems = [spacer, customBackButtonItem]
-
-        // Xóa tiêu đề của nút quay lại
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-    }
-    
     @objc func hideKeybroad() {
         self.view.endEditing(true)
-    }
-    
-    // Hàm quay lại
-    @objc private func backButtonTapped() {
-        self.navigationController?.popViewController(animated: true)
     }
     
     @objc func keyboardWillShow(notification: NSNotification) {
@@ -106,7 +74,15 @@ class NumberViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    func setupView() {
+    private func setupNav() {
+        // Tùy chỉnh màu sắc cho icon
+        self.navigationController?.navigationBar.tintColor = UIColor(hex: "#181725")
+        
+        // Đặt tiêu đề nút quay lại là trống
+        self.navigationController?.navigationBar.topItem?.title = ""
+    }
+    
+    private func setupView() {
         view.backgroundColor = UIColor(hex: "#FCFCFC")
         
         view.addSubview(scrollView)
@@ -138,7 +114,7 @@ class NumberViewController: UIViewController, UITextFieldDelegate {
         scrollView.insertSubview(blurBottom, at: 1)
         blurBottom.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            blurBottom.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            blurBottom.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             blurBottom.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             blurBottom.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
@@ -152,11 +128,11 @@ class NumberViewController: UIViewController, UITextFieldDelegate {
         subView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             subView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            subView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            subView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            subView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 25),
+            subView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -25),
             subView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             
-            subView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            subView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50),
             subView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.frameLayoutGuide.heightAnchor)
         ])
         
@@ -178,11 +154,11 @@ class NumberViewController: UIViewController, UITextFieldDelegate {
         viewContent.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             viewContent.topAnchor.constraint(equalTo: viewEmptyTop.bottomAnchor),
-            viewContent.leadingAnchor.constraint(equalTo: subView.leadingAnchor, constant: 25),
-            viewContent.trailingAnchor.constraint(equalTo: subView.trailingAnchor, constant: -25),
+            viewContent.leadingAnchor.constraint(equalTo: subView.leadingAnchor),
+            viewContent.trailingAnchor.constraint(equalTo: subView.trailingAnchor),
             viewContent.bottomAnchor.constraint(equalTo: subView.bottomAnchor),
             
-            viewContent.widthAnchor.constraint(equalTo: subView.widthAnchor, constant: -50),
+            viewContent.widthAnchor.constraint(equalTo: subView.widthAnchor)
         ])
         
         let labelTitle = UILabel()
@@ -219,7 +195,7 @@ class NumberViewController: UIViewController, UITextFieldDelegate {
         let viewEnterMobilePhone = UIStackView()
         viewEnterMobilePhone.axis = .horizontal
         viewEnterMobilePhone.alignment = .top
-        viewEnterMobilePhone.addBottomBorder(color: UIColor(hex: "#E2E2E2"), borderLineSize: 1)
+        viewEnterMobilePhone.addBorder(edges: [.bottom], color: UIColor(hex: "#E2E2E2"), borderLineSize: 1)
         viewContent.addSubview(viewEnterMobilePhone)
 
         viewEnterMobilePhone.translatesAutoresizingMaskIntoConstraints = false
@@ -372,13 +348,14 @@ class NumberViewController: UIViewController, UITextFieldDelegate {
             // Thiết bị đang xoay dọc
             setupPortraitLayout()
         }
-        
-        inputMobileNumber.becomeFirstResponder()
     }
     
     // Hàm được gọi ngay sau khi view đã được hiển thị trên màn hình
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
+        // Hiển thị bàn phím nhập cho số điện thoại
+        inputMobileNumber.becomeFirstResponder()
         
         // Kiểm tra hướng ban đầu khi view được tải
         if UIDevice.current.orientation.isLandscape {
@@ -388,6 +365,13 @@ class NumberViewController: UIViewController, UITextFieldDelegate {
             // Thiết bị đang xoay dọc
             setupPortraitLayout()
         }
+    }
+    
+    // Hàm được gọi trước khi ViewController biến mất
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        view.endEditing(true)
     }
     
     // Hàm được gọi ngay sau khi ViewController biến mất
@@ -489,6 +473,7 @@ class NumberViewController: UIViewController, UITextFieldDelegate {
         viewEmptyTopBottonConstraint?.isActive = true
     }
     
+    // Hàm cấu hình cho phép xoay theo chiều nào
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return [.portrait, .landscapeRight, .landscapeLeft]
     }

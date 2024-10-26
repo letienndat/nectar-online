@@ -9,10 +9,7 @@ import UIKit
 
 extension UIColor {
     
-    /// Init create UIColor use hex and alphe
-    /// - Parameters:
-    ///   - hex: hex description
-    ///   - alpha: alpha description
+    // Hàm tạo UIColor với đối truyền vào là mã hex và alpha
     convenience init(hex: String, alpha: CGFloat = 1.0) {
         var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
         hexSanitized = hexSanitized.replacingOccurrences(of: "#", with: "")
@@ -30,43 +27,55 @@ extension UIColor {
 
 extension UIView {
 
-    /// Adds bottom border to the view with given side margins
-    ///
-    /// - Parameters:
-    ///   - color: the border color
-    ///   - margins: the left and right margin
-    ///   - borderLineSize: the size of the border
-    func addBottomBorder(color: UIColor = UIColor.red, margins: CGFloat = 0, borderLineSize: CGFloat = 1) {
-        let border = UIView()
-        border.backgroundColor = color
-        border.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(border)
-        border.addConstraint(NSLayoutConstraint(item: border,
-                                                attribute: .height,
-                                                relatedBy: .equal,
-                                                toItem: nil,
-                                                attribute: .height,
-                                                multiplier: 1, constant: borderLineSize))
-        self.addConstraint(NSLayoutConstraint(item: border,
-                                              attribute: .bottom,
-                                              relatedBy: .equal,
-                                              toItem: self,
-                                              attribute: .bottom,
-                                              multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: border,
-                                              attribute: .leading,
-                                              relatedBy: .equal,
-                                              toItem: self,
-                                              attribute: .leading,
-                                              multiplier: 1, constant: margins))
-        self.addConstraint(NSLayoutConstraint(item: border,
-                                              attribute: .trailing,
-                                              relatedBy: .equal,
-                                              toItem: self,
-                                              attribute: .trailing,
-                                              multiplier: 1, constant: margins))
+    enum BorderEdge {
+        case top, left, bottom, right
     }
-    
+
+    // Tạo border (đường viền) cho view
+    func addBorder(edges: [BorderEdge], color: UIColor = .red, margins: CGFloat = 0, borderLineSize: CGFloat = 1) {
+        for edge in edges {
+            let border = UIView()
+            border.backgroundColor = color
+            border.translatesAutoresizingMaskIntoConstraints = false
+            self.addSubview(border)
+            
+            switch edge {
+            case .top:
+                NSLayoutConstraint.activate([
+                    border.topAnchor.constraint(equalTo: self.topAnchor),
+                    border.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: margins),
+                    border.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -margins),
+                    border.heightAnchor.constraint(equalToConstant: borderLineSize)
+                ])
+                
+            case .left:
+                NSLayoutConstraint.activate([
+                    border.topAnchor.constraint(equalTo: self.topAnchor, constant: margins),
+                    border.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -margins),
+                    border.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+                    border.widthAnchor.constraint(equalToConstant: borderLineSize)
+                ])
+                
+            case .bottom:
+                NSLayoutConstraint.activate([
+                    border.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+                    border.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: margins),
+                    border.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -margins),
+                    border.heightAnchor.constraint(equalToConstant: borderLineSize)
+                ])
+                
+            case .right:
+                NSLayoutConstraint.activate([
+                    border.topAnchor.constraint(equalTo: self.topAnchor, constant: margins),
+                    border.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -margins),
+                    border.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+                    border.widthAnchor.constraint(equalToConstant: borderLineSize)
+                ])
+            }
+        }
+    }
+
+    // Tìm UIView đang mở bàn phím
     func findFirstResponder() -> UIView? {
         if self.isFirstResponder {
             return self
@@ -77,5 +86,25 @@ extension UIView {
             }
         }
         return nil
+    }
+}
+
+// Extension UILabel để tìm vị trí kí tự tại vị trí chạm
+extension UILabel {
+    func indexOfAttributedTextCharacter(at point: CGPoint) -> Int {
+        guard let attributedText = self.attributedText else { return NSNotFound }
+        
+        let textStorage = NSTextStorage(attributedString: attributedText)
+        let layoutManager = NSLayoutManager()
+        textStorage.addLayoutManager(layoutManager)
+        
+        let textContainer = NSTextContainer(size: self.bounds.size)
+        textContainer.lineFragmentPadding = 0.0
+        textContainer.maximumNumberOfLines = self.numberOfLines
+        textContainer.lineBreakMode = self.lineBreakMode
+        layoutManager.addTextContainer(textContainer)
+
+        let index = layoutManager.characterIndex(for: point, in: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
+        return index
     }
 }

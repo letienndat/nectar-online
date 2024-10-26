@@ -17,6 +17,13 @@
 		FA3B6E522CC36D61004DD798 /* OnbordingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3B6E512CC36D61004DD798 /* OnbordingViewController.swift */; };
 		FA3B6E572CC36D61004DD798 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA3B6E562CC36D61004DD798 /* Assets.xcassets */; };
 		FA3B6E5A2CC36D61004DD798 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA3B6E582CC36D61004DD798 /* LaunchScreen.storyboard */; };
+		FA4F59142CCBC9F4009F09F1 /* FormControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F59132CCBC9F4009F09F1 /* FormControlView.swift */; };
+		FA4F59172CCC82C7009F09F1 /* Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F59162CCC82C7009F09F1 /* Validate.swift */; };
+		FA4F591A2CCC8410009F09F1 /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F59192CCC8410009F09F1 /* Constant.swift */; };
+		FA4F591C2CCCC1DD009F09F1 /* ButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F591B2CCCC1DD009F09F1 /* ButtonView.swift */; };
+		FA4F591E2CCCCD0F009F09F1 /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F591D2CCCCD0F009F09F1 /* LogInViewController.swift */; };
+		FA4F59202CCD357B009F09F1 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F591F2CCD357B009F09F1 /* SignUpViewController.swift */; };
+		FA4F59222CCD4BBC009F09F1 /* HomeScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F59212CCD4BBC009F09F1 /* HomeScreenViewController.swift */; };
 		FA7E09992CCA2848001FA9C3 /* SelectLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E09982CCA2848001FA9C3 /* SelectLocationViewController.swift */; };
 		FABC7A992CC3F5D2005C5BCB /* Gilroy-UltraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FABC7A852CC3F5D2005C5BCB /* Gilroy-UltraLightItalic.ttf */; };
 		FABC7A9A2CC3F5D2005C5BCB /* Gilroy-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FABC7A862CC3F5D2005C5BCB /* Gilroy-Medium.ttf */; };
@@ -54,6 +61,13 @@
 		FA3B6E562CC36D61004DD798 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FA3B6E592CC36D61004DD798 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FA3B6E5B2CC36D61004DD798 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FA4F59132CCBC9F4009F09F1 /* FormControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormControlView.swift; sourceTree = "<group>"; };
+		FA4F59162CCC82C7009F09F1 /* Validate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Validate.swift; sourceTree = "<group>"; };
+		FA4F59192CCC8410009F09F1 /* Constant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
+		FA4F591B2CCCC1DD009F09F1 /* ButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonView.swift; sourceTree = "<group>"; };
+		FA4F591D2CCCCD0F009F09F1 /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
+		FA4F591F2CCD357B009F09F1 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
+		FA4F59212CCD4BBC009F09F1 /* HomeScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreenViewController.swift; sourceTree = "<group>"; };
 		FA7E09982CCA2848001FA9C3 /* SelectLocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectLocationViewController.swift; sourceTree = "<group>"; };
 		FABC7A852CC3F5D2005C5BCB /* Gilroy-UltraLightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gilroy-UltraLightItalic.ttf"; sourceTree = "<group>"; };
 		FABC7A862CC3F5D2005C5BCB /* Gilroy-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gilroy-Medium.ttf"; sourceTree = "<group>"; };
@@ -98,6 +112,9 @@
 				FA328A462CC54EC00026E843 /* NumberViewController.swift */,
 				FA31EC202CC8EAA100ECE5D5 /* VerificationViewController.swift */,
 				FA7E09982CCA2848001FA9C3 /* SelectLocationViewController.swift */,
+				FA4F591D2CCCCD0F009F09F1 /* LogInViewController.swift */,
+				FA4F591F2CCD357B009F09F1 /* SignUpViewController.swift */,
+				FA4F59212CCD4BBC009F09F1 /* HomeScreenViewController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -137,17 +154,37 @@
 		FA3B6E4C2CC36D61004DD798 /* nectar-online */ = {
 			isa = PBXGroup;
 			children = (
-				FA31EC242CC91DB400ECE5D5 /* Implement */,
 				FABC7A842CC3F5D2005C5BCB /* fonts */,
+				FA4F59152CCC82B4009F09F1 /* Core */,
+				FA328A3B2CC53D8F0026E843 /* Extension */,
+				FA4F59122CCBC9C6009F09F1 /* Component */,
+				FA31EC242CC91DB400ECE5D5 /* Implement */,
 				FA3B6E4D2CC36D61004DD798 /* AppDelegate.swift */,
 				FA3B6E4F2CC36D61004DD798 /* SceneDelegate.swift */,
 				FA31EC232CC91D7B00ECE5D5 /* View */,
-				FA328A3B2CC53D8F0026E843 /* Extension */,
 				FA3B6E562CC36D61004DD798 /* Assets.xcassets */,
 				FA3B6E582CC36D61004DD798 /* LaunchScreen.storyboard */,
 				FA3B6E5B2CC36D61004DD798 /* Info.plist */,
 			);
 			path = "nectar-online";
+			sourceTree = "<group>";
+		};
+		FA4F59122CCBC9C6009F09F1 /* Component */ = {
+			isa = PBXGroup;
+			children = (
+				FA4F59132CCBC9F4009F09F1 /* FormControlView.swift */,
+				FA4F591B2CCCC1DD009F09F1 /* ButtonView.swift */,
+			);
+			path = Component;
+			sourceTree = "<group>";
+		};
+		FA4F59152CCC82B4009F09F1 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				FA4F59162CCC82C7009F09F1 /* Validate.swift */,
+				FA4F59192CCC8410009F09F1 /* Constant.swift */,
+			);
+			path = Core;
 			sourceTree = "<group>";
 		};
 		FABC7A842CC3F5D2005C5BCB /* fonts */ = {
@@ -267,15 +304,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA4F59222CCD4BBC009F09F1 /* HomeScreenViewController.swift in Sources */,
 				FA31EC212CC8EAA100ECE5D5 /* VerificationViewController.swift in Sources */,
 				FA31EC262CC91DD400ECE5D5 /* Implement.swift in Sources */,
 				FA328A3E2CC53DE10026E843 /* Extension.swift in Sources */,
+				FA4F59172CCC82C7009F09F1 /* Validate.swift in Sources */,
 				FA7E09992CCA2848001FA9C3 /* SelectLocationViewController.swift in Sources */,
 				FABC7AB02CC3F76C005C5BCB /* SignInViewController.swift in Sources */,
+				FA4F591C2CCCC1DD009F09F1 /* ButtonView.swift in Sources */,
 				FA3B6E522CC36D61004DD798 /* OnbordingViewController.swift in Sources */,
+				FA4F591E2CCCCD0F009F09F1 /* LogInViewController.swift in Sources */,
 				FA3B6E4E2CC36D61004DD798 /* AppDelegate.swift in Sources */,
+				FA4F59202CCD357B009F09F1 /* SignUpViewController.swift in Sources */,
 				FA328A432CC5479E0026E843 /* Blur.swift in Sources */,
+				FA4F591A2CCC8410009F09F1 /* Constant.swift in Sources */,
 				FA328A472CC54EC00026E843 /* NumberViewController.swift in Sources */,
+				FA4F59142CCBC9F4009F09F1 /* FormControlView.swift in Sources */,
 				FA3B6E502CC36D61004DD798 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

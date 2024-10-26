@@ -10,7 +10,6 @@ import UIKit
 class VerificationViewController: UIViewController, UITextFieldDelegate {
     
     private let (blurTop, blurBottom) = Blur.getBlur()
-    private let inputCode = UITextField()
     private let scrollView = UIScrollView()
     private let viewEmptyTop = UIView()
     private let viewContent = UIView()
@@ -37,40 +36,8 @@ class VerificationViewController: UIViewController, UITextFieldDelegate {
         setupView()
     }
     
-    func setupNav() {
-        // Tạo UIImage cho icon quay lại
-        let backIcon = UIImage(named: "icon-back-nav")?.withRenderingMode(.alwaysTemplate)
-        
-        // Tùy chỉnh màu sắc cho icon
-        self.navigationController?.navigationBar.tintColor = UIColor(hex: "#181725")
-
-        // Tạo UIButton cho nút quay lại tùy chỉnh
-        let backButton = UIButton(type: .custom)
-        backButton.setImage(backIcon, for: .normal)
-        backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
-        backButton.frame = CGRect(x: 0, y: 0, width: 10, height: 18) // Kích thước icon
-
-        // Tạo UIBarButtonItem từ UIButton
-        let customBackButtonItem = UIBarButtonItem(customView: backButton)
-        
-        // Tạo UIBarButtonItem cho khoảng cách
-        let spacer = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-        spacer.width = 25.0 - 10
-
-        // Thiết lập item trái cho navigation bar
-        self.navigationItem.leftBarButtonItems = [spacer, customBackButtonItem]
-
-        // Xóa tiêu đề của nút quay lại
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-    }
-    
     @objc func hideKeybroad() {
         self.view.endEditing(true)
-    }
-    
-    // Hàm quay lại
-    @objc private func backButtonTapped() {
-        self.navigationController?.popViewController(animated: true)
     }
     
     @objc func keyboardWillShow(notification: NSNotification) {
@@ -105,7 +72,15 @@ class VerificationViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    func setupView() {
+    private func setupNav() {
+        // Tùy chỉnh màu sắc cho icon
+        self.navigationController?.navigationBar.tintColor = UIColor(hex: "#181725")
+        
+        // Đặt tiêu đề nút quay lại là trống
+        self.navigationController?.navigationBar.topItem?.title = ""
+    }
+    
+    private func setupView() {
         view.backgroundColor = UIColor(hex: "#FCFCFC")
         
         view.addSubview(scrollView)
@@ -137,7 +112,7 @@ class VerificationViewController: UIViewController, UITextFieldDelegate {
         scrollView.insertSubview(blurBottom, at: 1)
         blurBottom.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            blurBottom.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            blurBottom.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             blurBottom.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             blurBottom.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
@@ -151,11 +126,11 @@ class VerificationViewController: UIViewController, UITextFieldDelegate {
         subView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             subView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            subView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            subView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            subView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 25),
+            subView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -25),
             subView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             
-            subView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            subView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50),
             subView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.frameLayoutGuide.heightAnchor)
         ])
         
@@ -177,11 +152,11 @@ class VerificationViewController: UIViewController, UITextFieldDelegate {
         viewContent.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             viewContent.topAnchor.constraint(equalTo: viewEmptyTop.bottomAnchor),
-            viewContent.leadingAnchor.constraint(equalTo: subView.leadingAnchor, constant: 25),
-            viewContent.trailingAnchor.constraint(equalTo: subView.trailingAnchor, constant: -25),
+            viewContent.leadingAnchor.constraint(equalTo: subView.leadingAnchor),
+            viewContent.trailingAnchor.constraint(equalTo: subView.trailingAnchor),
             viewContent.bottomAnchor.constraint(equalTo: subView.bottomAnchor),
             
-            viewContent.widthAnchor.constraint(equalTo: subView.widthAnchor, constant: -50),
+            viewContent.widthAnchor.constraint(equalTo: subView.widthAnchor),
         ])
         
         let labelTitle = UILabel()
@@ -220,7 +195,7 @@ class VerificationViewController: UIViewController, UITextFieldDelegate {
         viewEnterCode.alignment = .top
         viewEnterCode.distribution = .fill
         viewEnterCode.spacing = 5
-        viewEnterCode.addBottomBorder(color: UIColor(hex: "#E2E2E2"), borderLineSize: 1)
+        viewEnterCode.addBorder(edges: [.bottom], color: UIColor(hex: "#E2E2E2"), borderLineSize: 1)
         viewContent.addSubview(viewEnterCode)
 
         viewEnterCode.translatesAutoresizingMaskIntoConstraints = false
@@ -260,7 +235,7 @@ class VerificationViewController: UIViewController, UITextFieldDelegate {
             inputCodes[i].onDeleteBackward = {
                 self.hideButtonNextScreen()
                 if i == 0 {
-                    print("Cleared")
+                    // Clear code
                 } else {
                     self.inputCodes[i].isUserInteractionEnabled = false
                     self.inputCodes[i - 1].isUserInteractionEnabled = true
@@ -268,8 +243,6 @@ class VerificationViewController: UIViewController, UITextFieldDelegate {
                 }
             }
         }
-        
-        inputCodes.first?.becomeFirstResponder()
         
         let viewEmptyStackViewCode = UIView()
         viewEmptyStackViewCode.setContentHuggingPriority(.defaultLow, for: .horizontal)
@@ -385,6 +358,9 @@ class VerificationViewController: UIViewController, UITextFieldDelegate {
         let _ = (currentText as NSString).replacingCharacters(in: range, with: string)
         if !string.isEmpty {
             if let number = Int(string) {
+                if inputCodes.last! == textField && !inputCodes.last!.text!.isEmpty {
+                    return false
+                }
                 let index = inputCodes.firstIndex(of: textField as! CustomTextField)
                 if index! == inputsCount - 1 {
                     // Nhập xong code
@@ -435,7 +411,6 @@ class VerificationViewController: UIViewController, UITextFieldDelegate {
     // Hàm được gọi ngay trước khi ViewController xuất hiện
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.setNavigationBarHidden(false, animated: true)
         
         // Kiểm tra hướng ban đầu khi view được tải
         if UIDevice.current.orientation.isLandscape {
@@ -445,14 +420,15 @@ class VerificationViewController: UIViewController, UITextFieldDelegate {
             // Thiết bị đang xoay dọc
             setupPortraitLayout()
         }
-        
-        inputCode.becomeFirstResponder()
     }
     
     // Hàm được gọi ngay sau khi view đã được hiển thị trên màn hình
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        // Hiển thị bàn phím focus vào input số đầu tiên
+        inputCodes.first?.becomeFirstResponder()
+        
         // Kiểm tra hướng ban đầu khi view được tải
         if UIDevice.current.orientation.isLandscape {
             // Thiết bị đang xoay ngang
@@ -461,6 +437,12 @@ class VerificationViewController: UIViewController, UITextFieldDelegate {
             // Thiết bị đang xoay dọc
             setupPortraitLayout()
         }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        view.endEditing(true)
     }
     
     // Hàm được gọi trước khi ViewController biến mất

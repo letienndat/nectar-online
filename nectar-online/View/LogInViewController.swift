@@ -1,24 +1,17 @@
 //
-//  SelectLocationViewController.swift
+//  LogInViewController.swift
 //  nectar-online
 //
-//  Created by Macbook on 24/10/2024.
+//  Created by Macbook on 26/10/2024.
 //
 
 import UIKit
 
-class SelectLocationViewController: UIViewController {
+class LogInViewController: UIViewController {
     
     private let (blurTop, blurBottom) = Blur.getBlur()
     private let scrollView = UIScrollView()
     private var scrollViewBottomConstraint: NSLayoutConstraint?
-    private let arrayKeysSorted = Array(Const.ZONE.keys).sorted(by: <)
-    private lazy var formControlZone: FormControllView = {
-        return FormControllView(label: "Your Zone", typeInput: .select, options: arrayKeysSorted, placeholder: "Types of your zone")
-    }()
-    private lazy var formControlArea: FormControllView = {
-        return FormControllView(label: "Your Area", typeInput: .select, options: Array(Const.ZONE[arrayKeysSorted[0]] ?? []), placeholder: "Types of your area")
-    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -135,75 +128,62 @@ class SelectLocationViewController: UIViewController {
             subView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.frameLayoutGuide.heightAnchor)
         ])
         
-        let viewIllustrationLocation = UIView()
-        subView.addSubview(viewIllustrationLocation)
+        let viewTitle = UIView()
+        subView.addSubview(viewTitle)
         
-        viewIllustrationLocation.translatesAutoresizingMaskIntoConstraints = false
+        viewTitle.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            viewIllustrationLocation.topAnchor.constraint(equalTo: subView.topAnchor),
-            viewIllustrationLocation.leadingAnchor.constraint(equalTo: subView.leadingAnchor),
-            viewIllustrationLocation.trailingAnchor.constraint(equalTo: subView.trailingAnchor),
+            viewTitle.topAnchor.constraint(equalTo: subView.topAnchor),
+            viewTitle.leadingAnchor.constraint(equalTo: subView.leadingAnchor),
+            viewTitle.trailingAnchor.constraint(equalTo: subView.trailingAnchor),
             
-            viewIllustrationLocation.widthAnchor.constraint(equalTo: subView.widthAnchor)
+            viewTitle.widthAnchor.constraint(equalTo: subView.widthAnchor)
         ])
         
-        let imageIllustrationLocation = UIImageView()
-        imageIllustrationLocation.image = UIImage(named: "illustration-location")
-        viewIllustrationLocation.addSubview(imageIllustrationLocation)
+        let icon = UIImageView()
+        icon.image = UIImage(named: "icon-top-login-signup")
+        viewTitle.addSubview(icon)
         
-        imageIllustrationLocation.translatesAutoresizingMaskIntoConstraints = false
+        icon.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            imageIllustrationLocation.centerXAnchor.constraint(equalTo: viewIllustrationLocation.centerXAnchor),
-            imageIllustrationLocation.topAnchor.constraint(equalTo: viewIllustrationLocation.topAnchor, constant: 44.97),
+            icon.centerXAnchor.constraint(equalTo: viewTitle.centerXAnchor),
+            icon.topAnchor.constraint(equalTo: viewTitle.topAnchor, constant: 28.42),
             
-            imageIllustrationLocation.widthAnchor.constraint(equalToConstant: 224.69),
-            imageIllustrationLocation.heightAnchor.constraint(equalToConstant: 170.69)
+            icon.widthAnchor.constraint(equalToConstant: 47.84),
+            icon.heightAnchor.constraint(equalToConstant: 55.64)
         ])
         
-        let titleIllustrationLocation = UILabel()
-        titleIllustrationLocation.text = "Select Your Location"
-        titleIllustrationLocation.font = UIFont(name: "Gilroy-Semibold", size: 26)
-        titleIllustrationLocation.textColor = UIColor(hex: "#181725")
-        titleIllustrationLocation.textAlignment = .center
-        viewIllustrationLocation.addSubview(titleIllustrationLocation)
+        let title = UILabel()
+        title.text = "Loging"
+        title.font = UIFont(name: "Gilroy-Semibold", size: 26)
+        title.textColor = UIColor(hex: "#181725")
+        title.textAlignment = .left
+        viewTitle.addSubview(title)
         
-        titleIllustrationLocation.translatesAutoresizingMaskIntoConstraints = false
+        title.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            titleIllustrationLocation.topAnchor.constraint(equalTo: imageIllustrationLocation.bottomAnchor, constant: 40.15),
-            titleIllustrationLocation.leadingAnchor.constraint(equalTo: viewIllustrationLocation.leadingAnchor),
-            titleIllustrationLocation.trailingAnchor.constraint(equalTo: viewIllustrationLocation.trailingAnchor),
+            title.topAnchor.constraint(equalTo: icon.bottomAnchor, constant: 100.21),
+            title.leadingAnchor.constraint(equalTo: viewTitle.leadingAnchor),
+            title.trailingAnchor.constraint(equalTo: viewTitle.trailingAnchor),
             
-            titleIllustrationLocation.heightAnchor.constraint(equalToConstant: 29)
+            title.heightAnchor.constraint(equalToConstant: 29)
         ])
         
-        let descriptionIllustrationLocation = UILabel()
-        descriptionIllustrationLocation.text = "Swithch on your location to stay in tune with what’s happening in your area"
-        descriptionIllustrationLocation.font = UIFont(name: "Gilroy-Medium", size: 16)
-        descriptionIllustrationLocation.textColor = UIColor(hex: "#7C7C7C")
-        descriptionIllustrationLocation.numberOfLines = 3
-
-        // Tạo NSMutableParagraphStyle để cài đặt line height
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 5 // Khoảng cách giữa các dòng (line height)
-        paragraphStyle.alignment = .center
-
-        // Tạo NSAttributedString với đoạn text và paragraphStyle
-        let attributedString = NSMutableAttributedString(string: descriptionIllustrationLocation.text!)
-        attributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attributedString.length))
-
-        // Gán NSAttributedString vào UILabel
-        descriptionIllustrationLocation.attributedText = attributedString
+        let descriptionTitle = UILabel()
+        descriptionTitle.text = "Enter your emails and password"
+        descriptionTitle.font = UIFont(name: "Gilroy-Medium", size: 16)
+        descriptionTitle.textColor = UIColor(hex: "#7C7C7C")
+        descriptionTitle.textAlignment = .left
+        viewTitle.addSubview(descriptionTitle)
         
-        viewIllustrationLocation.addSubview(descriptionIllustrationLocation)
-        
-        descriptionIllustrationLocation.translatesAutoresizingMaskIntoConstraints = false
+        descriptionTitle.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            descriptionIllustrationLocation.topAnchor.constraint(equalTo: titleIllustrationLocation.bottomAnchor, constant: 15),
-            descriptionIllustrationLocation.bottomAnchor.constraint(equalTo: viewIllustrationLocation.bottomAnchor),
-            descriptionIllustrationLocation.leadingAnchor.constraint(equalTo: viewIllustrationLocation.leadingAnchor),
-            descriptionIllustrationLocation.trailingAnchor.constraint(equalTo: viewIllustrationLocation.trailingAnchor),
+            descriptionTitle.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 15),
+            descriptionTitle.bottomAnchor.constraint(equalTo: viewTitle.bottomAnchor),
+            descriptionTitle.leadingAnchor.constraint(equalTo: viewTitle.leadingAnchor),
+            descriptionTitle.trailingAnchor.constraint(equalTo: viewTitle.trailingAnchor),
             
-            descriptionIllustrationLocation.heightAnchor.constraint(equalToConstant: 57)
+            descriptionTitle.heightAnchor.constraint(equalToConstant: 15)
         ])
         
         let viewForm = UIView()
@@ -211,41 +191,57 @@ class SelectLocationViewController: UIViewController {
         
         viewForm.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            viewForm.topAnchor.constraint(equalTo: viewIllustrationLocation.bottomAnchor, constant: 89.35),
+            viewForm.topAnchor.constraint(equalTo: viewTitle.bottomAnchor, constant: 40),
             viewForm.leadingAnchor.constraint(equalTo: subView.leadingAnchor),
             viewForm.trailingAnchor.constraint(equalTo: subView.trailingAnchor),
             
             viewForm.widthAnchor.constraint(equalTo: subView.widthAnchor),
         ])
         
-        viewForm.addSubview(formControlZone)
-        
-        formControlZone.handleSelectOption = {
-            self.reloadOptionsArea(option: $0)
-        }
+        let formControlEmail = FormControllView(label: "Email", typeInput: .email, placeholder: "Enter your email")
+        viewForm.addSubview(formControlEmail)
 
-        formControlZone.translatesAutoresizingMaskIntoConstraints = false
+        formControlEmail.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            formControlZone.topAnchor.constraint(equalTo: viewForm.topAnchor),
-            formControlZone.leadingAnchor.constraint(equalTo: viewForm.leadingAnchor),
-            formControlZone.trailingAnchor.constraint(equalTo: viewForm.trailingAnchor),
+            formControlEmail.topAnchor.constraint(equalTo: viewForm.topAnchor),
+            formControlEmail.leadingAnchor.constraint(equalTo: viewForm.leadingAnchor),
+            formControlEmail.trailingAnchor.constraint(equalTo: viewForm.trailingAnchor),
 
-            formControlZone.widthAnchor.constraint(equalTo: viewForm.widthAnchor)
+            formControlEmail.widthAnchor.constraint(equalTo: viewForm.widthAnchor)
         ])
         
-        viewForm.addSubview(formControlArea)
+        let formControlPassword = FormControllView(label: "Password", typeInput: .password, placeholder: "Enter your password")
+        viewForm.addSubview(formControlPassword)
 
-        formControlArea.translatesAutoresizingMaskIntoConstraints = false
+        formControlPassword.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            formControlArea.topAnchor.constraint(equalTo: formControlZone.bottomAnchor, constant: 30),
-            formControlArea.leadingAnchor.constraint(equalTo: viewForm.leadingAnchor),
-            formControlArea.trailingAnchor.constraint(equalTo: viewForm.trailingAnchor),
+            formControlPassword.topAnchor.constraint(equalTo: formControlEmail.bottomAnchor, constant: 30),
+            formControlPassword.leadingAnchor.constraint(equalTo: viewForm.leadingAnchor),
+            formControlPassword.trailingAnchor.constraint(equalTo: viewForm.trailingAnchor),
 
-            formControlArea.widthAnchor.constraint(equalTo: viewForm.widthAnchor)
+            formControlPassword.widthAnchor.constraint(equalTo: viewForm.widthAnchor)
         ])
+        
+        let buttonForgotPassword = UIButton(type: .system)
+        buttonForgotPassword.backgroundColor = .clear
+        buttonForgotPassword.setTitle("Forgot Password?", for: .normal)
+        buttonForgotPassword.setTitleColor(UIColor(hex: "#181725"), for: .normal)
+        buttonForgotPassword.titleLabel?.font = UIFont(name: "Gilroy-Semibold", size: 14)
+        buttonForgotPassword.titleLabel?.textAlignment = .left
+        viewForm.addSubview(buttonForgotPassword)
+        
+        buttonForgotPassword.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            buttonForgotPassword.topAnchor.constraint(equalTo: formControlPassword.bottomAnchor, constant: 20),
+            buttonForgotPassword.trailingAnchor.constraint(equalTo: viewForm.trailingAnchor),
+            
+            buttonForgotPassword.heightAnchor.constraint(equalToConstant: 14)
+        ])
+        
+        buttonForgotPassword.addTarget(self, action: #selector(handleForgotPassword(_:)), for: .touchUpInside)
         
         let button = ButtonView.createSystemButton(
-            title: "Submit",
+            title: "Loging",
             titleColor: UIColor(hex: "#FFF9FF"),
             titleFont: UIFont(name: "Gilroy-Semibold", size: 18),
             backgroundColor: UIColor(hex: "#53B175"),
@@ -255,15 +251,62 @@ class SelectLocationViewController: UIViewController {
         
         button.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            button.topAnchor.constraint(equalTo: formControlArea.bottomAnchor, constant: 40.35),
-            button.bottomAnchor.constraint(equalTo: viewForm.bottomAnchor),
+            button.topAnchor.constraint(equalTo: buttonForgotPassword.bottomAnchor, constant: 30),
             button.leadingAnchor.constraint(equalTo: viewForm.leadingAnchor),
             button.trailingAnchor.constraint(equalTo: viewForm.trailingAnchor),
             
             button.widthAnchor.constraint(equalTo: viewForm.widthAnchor)
         ])
         
-        button.addTarget(self, action: #selector(handleSubmit(_:)), for: .touchUpInside)
+        button.addTarget(self, action: #selector(handleLogin(_:)), for: .touchUpInside)
+        
+        let viewQuestionRedirect = UIView()
+        viewForm.addSubview(viewQuestionRedirect)
+        
+        viewQuestionRedirect.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            viewQuestionRedirect.topAnchor.constraint(equalTo: button.bottomAnchor, constant: 25),
+            viewQuestionRedirect.bottomAnchor.constraint(equalTo: viewForm.bottomAnchor),
+            viewQuestionRedirect.centerXAnchor.constraint(equalTo: viewForm.centerXAnchor),
+            
+            viewQuestionRedirect.heightAnchor.constraint(equalToConstant: 14)
+        ])
+        
+        let labelQuestion = UILabel()
+        labelQuestion.text = "Don’t have an account?"
+        labelQuestion.textAlignment = .right
+        labelQuestion.font = UIFont(name: "Gilroy-Semibold", size: 14)
+        labelQuestion.textColor = UIColor(hex: "#181725")
+        viewQuestionRedirect.addSubview(labelQuestion)
+        
+        labelQuestion.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            labelQuestion.topAnchor.constraint(equalTo: viewQuestionRedirect.topAnchor),
+            labelQuestion.bottomAnchor.constraint(equalTo: viewQuestionRedirect.bottomAnchor),
+            labelQuestion.leadingAnchor.constraint(equalTo: viewQuestionRedirect.leadingAnchor),
+            
+            labelQuestion.heightAnchor.constraint(equalToConstant: 14)
+        ])
+        
+        let buttonRedirect = UIButton(type: .system)
+        buttonRedirect.backgroundColor = .clear
+        buttonRedirect.setTitle("Signup", for: .normal)
+        buttonRedirect.setTitleColor(UIColor(hex: "#53B175"), for: .normal)
+        buttonRedirect.titleLabel?.font = UIFont(name: "Gilroy-Semibold", size: 14)
+        buttonRedirect.titleLabel?.textAlignment = .left
+        viewQuestionRedirect.addSubview(buttonRedirect)
+        
+        buttonRedirect.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            buttonRedirect.topAnchor.constraint(equalTo: viewQuestionRedirect.topAnchor),
+            buttonRedirect.bottomAnchor.constraint(equalTo: viewQuestionRedirect.bottomAnchor),
+            buttonRedirect.leadingAnchor.constraint(equalTo: labelQuestion.trailingAnchor, constant: 5),
+            buttonRedirect.trailingAnchor.constraint(equalTo: viewQuestionRedirect.trailingAnchor),
+
+            buttonRedirect.heightAnchor.constraint(equalToConstant: 14)
+        ])
+        
+        buttonRedirect.addTarget(self, action: #selector(handleRedirectSignup(_:)), for: .touchUpInside)
         
         let viewEmpty = UIView()
         subView.addSubview(viewEmpty)
@@ -280,19 +323,25 @@ class SelectLocationViewController: UIViewController {
         ])
     }
     
-    func reloadOptionsArea(option: String) {
-        formControlArea.updateOptions(newOptions: Array(Const.ZONE[option] ?? []))
+    // Xử lý sự kiện khi bấm vào đăng nhập
+    @objc func handleLogin(_ sender: UIButton) {
+        self.navigationController?.setViewControllers([HomeScreenViewController()], animated: true)
     }
     
-    // Xử lý sự kiện khi bấm vào button submit
-    @objc func handleSubmit(_ sender: UIButton) {
-        self.navigationController?.setViewControllers([LogInViewController()], animated: true)
+    // Hàm xử lý quên mật khẩu
+    @objc func handleForgotPassword(_ sender: UIButton) {
+        //
+    }
+    
+    // Hàm xử lý điều hướng sang màn hình đăng ký
+    @objc func handleRedirectSignup(_ sender: UIButton) {
+        self.navigationController?.setViewControllers([SignUpViewController()], animated: true)
     }
     
     // Hàm được gọi ngay trước khi ViewController xuất hiện
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.setNavigationBarHidden(false, animated: true)
+        self.navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
     // Hàm được gọi trước khi ViewController biến mất

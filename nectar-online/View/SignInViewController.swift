@@ -1,31 +1,18 @@
 import UIKit
 
-class SignInViewController: UIViewController, UIGestureRecognizerDelegate {
+class SignInViewController: UIViewController {
     
     private let (blurTop, blurBottom) = Blur.getBlur()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        removeViewBefore()
-        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
-        
         view.backgroundColor = UIColor(hex: "#FCFCFC")
     
         setupView()
     }
     
-    func removeViewBefore() {
-        if var viewControllers = self.navigationController?.viewControllers {
-            if viewControllers.count > 1 {
-                viewControllers.removeAll { $0 is OnbordingViewController }
-                self.navigationController?.viewControllers = viewControllers
-            }
-        }
-            
-    }
-    
-    func setupView() {
+    private func setupView() {
         view.backgroundColor = UIColor(hex: "#FCFCFC")
         
         let scrollView = UIScrollView()
@@ -58,7 +45,7 @@ class SignInViewController: UIViewController, UIGestureRecognizerDelegate {
         scrollView.insertSubview(blurBottom, at: 1)
         blurBottom.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            blurBottom.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            blurBottom.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             blurBottom.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             blurBottom.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
@@ -136,7 +123,7 @@ class SignInViewController: UIViewController, UIGestureRecognizerDelegate {
 
         let phoneNumberView = UIView()
         phoneNumberView.backgroundColor = .clear
-        phoneNumberView.addBottomBorder(color: UIColor(hex: "#E2E2E2"), borderLineSize: 1)
+        phoneNumberView.addBorder(edges: [.bottom], color: UIColor(hex: "#E2E2E2"), borderLineSize: 1)
         contentView.addSubview(phoneNumberView)
         
         // Thêm UITapGestureRecognizer
@@ -278,11 +265,13 @@ class SignInViewController: UIViewController, UIGestureRecognizerDelegate {
         ])
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+    }
+    
     // Hàm được gọi trước khi ViewController xuất hiện
     override func viewDidAppear(_ animated: Bool) {
-        
         super.viewWillAppear(animated)
-        self.navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
     // Hàm được gọi trước khi ViewController biến mất

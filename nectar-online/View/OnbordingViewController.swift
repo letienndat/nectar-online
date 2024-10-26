@@ -16,7 +16,7 @@ class OnbordingViewController: UIViewController {
         setupView()
     }
 
-    func setupView() {
+    private func setupView() {
         let imageView: UIImageView = UIImageView()
         imageView.image = UIImage(named: "background-welcome-screen.png")
         imageView.contentMode = .scaleAspectFill
@@ -33,7 +33,7 @@ class OnbordingViewController: UIViewController {
         setupContentView()
     }
     
-    func setupContentView() {
+    private func setupContentView() {
         let subView: UIView = UIView()
         subView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(subView)
@@ -115,8 +115,7 @@ class OnbordingViewController: UIViewController {
     }
     
     @objc func handleButton() {
-        let signInViewController = SignInViewController()
-        self.navigationController?.pushViewController(signInViewController, animated: true)
+        self.navigationController?.setViewControllers([SignInViewController()], animated: true)
     }
     
     // Hàm được gọi khi ViewController xuất hiện
