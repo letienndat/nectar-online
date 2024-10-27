@@ -10,7 +10,7 @@
 		FA31EC212CC8EAA100ECE5D5 /* VerificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA31EC202CC8EAA100ECE5D5 /* VerificationViewController.swift */; };
 		FA31EC262CC91DD400ECE5D5 /* Implement.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA31EC252CC91DD400ECE5D5 /* Implement.swift */; };
 		FA328A3E2CC53DE10026E843 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA328A3D2CC53DE10026E843 /* Extension.swift */; };
-		FA328A432CC5479E0026E843 /* Blur.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA328A422CC5479E0026E843 /* Blur.swift */; };
+		FA328A432CC5479E0026E843 /* BlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA328A422CC5479E0026E843 /* BlurView.swift */; };
 		FA328A472CC54EC00026E843 /* NumberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA328A462CC54EC00026E843 /* NumberViewController.swift */; };
 		FA3B6E4E2CC36D61004DD798 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3B6E4D2CC36D61004DD798 /* AppDelegate.swift */; };
 		FA3B6E502CC36D61004DD798 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3B6E4F2CC36D61004DD798 /* SceneDelegate.swift */; };
@@ -25,6 +25,15 @@
 		FA4F59202CCD357B009F09F1 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F591F2CCD357B009F09F1 /* SignUpViewController.swift */; };
 		FA4F59222CCD4BBC009F09F1 /* HomeScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F59212CCD4BBC009F09F1 /* HomeScreenViewController.swift */; };
 		FA7E09992CCA2848001FA9C3 /* SelectLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E09982CCA2848001FA9C3 /* SelectLocationViewController.swift */; };
+		FA952ADE2CCDE76E0077DFB6 /* ExploreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA952ADD2CCDE76E0077DFB6 /* ExploreViewController.swift */; };
+		FA952AE02CCDE84C0077DFB6 /* CardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA952ADF2CCDE84C0077DFB6 /* CardViewController.swift */; };
+		FA952AE22CCDECC60077DFB6 /* FavoriteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA952AE12CCDECC60077DFB6 /* FavoriteViewController.swift */; };
+		FA952AE42CCDECCE0077DFB6 /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA952AE32CCDECCE0077DFB6 /* AccountViewController.swift */; };
+		FA952AE62CCDF2D10077DFB6 /* CustomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA952AE52CCDF2D10077DFB6 /* CustomTabBar.swift */; };
+		FA952AE92CCE22B80077DFB6 /* ImageSlideshow in Frameworks */ = {isa = PBXBuildFile; productRef = FA952AE82CCE22B80077DFB6 /* ImageSlideshow */; };
+		FA952AEC2CCE27010077DFB6 /* ProductClassificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA952AEB2CCE27010077DFB6 /* ProductClassificationView.swift */; };
+		FA952AEE2CCE7C020077DFB6 /* ProductView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA952AED2CCE7C020077DFB6 /* ProductView.swift */; };
+		FA952AF12CCE91AD0077DFB6 /* DataTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA952AF02CCE91AD0077DFB6 /* DataTest.swift */; };
 		FABC7A992CC3F5D2005C5BCB /* Gilroy-UltraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FABC7A852CC3F5D2005C5BCB /* Gilroy-UltraLightItalic.ttf */; };
 		FABC7A9A2CC3F5D2005C5BCB /* Gilroy-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FABC7A862CC3F5D2005C5BCB /* Gilroy-Medium.ttf */; };
 		FABC7A9B2CC3F5D2005C5BCB /* Gilroy-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FABC7A872CC3F5D2005C5BCB /* Gilroy-LightItalic.ttf */; };
@@ -46,13 +55,14 @@
 		FABC7AAB2CC3F5D2005C5BCB /* Gilroy-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FABC7A972CC3F5D2005C5BCB /* Gilroy-Bold.ttf */; };
 		FABC7AAC2CC3F5D2005C5BCB /* Gilroy-Heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FABC7A982CC3F5D2005C5BCB /* Gilroy-Heavy.ttf */; };
 		FABC7AB02CC3F76C005C5BCB /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABC7AAF2CC3F76C005C5BCB /* SignInViewController.swift */; };
+		FAFE01532CCE9EAE00F92545 /* Collections in Frameworks */ = {isa = PBXBuildFile; productRef = FAFE01522CCE9EAE00F92545 /* Collections */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		FA31EC202CC8EAA100ECE5D5 /* VerificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationViewController.swift; sourceTree = "<group>"; };
 		FA31EC252CC91DD400ECE5D5 /* Implement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Implement.swift; sourceTree = "<group>"; };
 		FA328A3D2CC53DE10026E843 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
-		FA328A422CC5479E0026E843 /* Blur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Blur.swift; sourceTree = "<group>"; };
+		FA328A422CC5479E0026E843 /* BlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlurView.swift; sourceTree = "<group>"; };
 		FA328A462CC54EC00026E843 /* NumberViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberViewController.swift; sourceTree = "<group>"; };
 		FA3B6E4A2CC36D61004DD798 /* nectar-online.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "nectar-online.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA3B6E4D2CC36D61004DD798 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -69,6 +79,14 @@
 		FA4F591F2CCD357B009F09F1 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		FA4F59212CCD4BBC009F09F1 /* HomeScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreenViewController.swift; sourceTree = "<group>"; };
 		FA7E09982CCA2848001FA9C3 /* SelectLocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectLocationViewController.swift; sourceTree = "<group>"; };
+		FA952ADD2CCDE76E0077DFB6 /* ExploreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreViewController.swift; sourceTree = "<group>"; };
+		FA952ADF2CCDE84C0077DFB6 /* CardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardViewController.swift; sourceTree = "<group>"; };
+		FA952AE12CCDECC60077DFB6 /* FavoriteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteViewController.swift; sourceTree = "<group>"; };
+		FA952AE32CCDECCE0077DFB6 /* AccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
+		FA952AE52CCDF2D10077DFB6 /* CustomTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBar.swift; sourceTree = "<group>"; };
+		FA952AEB2CCE27010077DFB6 /* ProductClassificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductClassificationView.swift; sourceTree = "<group>"; };
+		FA952AED2CCE7C020077DFB6 /* ProductView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductView.swift; sourceTree = "<group>"; };
+		FA952AF02CCE91AD0077DFB6 /* DataTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTest.swift; sourceTree = "<group>"; };
 		FABC7A852CC3F5D2005C5BCB /* Gilroy-UltraLightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gilroy-UltraLightItalic.ttf"; sourceTree = "<group>"; };
 		FABC7A862CC3F5D2005C5BCB /* Gilroy-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gilroy-Medium.ttf"; sourceTree = "<group>"; };
 		FABC7A872CC3F5D2005C5BCB /* Gilroy-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gilroy-LightItalic.ttf"; sourceTree = "<group>"; };
@@ -97,16 +115,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAFE01532CCE9EAE00F92545 /* Collections in Frameworks */,
+				FA952AE92CCE22B80077DFB6 /* ImageSlideshow in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		FA31EC232CC91D7B00ECE5D5 /* View */ = {
+		FA31EC232CC91D7B00ECE5D5 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				FA328A422CC5479E0026E843 /* Blur.swift */,
 				FA3B6E512CC36D61004DD798 /* OnbordingViewController.swift */,
 				FABC7AAF2CC3F76C005C5BCB /* SignInViewController.swift */,
 				FA328A462CC54EC00026E843 /* NumberViewController.swift */,
@@ -115,8 +134,12 @@
 				FA4F591D2CCCCD0F009F09F1 /* LogInViewController.swift */,
 				FA4F591F2CCD357B009F09F1 /* SignUpViewController.swift */,
 				FA4F59212CCD4BBC009F09F1 /* HomeScreenViewController.swift */,
+				FA952ADD2CCDE76E0077DFB6 /* ExploreViewController.swift */,
+				FA952ADF2CCDE84C0077DFB6 /* CardViewController.swift */,
+				FA952AE12CCDECC60077DFB6 /* FavoriteViewController.swift */,
+				FA952AE32CCDECCE0077DFB6 /* AccountViewController.swift */,
 			);
-			path = View;
+			path = Controller;
 			sourceTree = "<group>";
 		};
 		FA31EC242CC91DB400ECE5D5 /* Implement */ = {
@@ -157,11 +180,11 @@
 				FABC7A842CC3F5D2005C5BCB /* fonts */,
 				FA4F59152CCC82B4009F09F1 /* Core */,
 				FA328A3B2CC53D8F0026E843 /* Extension */,
-				FA4F59122CCBC9C6009F09F1 /* Component */,
+				FA4F59122CCBC9C6009F09F1 /* View */,
 				FA31EC242CC91DB400ECE5D5 /* Implement */,
 				FA3B6E4D2CC36D61004DD798 /* AppDelegate.swift */,
 				FA3B6E4F2CC36D61004DD798 /* SceneDelegate.swift */,
-				FA31EC232CC91D7B00ECE5D5 /* View */,
+				FA31EC232CC91D7B00ECE5D5 /* Controller */,
 				FA3B6E562CC36D61004DD798 /* Assets.xcassets */,
 				FA3B6E582CC36D61004DD798 /* LaunchScreen.storyboard */,
 				FA3B6E5B2CC36D61004DD798 /* Info.plist */,
@@ -169,20 +192,25 @@
 			path = "nectar-online";
 			sourceTree = "<group>";
 		};
-		FA4F59122CCBC9C6009F09F1 /* Component */ = {
+		FA4F59122CCBC9C6009F09F1 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				FA328A422CC5479E0026E843 /* BlurView.swift */,
 				FA4F59132CCBC9F4009F09F1 /* FormControlView.swift */,
 				FA4F591B2CCCC1DD009F09F1 /* ButtonView.swift */,
+				FA952AE52CCDF2D10077DFB6 /* CustomTabBar.swift */,
+				FA952AEB2CCE27010077DFB6 /* ProductClassificationView.swift */,
+				FA952AED2CCE7C020077DFB6 /* ProductView.swift */,
 			);
-			path = Component;
+			path = View;
 			sourceTree = "<group>";
 		};
 		FA4F59152CCC82B4009F09F1 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				FA4F59162CCC82C7009F09F1 /* Validate.swift */,
 				FA4F59192CCC8410009F09F1 /* Constant.swift */,
+				FA4F59162CCC82C7009F09F1 /* Validate.swift */,
+				FA952AF02CCE91AD0077DFB6 /* DataTest.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -230,6 +258,10 @@
 			dependencies = (
 			);
 			name = "nectar-online";
+			packageProductDependencies = (
+				FA952AE82CCE22B80077DFB6 /* ImageSlideshow */,
+				FAFE01522CCE9EAE00F92545 /* Collections */,
+			);
 			productName = "nectar-online";
 			productReference = FA3B6E4A2CC36D61004DD798 /* nectar-online.app */;
 			productType = "com.apple.product-type.application";
@@ -258,6 +290,10 @@
 				Base,
 			);
 			mainGroup = FA3B6E412CC36D60004DD798;
+			packageReferences = (
+				FA952AE72CCE22B70077DFB6 /* XCRemoteSwiftPackageReference "ImageSlideshow" */,
+				FAFE01512CCE9EAD00F92545 /* XCRemoteSwiftPackageReference "swift-collections" */,
+			);
 			productRefGroup = FA3B6E4B2CC36D61004DD798 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -306,7 +342,11 @@
 			files = (
 				FA4F59222CCD4BBC009F09F1 /* HomeScreenViewController.swift in Sources */,
 				FA31EC212CC8EAA100ECE5D5 /* VerificationViewController.swift in Sources */,
+				FA952AE42CCDECCE0077DFB6 /* AccountViewController.swift in Sources */,
 				FA31EC262CC91DD400ECE5D5 /* Implement.swift in Sources */,
+				FA952AE02CCDE84C0077DFB6 /* CardViewController.swift in Sources */,
+				FA952AF12CCE91AD0077DFB6 /* DataTest.swift in Sources */,
+				FA952AEC2CCE27010077DFB6 /* ProductClassificationView.swift in Sources */,
 				FA328A3E2CC53DE10026E843 /* Extension.swift in Sources */,
 				FA4F59172CCC82C7009F09F1 /* Validate.swift in Sources */,
 				FA7E09992CCA2848001FA9C3 /* SelectLocationViewController.swift in Sources */,
@@ -316,8 +356,12 @@
 				FA4F591E2CCCCD0F009F09F1 /* LogInViewController.swift in Sources */,
 				FA3B6E4E2CC36D61004DD798 /* AppDelegate.swift in Sources */,
 				FA4F59202CCD357B009F09F1 /* SignUpViewController.swift in Sources */,
-				FA328A432CC5479E0026E843 /* Blur.swift in Sources */,
+				FA952AE62CCDF2D10077DFB6 /* CustomTabBar.swift in Sources */,
+				FA952AEE2CCE7C020077DFB6 /* ProductView.swift in Sources */,
+				FA328A432CC5479E0026E843 /* BlurView.swift in Sources */,
+				FA952AE22CCDECC60077DFB6 /* FavoriteViewController.swift in Sources */,
 				FA4F591A2CCC8410009F09F1 /* Constant.swift in Sources */,
+				FA952ADE2CCDE76E0077DFB6 /* ExploreViewController.swift in Sources */,
 				FA328A472CC54EC00026E843 /* NumberViewController.swift in Sources */,
 				FA4F59142CCBC9F4009F09F1 /* FormControlView.swift in Sources */,
 				FA3B6E502CC36D61004DD798 /* SceneDelegate.swift in Sources */,
@@ -530,6 +574,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		FA952AE72CCE22B70077DFB6 /* XCRemoteSwiftPackageReference "ImageSlideshow" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/zvonicek/ImageSlideshow";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+		FAFE01512CCE9EAD00F92545 /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		FA952AE82CCE22B80077DFB6 /* ImageSlideshow */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA952AE72CCE22B70077DFB6 /* XCRemoteSwiftPackageReference "ImageSlideshow" */;
+			productName = ImageSlideshow;
+		};
+		FAFE01522CCE9EAE00F92545 /* Collections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAFE01512CCE9EAD00F92545 /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = Collections;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = FA3B6E422CC36D60004DD798 /* Project object */;
 }

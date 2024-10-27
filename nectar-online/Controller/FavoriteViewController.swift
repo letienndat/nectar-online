@@ -1,14 +1,14 @@
 //
-//  HomeScreenViewController.swift
+//  FavoriteViewController.swift
 //  nectar-online
 //
-//  Created by Macbook on 26/10/2024.
+//  Created by Macbook on 27/10/2024.
 //
 
 import UIKit
 
-class HomeScreenViewController: UIViewController {
-
+class FavoriteViewController: UIViewController {
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 

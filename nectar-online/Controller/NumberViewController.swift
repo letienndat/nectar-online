@@ -9,7 +9,7 @@ import UIKit
 
 class NumberViewController: UIViewController, UITextFieldDelegate {
     
-    private let (blurTop, blurBottom) = Blur.getBlur()
+    private let (blurTop, blurBottom) = BlurView.getBlur()
     private let inputCodeCountry = DeletableTextField()
     private let inputMobileNumber = DeletableTextField()
     private var beforeMobileNumber: String! = ""

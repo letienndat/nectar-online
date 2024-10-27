@@ -9,15 +9,15 @@ import UIKit
 
 class SelectLocationViewController: UIViewController {
     
-    private let (blurTop, blurBottom) = Blur.getBlur()
+    private let (blurTop, blurBottom) = BlurView.getBlur()
     private let scrollView = UIScrollView()
     private var scrollViewBottomConstraint: NSLayoutConstraint?
-    private let arrayKeysSorted = Array(Const.ZONE.keys).sorted(by: <)
+    private let arrayKeysSorted = Array(DataTest.zone.keys).sorted(by: <)
     private lazy var formControlZone: FormControllView = {
         return FormControllView(label: "Your Zone", typeInput: .select, options: arrayKeysSorted, placeholder: "Types of your zone")
     }()
     private lazy var formControlArea: FormControllView = {
-        return FormControllView(label: "Your Area", typeInput: .select, options: Array(Const.ZONE[arrayKeysSorted[0]] ?? []), placeholder: "Types of your area")
+        return FormControllView(label: "Your Area", typeInput: .select, options: Array(DataTest.zone[arrayKeysSorted[0]] ?? []), placeholder: "Types of your area")
     }()
 
     override func viewDidLoad() {
@@ -281,7 +281,7 @@ class SelectLocationViewController: UIViewController {
     }
     
     func reloadOptionsArea(option: String) {
-        formControlArea.updateOptions(newOptions: Array(Const.ZONE[option] ?? []))
+        formControlArea.updateOptions(newOptions: Array(DataTest.zone[option] ?? []))
     }
     
     // Xử lý sự kiện khi bấm vào button submit

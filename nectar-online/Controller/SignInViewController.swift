@@ -2,7 +2,7 @@ import UIKit
 
 class SignInViewController: UIViewController {
     
-    private let (blurTop, blurBottom) = Blur.getBlur()
+    private let (blurTop, blurBottom) = BlurView.getBlur()
     
     override func viewDidLoad() {
         super.viewDidLoad()

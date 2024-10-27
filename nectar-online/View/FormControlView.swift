@@ -137,7 +137,7 @@ class FormControllView: UIView, UIPickerViewDelegate, UIPickerViewDataSource, UI
             self.formInput.inputAccessoryView = toolbar
             
             let arrowDownImage = UIImageView(image: UIImage(systemName: "chevron.down"))
-            arrowDownImage.tintColor = UIColor.gray
+            arrowDownImage.tintColor = UIColor(hex: "#7C7C7C")
             arrowDownImage.contentMode = .scaleAspectFit
             
             self.formInput.rightView = arrowDownImage

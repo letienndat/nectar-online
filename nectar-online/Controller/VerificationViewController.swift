@@ -9,7 +9,7 @@ import UIKit
 
 class VerificationViewController: UIViewController, UITextFieldDelegate {
     
-    private let (blurTop, blurBottom) = Blur.getBlur()
+    private let (blurTop, blurBottom) = BlurView.getBlur()
     private let scrollView = UIScrollView()
     private let viewEmptyTop = UIView()
     private let viewContent = UIView()

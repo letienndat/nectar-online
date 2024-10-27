@@ -9,6 +9,7 @@
 		<string>Gilroy-Regular.ttf</string>
 		<string>Gilroy-SemiBold.ttf</string>
 		<string>Gilroy-Medium.ttf</string>
+		<string>Gilroy-Bold.ttf</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
@@ -23,8 +24,8 @@
 					<string>Default Configuration</string>
 					<key>UISceneDelegateClassName</key>
 					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
-                    <key>NSUserAuthentication</key>
-                    <true/>
+					<key>NSUserAuthentication</key>
+					<true/>
 				</dict>
 			</array>
 		</dict>

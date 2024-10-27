@@ -9,7 +9,7 @@ import UIKit
 
 class SignUpViewController: UIViewController {
     
-    private let (blurTop, blurBottom) = Blur.getBlur()
+    private let (blurTop, blurBottom) = BlurView.getBlur()
     private let scrollView = UIScrollView()
     private var scrollViewBottomConstraint: NSLayoutConstraint?
     private let labelTermsAndPolices: UILabel = UILabel()

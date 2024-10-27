@@ -1,5 +1,5 @@
 //
-//  Blur.swift
+//  BlurView.swift
 //  nectar-online
 //
 //  Created by Macbook on 20/10/2024.
@@ -119,7 +119,7 @@ class BlurBottom: UIView {
     }
 }
 
-class Blur {
+class BlurView {
     static func getBlur() -> (BlurTop, BlurBottom) {
         return (BlurTop(), BlurBottom())
     }
