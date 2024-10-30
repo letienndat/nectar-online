@@ -12,13 +12,16 @@ class SelectLocationViewController: UIViewController {
     private let (blurTop, blurBottom) = BlurView.getBlur()
     private let scrollView = UIScrollView()
     private var scrollViewBottomConstraint: NSLayoutConstraint?
-    private let arrayKeysSorted = Array(DataTest.zone.keys).sorted(by: <)
     private lazy var formControlZone: FormControllView = {
-        return FormControllView(label: "Your Zone", typeInput: .select, options: arrayKeysSorted, placeholder: "Types of your zone")
+        return FormControllView(label: "Your Zone", typeInput: .select, options: [], placeholder: "Types of your zone")
     }()
     private lazy var formControlArea: FormControllView = {
-        return FormControllView(label: "Your Area", typeInput: .select, options: Array(DataTest.zone[arrayKeysSorted[0]] ?? []), placeholder: "Types of your area")
+        return FormControllView(label: "Your Area", typeInput: .select, options: [], placeholder: "Types of your area")
     }()
+    private var zones: [Zone] = [] // = DataTest.zones
+    private var idZone: Int? = nil
+    private var idArea: Int? = nil
+    private let loadingOverlay = LoadingOverlayView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,6 +38,8 @@ class SelectLocationViewController: UIViewController {
 
         setupNav()
         setupView()
+        setupLoadingOverlay()
+        fetchData()
     }
     
     @objc func hideKeybroad() {
@@ -221,7 +226,8 @@ class SelectLocationViewController: UIViewController {
         viewForm.addSubview(formControlZone)
         
         formControlZone.handleSelectOption = {
-            self.reloadOptionsArea(option: $0)
+            self.idZone = Int($0) ?? nil
+            self.reloadOptionsArea(idOption: Int($0) ?? nil)
         }
 
         formControlZone.translatesAutoresizingMaskIntoConstraints = false
@@ -234,6 +240,10 @@ class SelectLocationViewController: UIViewController {
         ])
         
         viewForm.addSubview(formControlArea)
+        
+        formControlArea.handleSelectOption = {
+            self.idArea = Int($0) ?? nil
+        }
 
         formControlArea.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -280,13 +290,107 @@ class SelectLocationViewController: UIViewController {
         ])
     }
     
-    func reloadOptionsArea(option: String) {
-        formControlArea.updateOptions(newOptions: Array(DataTest.zone[option] ?? []))
+    private func setupLoadingOverlay() {
+        view.addSubview(loadingOverlay)
+        
+        // Cài đặt Auto Layout cho lớp phủ mờ để nó bao phủ toàn bộ view
+        NSLayoutConstraint.activate([
+            loadingOverlay.topAnchor.constraint(equalTo: view.topAnchor),
+            loadingOverlay.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            loadingOverlay.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            loadingOverlay.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+    }
+    
+    // Cập nhật lại danh sách của area
+    func reloadOptionsArea(idOption: Int?) {
+        guard let idOption = idOption else {
+            return
+        }
+        formControlArea.updateOptions(newOptions: self.zones.first { $0.id == idOption }?.areas.map { Picker(from: $0) } ?? [])
+    }
+    
+    // Gọi API lấy dữ liệu zones và areas từ server
+    private func fetchData() {
+        self.loadingOverlay.handleUserInteraction = {
+            self.view.isUserInteractionEnabled = false
+        }
+        self.loadingOverlay.showLoadingOverlay()
+        
+        SelectLocationService.shared.fetchZones { [weak self] result in
+            DispatchQueue.main.async {
+                self?.loadingOverlay.handleUserInteraction = {
+                    self?.view.isUserInteractionEnabled = true
+                }
+                self?.loadingOverlay.hideLoadingOverlay()
+                
+                switch result {
+                case .success(let zones):
+                    print(zones)
+                    self?.zones = zones
+                    // Update UI
+                    self?.updateUI()
+                case .failure(let error):
+                    print("Fail: \(error)")
+                    self?.showErrorAlert(message: "Không thể lấy dữ liệu từ server!")
+                }
+            }
+        }
+    }
+    
+    // Cập nhật danh sách zone và area lên picker
+    private func updateUI() {
+        formControlZone.updateOptions(newOptions: self.zones.map { Picker(from: $0) })
+        formControlArea.updateOptions(newOptions: self.zones.first?.areas.map { Picker(from: $0) } ?? [])
+        
+        if zones.count > 0 {
+            self.idZone = 0
+            if let area = zones.first?.areas, area.count > 0 {
+                self.idArea = 0
+            }
+        }
+    }
+    
+    // Hiển thị lỗi
+    private func showErrorAlert(message: String) {
+        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
     }
     
     // Xử lý sự kiện khi bấm vào button submit
     @objc func handleSubmit(_ sender: UIButton) {
-        self.navigationController?.setViewControllers([LogInViewController()], animated: true)
+        guard let idZone = idZone, let idArea = idArea else {
+            self.showErrorAlert(message: "Gửi dữ liệu thất bại, không thể tiếp tục!")
+            return
+        }
+        
+        self.loadingOverlay.handleUserInteraction = {
+            self.view.isUserInteractionEnabled = false
+        }
+        self.loadingOverlay.showLoadingOverlay()
+        
+        let data: [String: Any] = [
+            "idZone": idZone,
+            "idArea": idArea
+        ]
+        
+        SelectLocationService.shared.sendData(data: data) { [weak self] success, error in
+            DispatchQueue.main.async {
+                self?.loadingOverlay.handleUserInteraction = {
+                    self?.view.isUserInteractionEnabled = true
+                }
+                self?.loadingOverlay.hideLoadingOverlay()
+                
+                if success {
+                    print("Gửi dữ liệu thành công!")
+                    self?.navigationController?.setViewControllers([LogInViewController()], animated: true)
+                } else {
+                    print(error?.localizedDescription ?? "Error")
+                    self?.showErrorAlert(message: "Gửi dữ liệu thất bại, không thể tiếp tục!")
+                }
+            }
+        }
     }
     
     // Hàm được gọi ngay trước khi ViewController xuất hiện

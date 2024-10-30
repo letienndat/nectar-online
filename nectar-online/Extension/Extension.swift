@@ -32,7 +32,7 @@ extension UIView {
     }
 
     // Tạo border (đường viền) cho view
-    func addBorder(edges: [BorderEdge], color: UIColor = .red, margins: CGFloat = 0, borderLineSize: CGFloat = 1) {
+    func addBorder(edges: [BorderEdge], color: UIColor = .red, margins: CGFloat = 0, borderLineSize: CGFloat = 0) {
         for edge in edges {
             let border = UIView()
             border.backgroundColor = color

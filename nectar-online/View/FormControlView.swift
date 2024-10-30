@@ -12,12 +12,12 @@ class FormControllView: UIView, UIPickerViewDelegate, UIPickerViewDataSource, UI
     private let formLabel: UILabel
     private let formInput: UITextField
     private let typeInput: TypeFormInput
-    private var options: [String]
+    private var options: [Picker]
     private let check: Bool
     private let checkMarkImageView = UIImageView()
     var handleSelectOption: ((String) -> Void)?
     
-    init(label: String = "", typeInput: TypeFormInput = .text, options: [String] = [], placeholder: String = "", check: Bool = false) {
+    init(label: String = "", typeInput: TypeFormInput = .text, options: [Picker] = [], placeholder: String = "", check: Bool = false) {
         // Khởi tạo các thuộc tính bắt buộc trước
         self.formLabel = UILabel()
         self.formLabel.text = label
@@ -50,7 +50,7 @@ class FormControllView: UIView, UIPickerViewDelegate, UIPickerViewDataSource, UI
             picker.delegate = self
             picker.dataSource = self
             self.formInput.inputView = picker
-            self.formInput.text = options.first
+            self.formInput.text = options.first?.name
         }
         
         self.setupView()
@@ -172,12 +172,12 @@ class FormControllView: UIView, UIPickerViewDelegate, UIPickerViewDataSource, UI
     }
     
     // Hàm cập nhật danh sách options của UIPickerView
-    func updateOptions(newOptions: [String]) {
+    func updateOptions(newOptions: [Picker]) {
         if let picker = self.formInput.inputView as? UIPickerView {
             self.options = newOptions
             picker.reloadAllComponents()
             picker.selectRow(0, inComponent: 0, animated: false)
-            self.formInput.text = options.first ?? ""
+            self.formInput.text = options.first?.name
         }
     }
     
@@ -208,14 +208,14 @@ class FormControllView: UIView, UIPickerViewDelegate, UIPickerViewDataSource, UI
     
     // Nội dung của mỗi hàng trong Picker
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return options[row]
+        return options[row].name
     }
     
     // Xử lý sự kiện khi người dùng chọn một hàng trong Picker
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if !options.isEmpty {
-            self.formInput.text = options[row]
-            self.handleSelectOption?(options[row])
+            self.formInput.text = options[row].name
+            self.handleSelectOption?(options[row].id)
         }
     }
 }

@@ -14,4 +14,5 @@ class Const {
     public static let REGEX_EMAIL: String = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}$"
     public static let REGEX_PASSWORD: String = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)[A-Za-z\\d@$!%*?&#]{8,}$"
     public static let TIME_INTERVAL_SLIDESHOW: Double = 3
+    public static let BASE_URL = "http://192.168.0.103:8000/api"
 }

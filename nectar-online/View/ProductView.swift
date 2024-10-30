@@ -9,13 +9,17 @@ import UIKit
 
 class ProductView: UIView {
     
+    private let idProduct: String
     private let imageProduct: UIImage
     private let nameProduct: UILabel
     private let piecePriceProduct: UILabel
     private let priceProduct: UILabel
+    var closureAddToCard: ((String) -> Void)?
+    var closureTapProduct: ((String) -> Void)?
 
-    init(imageProduct: UIImage, nameProduct: UILabel, piecePriceProduct: UILabel, priceProduct: UILabel) {
+    init(idProduct: String, imageProduct: UIImage, nameProduct: UILabel, piecePriceProduct: UILabel, priceProduct: UILabel) {
         
+        self.idProduct = idProduct
         self.imageProduct = imageProduct
         self.nameProduct = nameProduct
         self.piecePriceProduct = piecePriceProduct
@@ -136,10 +140,12 @@ class ProductView: UIView {
     // Hàm xử lý khi bấm thêm sản phẩm vào giỏ hàng
     @objc func handleAddToCard(_ sender: UIButton) {
         //
+        self.closureAddToCard?(idProduct)
     }
     
     // Hàm xử lý khi bấm vào sảm phẩm
     @objc func handleTapProduct(_ sender: UITapGestureRecognizer) {
         //
+        self.closureTapProduct?(idProduct)
     }
 }
