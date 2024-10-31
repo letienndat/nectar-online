@@ -1,17 +1,16 @@
 //
-//  SelectLocationService.swift
+//  LoginService.swift
 //  nectar-online
 //
-//  Created by Macbook on 30/10/2024.
+//  Created by Macbook on 31/10/2024.
 //
 
 import Foundation
 
-class SelectLocationService {
-    static let shared = SelectLocationService()
+class LoginService {
     private let session: URLSession
     
-    private init() {
+    init() {
         // Tạo URLSessionConfiguration và đặt thời gian chờ cho request
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = 10 // Thời gian chờ request
@@ -20,38 +19,8 @@ class SelectLocationService {
         session = URLSession(configuration: configuration)
     }
     
-    func fetchZones(completion: @escaping (Result<[Zone], Error>) -> Void) {
-        let urlString = "\(Const.BASE_URL)/zones"
-        guard let url = URL(string: urlString) else {
-            completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
-            return
-        }
-        
-        let task = self.session.dataTask(with: url) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            guard let data = data else {
-                completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "No data"])))
-                return
-            }
-            
-            do {
-                let coder = JSONDecoder()
-                let zones = try coder.decode([Zone].self, from: data)
-                completion(.success(zones))
-            } catch {
-                completion(.failure(error))
-            }
-        }
-        // Thực thi task
-        task.resume()
-    }
-    
-    func sendData(data: [String: Any], completion: @escaping (Bool, Error?) -> Void) {
-        guard let url = URL(string: "\(Const.BASE_URL)/zone") else {
+    func sendDataLogin(data: [String: Any], completion: @escaping (Bool, Error?) -> Void) {
+        guard let url = URL(string: "\(Const.BASE_URL)/login") else {
             return
         }
         

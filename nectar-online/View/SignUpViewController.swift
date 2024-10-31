@@ -1,5 +1,5 @@
 //
-//  LogInViewController.swift
+//  SignUpViewController.swift
 //  nectar-online
 //
 //  Created by Macbook on 26/10/2024.
@@ -7,11 +7,25 @@
 
 import UIKit
 
-class LogInViewController: UIViewController {
+class SignUpViewController: UIViewController {
     
     private let (blurTop, blurBottom) = BlurView.getBlur()
     private let scrollView = UIScrollView()
     private var scrollViewBottomConstraint: NSLayoutConstraint?
+    private let labelTermsAndPolices: UILabel = UILabel()
+    private lazy var formControlUsername = {
+        return FormControllView(label: "Username", typeInput: .email, placeholder: "Enter your username")
+    }()
+    private lazy var formControlEmail = {
+        return FormControllView(label: "Email", typeInput: .email, placeholder: "Enter your email", check: true)
+    }()
+    private lazy var formControlPassword = {
+        return FormControllView(label: "Password", typeInput: .password, placeholder: "Enter your password")
+    }()
+    private let loadingOverlay = LoadingOverlayView()
+    private let selectLocationViewModel = SelectLocationViewModel.shared
+    private let signUpViewModel = SignUpViewModel()
+    private let loginViewModel = LoginViewModel.shared
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +42,7 @@ class LogInViewController: UIViewController {
 
         setupNav()
         setupView()
+        setupLoadingOverlay()
     }
     
     @objc func hideKeybroad() {
@@ -154,7 +169,7 @@ class LogInViewController: UIViewController {
         ])
         
         let title = UILabel()
-        title.text = "Loging"
+        title.text = "Sign Up"
         title.font = UIFont(name: "Gilroy-Semibold", size: 26)
         title.textColor = UIColor(hex: "#181725")
         title.textAlignment = .left
@@ -170,7 +185,7 @@ class LogInViewController: UIViewController {
         ])
         
         let descriptionTitle = UILabel()
-        descriptionTitle.text = "Enter your emails and password"
+        descriptionTitle.text = "Enter your credentials to continue"
         descriptionTitle.font = UIFont(name: "Gilroy-Medium", size: 16)
         descriptionTitle.textColor = UIColor(hex: "#7C7C7C")
         descriptionTitle.textAlignment = .left
@@ -198,19 +213,28 @@ class LogInViewController: UIViewController {
             viewForm.widthAnchor.constraint(equalTo: subView.widthAnchor),
         ])
         
-        let formControlEmail = FormControllView(label: "Email", typeInput: .email, placeholder: "Enter your email")
+        viewForm.addSubview(formControlUsername)
+
+        formControlUsername.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            formControlUsername.topAnchor.constraint(equalTo: viewForm.topAnchor),
+            formControlUsername.leadingAnchor.constraint(equalTo: viewForm.leadingAnchor),
+            formControlUsername.trailingAnchor.constraint(equalTo: viewForm.trailingAnchor),
+
+            formControlUsername.widthAnchor.constraint(equalTo: viewForm.widthAnchor)
+        ])
+        
         viewForm.addSubview(formControlEmail)
 
         formControlEmail.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            formControlEmail.topAnchor.constraint(equalTo: viewForm.topAnchor),
+            formControlEmail.topAnchor.constraint(equalTo: formControlUsername.bottomAnchor, constant: 30),
             formControlEmail.leadingAnchor.constraint(equalTo: viewForm.leadingAnchor),
             formControlEmail.trailingAnchor.constraint(equalTo: viewForm.trailingAnchor),
 
             formControlEmail.widthAnchor.constraint(equalTo: viewForm.widthAnchor)
         ])
         
-        let formControlPassword = FormControllView(label: "Password", typeInput: .password, placeholder: "Enter your password")
         viewForm.addSubview(formControlPassword)
 
         formControlPassword.translatesAutoresizingMaskIntoConstraints = false
@@ -222,26 +246,54 @@ class LogInViewController: UIViewController {
             formControlPassword.widthAnchor.constraint(equalTo: viewForm.widthAnchor)
         ])
         
-        let buttonForgotPassword = UIButton(type: .system)
-        buttonForgotPassword.backgroundColor = .clear
-        buttonForgotPassword.setTitle("Forgot Password?", for: .normal)
-        buttonForgotPassword.setTitleColor(UIColor(hex: "#181725"), for: .normal)
-        buttonForgotPassword.titleLabel?.font = UIFont(name: "Gilroy-Semibold", size: 14)
-        buttonForgotPassword.titleLabel?.textAlignment = .left
-        viewForm.addSubview(buttonForgotPassword)
+        // Tạo NSAttributedString với các đoạn chữ có thể bấm vào
+        let textTermsAndPolices = "By continuing you agree to our Terms of Service and Privacy Policy."
+        let attributedText = NSMutableAttributedString(string: textTermsAndPolices)
         
-        buttonForgotPassword.translatesAutoresizingMaskIntoConstraints = false
+        // Tạo paragraph style để cài đặt line spacing
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 7
+        
+        // Thêm letter spacing 5%
+        let letterSpacing = 0.05 * (UIFont(name: "Gilroy-Medium", size: 14)!.pointSize)
+        
+        // Định dạng toàn bộ văn bản
+        attributedText.addAttributes([
+            .foregroundColor: UIColor(hex: "#030303"),
+            .font: UIFont(name: "Gilroy-Medium", size: 14)!,
+            .paragraphStyle: paragraphStyle,
+            .kern: letterSpacing
+        ], range: NSRange(location: 0, length: textTermsAndPolices.count))
+        
+        // Định dạng và xác định phạm vi của "Terms of Service"
+        let termsRange = (textTermsAndPolices as NSString).range(of: "Terms of Service")
+        attributedText.addAttribute(.foregroundColor, value: UIColor(hex: "#53B175"), range: termsRange)
+        
+        // Định dạng và xác định phạm vi của "Privacy Policy"
+        let privacyRange = (textTermsAndPolices as NSString).range(of: "Privacy Policy")
+        attributedText.addAttribute(.foregroundColor, value: UIColor(hex: "#53B175"), range: privacyRange)
+        
+        // Cài đặt cho UILabel
+        labelTermsAndPolices.attributedText = attributedText
+        labelTermsAndPolices.numberOfLines = 0
+        labelTermsAndPolices.isUserInteractionEnabled = true
+        labelTermsAndPolices.translatesAutoresizingMaskIntoConstraints = false
+        viewForm.addSubview(labelTermsAndPolices)
+        
         NSLayoutConstraint.activate([
-            buttonForgotPassword.topAnchor.constraint(equalTo: formControlPassword.bottomAnchor, constant: 20),
-            buttonForgotPassword.trailingAnchor.constraint(equalTo: viewForm.trailingAnchor),
+            labelTermsAndPolices.topAnchor.constraint(equalTo: formControlPassword.bottomAnchor, constant: 20),
+            labelTermsAndPolices.leadingAnchor.constraint(equalTo: viewForm.leadingAnchor),
+            labelTermsAndPolices.trailingAnchor.constraint(equalTo: viewForm.trailingAnchor),
             
-            buttonForgotPassword.heightAnchor.constraint(equalToConstant: 14)
+            labelTermsAndPolices.widthAnchor.constraint(equalTo: viewForm.widthAnchor)
         ])
         
-        buttonForgotPassword.addTarget(self, action: #selector(handleForgotPassword(_:)), for: .touchUpInside)
+        // Thêm UITapGestureRecognizer cho UILabel
+        let tapGestureLabelTermsAndPolices = UITapGestureRecognizer(target: self, action: #selector(handleTapGestureLabelTermsAndPolices(_:)))
+        labelTermsAndPolices.addGestureRecognizer(tapGestureLabelTermsAndPolices)
         
         let button = ButtonView.createSystemButton(
-            title: "Loging",
+            title: "Sign Up",
             titleColor: UIColor(hex: "#FFF9FF"),
             titleFont: UIFont(name: "Gilroy-Semibold", size: 18),
             backgroundColor: UIColor(hex: "#53B175"),
@@ -251,14 +303,14 @@ class LogInViewController: UIViewController {
         
         button.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            button.topAnchor.constraint(equalTo: buttonForgotPassword.bottomAnchor, constant: 30),
+            button.topAnchor.constraint(equalTo: labelTermsAndPolices.bottomAnchor, constant: 30),
             button.leadingAnchor.constraint(equalTo: viewForm.leadingAnchor),
             button.trailingAnchor.constraint(equalTo: viewForm.trailingAnchor),
             
             button.widthAnchor.constraint(equalTo: viewForm.widthAnchor)
         ])
         
-        button.addTarget(self, action: #selector(handleLogin(_:)), for: .touchUpInside)
+        button.addTarget(self, action: #selector(handleSignup(_:)), for: .touchUpInside)
         
         let viewQuestionRedirect = UIView()
         viewForm.addSubview(viewQuestionRedirect)
@@ -273,7 +325,7 @@ class LogInViewController: UIViewController {
         ])
         
         let labelQuestion = UILabel()
-        labelQuestion.text = "Don’t have an account?"
+        labelQuestion.text = "Already have an account?"
         labelQuestion.textAlignment = .right
         labelQuestion.font = UIFont(name: "Gilroy-Semibold", size: 14)
         labelQuestion.textColor = UIColor(hex: "#181725")
@@ -290,7 +342,7 @@ class LogInViewController: UIViewController {
         
         let buttonRedirect = UIButton(type: .system)
         buttonRedirect.backgroundColor = .clear
-        buttonRedirect.setTitle("Signup", for: .normal)
+        buttonRedirect.setTitle("Login", for: .normal)
         buttonRedirect.setTitleColor(UIColor(hex: "#53B175"), for: .normal)
         buttonRedirect.titleLabel?.font = UIFont(name: "Gilroy-Semibold", size: 14)
         buttonRedirect.titleLabel?.textAlignment = .left
@@ -306,7 +358,7 @@ class LogInViewController: UIViewController {
             buttonRedirect.heightAnchor.constraint(equalToConstant: 14)
         ])
         
-        buttonRedirect.addTarget(self, action: #selector(handleRedirectSignup(_:)), for: .touchUpInside)
+        buttonRedirect.addTarget(self, action: #selector(handleRedirectSignin(_:)), for: .touchUpInside)
         
         let viewEmpty = UIView()
         subView.addSubview(viewEmpty)
@@ -323,9 +375,118 @@ class LogInViewController: UIViewController {
         ])
     }
     
-    // Xử lý sự kiện khi bấm vào đăng nhập
-    @objc func handleLogin(_ sender: UIButton) {
+    private func setupLoadingOverlay() {
+        view.addSubview(loadingOverlay)
         
+        // Cài đặt Auto Layout cho lớp phủ mờ để nó bao phủ toàn bộ view
+        NSLayoutConstraint.activate([
+            loadingOverlay.topAnchor.constraint(equalTo: view.topAnchor),
+            loadingOverlay.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            loadingOverlay.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            loadingOverlay.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+    }
+    
+    // Xử lý sự kiện khi bấm vào đăng ký
+    @objc func handleSignup(_ sender: UIButton) {
+        signUpViewModel.showLoading = { [weak self] in
+            guard let self = self else { return }
+            
+            self.view.isUserInteractionEnabled = false
+            self.loadingOverlay.showLoadingOverlay()
+        }
+        
+        signUpViewModel.hideLoading = { [weak self] in
+            guard let self = self else { return }
+            
+            self.view.isUserInteractionEnabled = true
+            self.loadingOverlay.hideLoadingOverlay()
+        }
+        
+        signUpViewModel.showError = { [weak self] error in
+            guard let self = self else { return }
+            
+            self.showErrorAlert(message: error)
+        }
+        
+        signUpViewModel.signUpSuccess = { [weak self] in
+            guard let self = self else { return }
+            
+            self.signUpSuccess()
+        }
+        
+        guard let idZone = selectLocationViewModel.idZone,
+              let idArea = selectLocationViewModel.idArea
+        else { return }
+        
+        guard let username = formControlUsername.formInput.text, !username.isEmpty else {
+            showErrorAlert(message: "Không đúng định dạng username!")
+            return
+        }
+        
+        guard let email = formControlEmail.formInput.text, !email.isEmpty, Validate.validate(type: .email, string: email) else {
+            showErrorAlert(message: "Không đúng định dạng email!")
+            return
+        }
+        
+        guard let password = formControlPassword.formInput.text, !password.isEmpty, Validate.validate(type: .password, string: password) else {
+            showErrorAlert(message: "Không đúng định dạng password!")
+            return
+        }
+        
+        let data: [String: Any] = [
+            "username": username,
+            "email": email,
+            "password": password,
+            "idZone": idZone,
+            "idArea": idArea
+        ]
+        
+        signUpViewModel.sendDataSignUp(data: data)
+    }
+    
+    // Hàm xử lý khi đăng ký thành công
+    private func signUpSuccess() {
+        loginViewModel.showLoading = { [weak self] in
+            guard let self = self else { return }
+            
+            self.view.isUserInteractionEnabled = false
+            self.loadingOverlay.showLoadingOverlay()
+        }
+        
+        loginViewModel.hideLoading = { [weak self] in
+            guard let self = self else { return }
+            
+            self.view.isUserInteractionEnabled = true
+            self.loadingOverlay.hideLoadingOverlay()
+        }
+        
+        loginViewModel.showError = { [weak self] error in
+            guard let self = self else { return }
+            
+            self.showErrorAlert(message: error)
+        }
+        
+        loginViewModel.loginSuccess = { [weak self] in
+            guard let self = self else { return }
+            
+            self.loginSuccess()
+        }
+        
+        guard let email = formControlEmail.formInput.text, !email.isEmpty, Validate.validate(type: .email, string: email),
+              let password = formControlPassword.formInput.text, !password.isEmpty, Validate.validate(type: .password, string: password)
+        else { return }
+        
+        let data: [String: Any] = [
+            "email": email,
+            "password": password
+        ]
+        
+        loginViewModel.sendDataLogin(data: data)
+    }
+    
+    // Hàm xử lý khi login thành công
+    private func loginSuccess() {
         // Tạo nav cho tab Home Screen
         let homeScreenViewController = HomeScreenViewController()
         let homeScreenNavigationController = UINavigationController(rootViewController: homeScreenViewController)
@@ -394,14 +555,64 @@ class LogInViewController: UIViewController {
         self.navigationController?.setViewControllers([tabBarController], animated: true)
     }
     
-    // Hàm xử lý quên mật khẩu
-    @objc func handleForgotPassword(_ sender: UIButton) {
+    // Hiển thị lỗi
+    private func showErrorAlert(message: String) {
+        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+    
+    // Xử lý sự kiện khi bấm vào label điều khoản và chính sách
+    @objc private func handleTapGestureLabelTermsAndPolices(_ gesture: UITapGestureRecognizer) {
+        guard let label = gesture.view as? UILabel else { return }
+        let fullText = labelTermsAndPolices.text!
+        let termsRange = (fullText as NSString).range(of: "Terms of Service")
+        let privacyRange = (fullText as NSString).range(of: "Privacy Policy")
+
+        let tapLocation = gesture.location(in: label)
+        let index = labelTermsAndPolices.indexOfAttributedTextCharacter(at: tapLocation)
+
+        // Kiểm tra xem đoạn nào được nhấn
+        if NSLocationInRange(index, termsRange) {
+            animateTextHighlight(in: label, range: termsRange) {
+                self.handleTermsTapped()
+            }
+        } else if NSLocationInRange(index, privacyRange) {
+            animateTextHighlight(in: label, range: privacyRange) {
+                self.handlePrivacyTapped()
+            }
+        }
+    }
+    
+    // Tạo hiệu ứng bấm vào label cho giống như bấm vào button (type system)
+    private func animateTextHighlight(in label: UILabel, range: NSRange, completion: @escaping () -> Void) {
+        guard let attributedText = label.attributedText?.mutableCopy() as? NSMutableAttributedString else { return }
+        
+        // Thay đổi tạm thời màu đoạn nhấn
+        attributedText.addAttribute(.foregroundColor, value: UIColor.gray, range: range)
+        label.attributedText = attributedText
+
+        // Đợi một chút rồi khôi phục màu và gọi completion
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+            attributedText.addAttribute(.foregroundColor, value: UIColor(hex: "#53B175"), range: range)
+            label.attributedText = attributedText
+            completion()
+        }
+    }
+    
+    // Hàm xử lý sự kiện khi bấm vào "Terms of Service"
+    private func handleTermsTapped() {
         //
     }
     
-    // Hàm xử lý điều hướng sang màn hình đăng ký
-    @objc func handleRedirectSignup(_ sender: UIButton) {
-        self.navigationController?.setViewControllers([SignUpViewController()], animated: true)
+    // Hàm xử lý sự kiện khi bấm vào "Privacy Policy"
+    private func handlePrivacyTapped() {
+        //
+    }
+    
+    // Hàm xử lý điều hướng sang màn hình đăng nhập
+    @objc func handleRedirectSignin(_ sender: UIButton) {
+        self.navigationController?.setViewControllers([LogInViewController()], animated: true)
     }
     
     // Hàm được gọi ngay trước khi ViewController xuất hiện

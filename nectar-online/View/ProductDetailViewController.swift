@@ -10,13 +10,19 @@ import ImageSlideshow
 
 class ProductDetailViewController: UIViewController {
     
-    private let labelProductDetail = UILabel()
+    private let buttonHeart = UIButton(type: .system)
+    private let labelProductDetail = CopyableLabel()
     private let iconArrowProductDetail = UIButton(type: .system)
     private let iconArrowNutritions = UIButton(type: .system)
     private let iconArrowReview = UIButton(type: .system)
     private var isShowProductDetail = false
     private var isShowNutritions = false
     private var isShowReview = false
+    private var productDetailViewModel = ProductDetailViewModel()
+    private let labelNumberQuantity = UILabel()
+    private let labelPrice = UILabel()
+    private let iconSubtract = UIButton(type: .system)  
+    private var arrayIconStars: [UIButton] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,6 +30,22 @@ class ProductDetailViewController: UIViewController {
         // Do any additional setup after loading the view.
         setupNav()
         setupView()
+        
+        productDetailViewModel.updateFavoriteIcon = { [weak self] in
+            self?.updateIconFavoriteColor()
+        }
+        
+        productDetailViewModel.updateQuantityView = { [weak self] in
+            self?.updateNumberQuantiyAndPrice()
+        }
+        
+        productDetailViewModel.updateIconSubtract = { [weak self] in
+            self?.updateIconSubtract()
+        }
+        
+        productDetailViewModel.updateStars = { [weak self] in
+            self?.showStars()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -185,7 +207,6 @@ class ProductDetailViewController: UIViewController {
             labelPieceAndPrice.heightAnchor.constraint(equalToConstant: 14.89)
         ])
         
-        let buttonHeart = UIButton(type: .system)
         buttonHeart.setImage(UIImage(named: "icon-heart"), for: .normal)
         buttonHeart.tintColor = UIColor(hex: "#7C7C7C")
         viewInfoMainTop.addSubview(buttonHeart)
@@ -198,6 +219,7 @@ class ProductDetailViewController: UIViewController {
             buttonHeart.widthAnchor.constraint(equalToConstant: 22.8),
             buttonHeart.heightAnchor.constraint(equalToConstant: 19.6)
         ])
+        buttonHeart.addTarget(self, action: #selector(handleTapFavorite(_:)), for: .touchUpInside)
         
         let viewInfoMainBottom = UIView()
         viewInfoMain.addSubview(viewInfoMainBottom)
@@ -222,7 +244,6 @@ class ProductDetailViewController: UIViewController {
             viewQuantity.heightAnchor.constraint(equalToConstant: 45.67)
         ])
         
-        let iconSubtract = UIButton(type: .system)
         iconSubtract.setImage(UIImage(named: "icon-subtract"), for: .normal)
         iconSubtract.tintColor = UIColor(hex: "#B3B3B3")
         viewQuantity.addSubview(iconSubtract)
@@ -235,6 +256,8 @@ class ProductDetailViewController: UIViewController {
             iconSubtract.widthAnchor.constraint(equalToConstant: 17),
             iconSubtract.heightAnchor.constraint(equalToConstant: 2.84)
         ])
+        
+        iconSubtract.addTarget(self, action: #selector(subtractOneQuantity(_:)), for: .touchUpInside)
         
         let viewNumberQuantity = UIView()
         viewNumberQuantity.layer.cornerRadius = 17
@@ -251,19 +274,17 @@ class ProductDetailViewController: UIViewController {
             viewNumberQuantity.widthAnchor.constraint(greaterThanOrEqualToConstant: 45.67)
         ])
         
-        let labelNumberQuantity = UILabel()
-        labelNumberQuantity.text = "100"
+        labelNumberQuantity.text = "\(productDetailViewModel.productDetail.quantity)"
         labelNumberQuantity.font = UIFont(name: "Gilroy-Semibold", size: 18)
         labelNumberQuantity.textColor = UIColor(hex: "#181725")
         viewNumberQuantity.addSubview(labelNumberQuantity)
         
         labelNumberQuantity.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            labelNumberQuantity.centerXAnchor.constraint(equalTo: viewNumberQuantity.centerXAnchor),
             labelNumberQuantity.centerYAnchor.constraint(equalTo: viewNumberQuantity.centerYAnchor),
             
-            labelNumberQuantity.leadingAnchor.constraint(equalTo: viewNumberQuantity.leadingAnchor, constant: 13.83),
-            labelNumberQuantity.trailingAnchor.constraint(equalTo: viewNumberQuantity.trailingAnchor, constant: -13.83)
+            labelNumberQuantity.leadingAnchor.constraint(equalTo: viewNumberQuantity.leadingAnchor, constant: 19.33),
+            labelNumberQuantity.trailingAnchor.constraint(equalTo: viewNumberQuantity.trailingAnchor, constant: -19.34)
         ])
         
         let iconAdd = UIButton(type: .system)
@@ -281,8 +302,9 @@ class ProductDetailViewController: UIViewController {
             iconAdd.heightAnchor.constraint(equalToConstant: 17)
         ])
         
-        let labelPrice = UILabel()
-        labelPrice.text = "$4.99"
+        iconAdd.addTarget(self, action: #selector(addOneQuantity(_:)), for: .touchUpInside)
+        
+        labelPrice.text = "$\(productDetailViewModel.productDetail.price)"
         labelPrice.font = UIFont(name: "Gilroy-Bold", size: 24)
         labelPrice.textColor = UIColor(hex: "#181725")
         viewInfoMainBottom.addSubview(labelPrice)
@@ -321,6 +343,8 @@ class ProductDetailViewController: UIViewController {
             viewTopProductDetail.topAnchor.constraint(equalTo: stackViewProductDetail.topAnchor),
             viewTopProductDetail.heightAnchor.constraint(equalToConstant: 18)
         ])
+        
+        viewTopProductDetail.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapArrowProductDetail(_:))))
         
         let labelTitleProductDetail = UILabel()
         labelTitleProductDetail.text = "Product Detail"
@@ -374,33 +398,54 @@ class ProductDetailViewController: UIViewController {
         viewNutritions.backgroundColor = UIColor(hex: "#FFFFFF")
         stackViewContent.addArrangedSubview(viewNutritions)
         
-        viewNutritions.translatesAutoresizingMaskIntoConstraints = false
+        let stackViewNutritions = UIStackView()
+        stackViewNutritions.axis = .vertical
+        stackViewNutritions.distribution = .fill
+        stackViewNutritions.alignment = .fill
+        stackViewNutritions.spacing = 9.45
+        viewNutritions.addSubview(stackViewNutritions)
+        
+        stackViewNutritions.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            viewNutritions.heightAnchor.constraint(equalToConstant: 55)
+            stackViewNutritions.topAnchor.constraint(equalTo: viewNutritions.topAnchor, constant: 18.05),
+            stackViewNutritions.bottomAnchor.constraint(equalTo: viewNutritions.bottomAnchor, constant: -19.1),
+            stackViewNutritions.leadingAnchor.constraint(equalTo: viewNutritions.leadingAnchor),
+            stackViewNutritions.trailingAnchor.constraint(equalTo: viewNutritions.trailingAnchor)
         ])
+        
+        let viewTopNutritions = UIView()
+        stackViewNutritions.addArrangedSubview(viewTopNutritions)
+        
+        viewTopNutritions.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            viewTopNutritions.topAnchor.constraint(equalTo: stackViewNutritions.topAnchor),
+            viewTopNutritions.heightAnchor.constraint(equalToConstant: 18)
+        ])
+        
+        viewTopNutritions.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapArrowNutritions(_:))))
         
         let labelTitleNutritions = UILabel()
         labelTitleNutritions.text = "Nutritions"
         labelTitleNutritions.font = UIFont(name: "Gilroy-Semibold", size: 16)
         labelTitleNutritions.textColor = UIColor(hex: "#181725")
-        viewNutritions.addSubview(labelTitleNutritions)
+        viewTopNutritions.addSubview(labelTitleNutritions)
         
         labelTitleNutritions.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            labelTitleNutritions.leadingAnchor.constraint(equalTo: viewNutritions.leadingAnchor),
-            labelTitleNutritions.centerYAnchor.constraint(equalTo: viewNutritions.centerYAnchor),
+            labelTitleNutritions.leadingAnchor.constraint(equalTo: viewTopNutritions.leadingAnchor),
+            labelTitleNutritions.centerYAnchor.constraint(equalTo: viewTopNutritions.centerYAnchor),
         ])
         
         iconArrowNutritions.setImage(UIImage(named: "icon-arrow-right"), for: .normal)
         iconArrowNutritions.tintColor = UIColor(hex: "#181725")
-        viewNutritions.addSubview(iconArrowNutritions)
+        viewTopNutritions.addSubview(iconArrowNutritions)
         
         iconArrowNutritions.addTarget(self, action: #selector(handleTapArrowNutritions(_:)), for: .touchUpInside)
         
         iconArrowNutritions.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            iconArrowNutritions.trailingAnchor.constraint(equalTo: viewNutritions.trailingAnchor),
-            iconArrowNutritions.centerYAnchor.constraint(equalTo: viewNutritions.centerYAnchor),
+            iconArrowNutritions.trailingAnchor.constraint(equalTo: viewTopNutritions.trailingAnchor),
+            iconArrowNutritions.centerYAnchor.constraint(equalTo: viewTopNutritions.centerYAnchor),
             
             iconArrowNutritions.widthAnchor.constraint(equalToConstant: 8.4),
             iconArrowNutritions.heightAnchor.constraint(equalToConstant: 14)
@@ -409,13 +454,13 @@ class ProductDetailViewController: UIViewController {
         let viewNutritionalContent = UIView()
         viewNutritionalContent.backgroundColor = UIColor(hex: "#EBEBEB")
         viewNutritionalContent.layer.cornerRadius = 5
-        viewNutritions.addSubview(viewNutritionalContent)
+        viewTopNutritions.addSubview(viewNutritionalContent)
         
         viewNutritionalContent.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             viewNutritionalContent.leadingAnchor.constraint(greaterThanOrEqualTo: labelTitleNutritions.trailingAnchor, constant: 20),
             viewNutritionalContent.trailingAnchor.constraint(equalTo: iconArrowNutritions.leadingAnchor, constant: -20.6),
-            viewNutritionalContent.centerYAnchor.constraint(equalTo: viewNutritions.centerYAnchor),
+            viewNutritionalContent.centerYAnchor.constraint(equalTo: viewTopNutritions.centerYAnchor),
             
             viewNutritionalContent.heightAnchor.constraint(equalToConstant: 18)
         ])
@@ -439,33 +484,54 @@ class ProductDetailViewController: UIViewController {
         viewReview.backgroundColor = UIColor(hex: "#FFFFFF")
         stackViewContent.addArrangedSubview(viewReview)
         
-        viewReview.translatesAutoresizingMaskIntoConstraints = false
+        let stackViewReview = UIStackView()
+        stackViewReview.axis = .vertical
+        stackViewReview.distribution = .fill
+        stackViewReview.alignment = .fill
+        stackViewReview.spacing = 9.45
+        viewReview.addSubview(stackViewReview)
+        
+        stackViewReview.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            viewReview.heightAnchor.constraint(equalToConstant: 55)
+            stackViewReview.topAnchor.constraint(equalTo: viewReview.topAnchor, constant: 18.05),
+            stackViewReview.bottomAnchor.constraint(equalTo: viewReview.bottomAnchor, constant: -19.1),
+            stackViewReview.leadingAnchor.constraint(equalTo: viewReview.leadingAnchor),
+            stackViewReview.trailingAnchor.constraint(equalTo: viewReview.trailingAnchor)
         ])
+        
+        let viewTopReview = UIView()
+        stackViewReview.addArrangedSubview(viewTopReview)
+        
+        viewTopReview.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            viewTopReview.topAnchor.constraint(equalTo: stackViewReview.topAnchor),
+            viewTopReview.heightAnchor.constraint(equalToConstant: 18)
+        ])
+        
+        viewTopReview.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapArrowReview(_:))))
         
         let labelTitleReview = UILabel()
         labelTitleReview.text = "Review "
         labelTitleReview.font = UIFont(name: "Gilroy-Semibold", size: 16)
         labelTitleReview.textColor = UIColor(hex: "#181725")
-        viewReview.addSubview(labelTitleReview)
+        viewTopReview.addSubview(labelTitleReview)
         
         labelTitleReview.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            labelTitleReview.leadingAnchor.constraint(equalTo: viewReview.leadingAnchor),
-            labelTitleReview.centerYAnchor.constraint(equalTo: viewReview.centerYAnchor),
+            labelTitleReview.leadingAnchor.constraint(equalTo: viewTopReview.leadingAnchor),
+            labelTitleReview.centerYAnchor.constraint(equalTo: viewTopReview.centerYAnchor),
         ])
         
         iconArrowReview.setImage(UIImage(named: "icon-arrow-right"), for: .normal)
         iconArrowReview.tintColor = UIColor(hex: "#181725")
-        viewReview.addSubview(iconArrowReview)
+        viewTopReview.addSubview(iconArrowReview)
         
         iconArrowReview.addTarget(self, action: #selector(handleTapArrowReview(_:)), for: .touchUpInside)
         
         iconArrowReview.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            iconArrowReview.trailingAnchor.constraint(equalTo: viewReview.trailingAnchor),
-            iconArrowReview.centerYAnchor.constraint(equalTo: viewReview.centerYAnchor),
+            iconArrowReview.trailingAnchor.constraint(equalTo: viewTopReview.trailingAnchor),
+            iconArrowReview.centerYAnchor.constraint(equalTo: viewTopReview.centerYAnchor),
             
             iconArrowReview.widthAnchor.constraint(equalToConstant: 8.4),
             iconArrowReview.heightAnchor.constraint(equalToConstant: 14)
@@ -476,19 +542,21 @@ class ProductDetailViewController: UIViewController {
         stackViewReviewStars.alignment = .center
         stackViewReviewStars.distribution = .fill
         stackViewReviewStars.spacing = 4.72
-        viewReview.addSubview(stackViewReviewStars)
+        viewTopReview.addSubview(stackViewReviewStars)
         
         stackViewReviewStars.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             stackViewReviewStars.leadingAnchor.constraint(greaterThanOrEqualTo: labelTitleReview.trailingAnchor, constant: 20),
             stackViewReviewStars.trailingAnchor.constraint(equalTo: iconArrowReview.leadingAnchor, constant: -20.6),
-            stackViewReviewStars.centerYAnchor.constraint(equalTo: viewReview.centerYAnchor),
+            stackViewReviewStars.centerYAnchor.constraint(equalTo: viewTopReview.centerYAnchor),
             
             stackViewReviewStars.heightAnchor.constraint(equalToConstant: 14)
         ])
         
         (1...5).forEach { _ in
-            let iconStar = UIImageView(image: UIImage(named: "icon-star"))
+            let iconStar = UIButton(type: .system)
+            iconStar.setImage(UIImage(named: "icon-star"), for: .normal)
+            iconStar.tintColor = UIColor(hex: "#F3603F")
             stackViewReviewStars.addArrangedSubview(iconStar)
             
             iconStar.translatesAutoresizingMaskIntoConstraints = false
@@ -496,6 +564,10 @@ class ProductDetailViewController: UIViewController {
                 iconStar.widthAnchor.constraint(equalToConstant: 14.72),
                 iconStar.heightAnchor.constraint(equalToConstant: 14)
             ])
+            
+            iconStar.addTarget(self, action: #selector(handleTapIconStar(_:)), for: .touchUpInside)
+            
+            arrayIconStars.append(iconStar)
         }
         
         let viewEmpty = UIView()
@@ -535,8 +607,39 @@ class ProductDetailViewController: UIViewController {
         //
     }
     
+    // Hàm xử lý khi bấm vào icon yêu thích
+    @objc private func handleTapFavorite(_ sender: UIButton) {
+        productDetailViewModel.isFavorite.toggle()
+    }
+    
+    // Cập nhật màu cho icon yêu thích
+    private func updateIconFavoriteColor() {
+        buttonHeart.tintColor = UIColor(hex: productDetailViewModel.isFavorite ? "#FF0000" : "#7C7C7C")
+    }
+    
+    // Xử lý sự kiện bấm nút giảm số lượng
+    @objc func subtractOneQuantity(_ sender: UIButton) {
+        productDetailViewModel.subtractOneQuantity()
+    }
+    
+    // Xử lý sự kiện bấm nút tăng số lượng
+    @objc func addOneQuantity(_ sender: UIButton) {
+        productDetailViewModel.addOneQuantity()
+    }
+    
+    // Cập nhật số lượng và giá
+    private func updateNumberQuantiyAndPrice() {
+        labelNumberQuantity.text = "\(productDetailViewModel.productDetail.quantity)"
+        labelPrice.text = "$\(String(format: "%.2f", Double(productDetailViewModel.productDetail.quantity) * productDetailViewModel.productDetail.price))"
+    }
+    
+    // Cập nhật icon giảm sản phẩm
+    private func updateIconSubtract() {
+        self.iconSubtract.tintColor = UIColor(hex: self.productDetailViewModel.canSubtractQuantity ? "#53B175" : "#B3B3B3")
+    }
+    
     // Hàm ẩn hiện chi tiết sản phẩm
-    @objc private func handleTapArrowProductDetail(_ sender: UIButton) {
+    @objc private func handleTapArrowProductDetail(_ sender: UIView) {
         labelProductDetail.isHidden.toggle()
         isShowProductDetail.toggle()
         
@@ -548,7 +651,7 @@ class ProductDetailViewController: UIViewController {
     }
     
     // Hàm ẩn hiện thông tin Nutritions
-    @objc private func handleTapArrowNutritions(_ sender: UIButton) {
+    @objc private func handleTapArrowNutritions(_ sender: UIView) {
         isShowNutritions.toggle()
         
         if isShowNutritions {
@@ -559,13 +662,30 @@ class ProductDetailViewController: UIViewController {
     }
     
     // Hàm ẩn/hiện đánh giá
-    @objc private func handleTapArrowReview(_ sender: UIButton) {
+    @objc private func handleTapArrowReview(_ sender: UIView) {
         isShowReview.toggle()
         
         if isShowReview {
             iconArrowReview.transform = CGAffineTransform(rotationAngle: .pi / 2)
         } else {
             iconArrowReview.transform = CGAffineTransform(rotationAngle: 0)
+        }
+    }
+    
+    // Hàm tính toán số sao đánh giá
+    @objc private func handleTapIconStar(_ sender: UIButton) {
+        if let index = arrayIconStars.firstIndex(of: sender) {
+            self.productDetailViewModel.stars = index + 1
+        }
+    }
+    
+    // Hàm hiển thị số sao được đánh giá
+    private func showStars() {
+        for i in stride(from: self.productDetailViewModel.stars - 1, to: -1, by: -1) {
+            arrayIconStars[i].tintColor = UIColor(hex: "#F3603F")
+        }
+        for i in stride(from: self.productDetailViewModel.stars, to: arrayIconStars.count, by: 1) {
+            arrayIconStars[i].tintColor = UIColor(hex: "#DADADA")
         }
     }
     

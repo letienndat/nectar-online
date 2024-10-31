@@ -12,13 +12,11 @@ class LoadingOverlayView: UIView {
     
     // Loading Indicator
     private let loadingIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(style: .large)
+        let indicator = UIActivityIndicatorView(style: .medium)
         indicator.color = .white
         indicator.translatesAutoresizingMaskIntoConstraints = false
         return indicator
     }()
-    
-    var handleUserInteraction: (() -> Void)?
 
     override init(frame: CGRect) {
         super.init(frame: .zero)
@@ -47,12 +45,10 @@ class LoadingOverlayView: UIView {
     func showLoadingOverlay() {
         self.isHidden = false
         loadingIndicator.startAnimating()
-        self.handleUserInteraction?() // Vô hiệu hóa tương tác người dùng
     }
     
     func hideLoadingOverlay() {
         self.isHidden = true
         loadingIndicator.stopAnimating()
-        self.handleUserInteraction?() // Cho phép tương tác trở lại
     }
 }

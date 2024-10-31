@@ -89,3 +89,52 @@ class PaddedTextField: UITextField {
         return rightViewRect
     }
 }
+
+class CopyableLabel: UILabel {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupGestureRecognizer()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupGestureRecognizer()
+    }
+    
+    private func setupGestureRecognizer() {
+        // Bật khả năng tương tác và thêm cử chỉ nhấn giữ để hiển thị menu
+        self.isUserInteractionEnabled = true
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(showMenu))
+        self.addGestureRecognizer(longPressGesture)
+    }
+    
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+    
+    @objc private func showMenu() {
+        // Kích hoạt menu sao chép khi nhấn giữ
+        self.becomeFirstResponder()
+        
+        let menu = UIMenuController.shared
+        if !menu.isMenuVisible {
+            menu.showMenu(from: self, rect: self.bounds)
+        }
+    }
+    
+    override func copy(_ sender: Any?) {
+        // Thực hiện hành động sao chép
+        UIPasteboard.general.string = self.text
+    }
+    
+    override func cut(_ sender: Any?) {
+        // Thực hiện hành động cắt (sao chép và xóa nội dung)
+        UIPasteboard.general.string = self.text
+        self.text = ""
+    }
+    
+    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        // Cho phép các hành động "copy" và "cut"
+        return action == #selector(copy(_:)) || action == #selector(cut(_:))
+    }
+}

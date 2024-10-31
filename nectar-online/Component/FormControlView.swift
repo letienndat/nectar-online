@@ -10,7 +10,7 @@ import UIKit
 class FormControllView: UIView, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate {
     
     private let formLabel: UILabel
-    private let formInput: UITextField
+    let formInput: UITextField
     private let typeInput: TypeFormInput
     private var options: [Picker]
     private let check: Bool

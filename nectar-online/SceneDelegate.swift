@@ -30,7 +30,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         
         // Tạo ViewController đầu tiên và gán làm rootViewController
-        let rootViewController = LogInViewController() // Đặt ViewController đầu tiên
+        let rootViewController = ProductDetailViewController() // Đặt ViewController đầu tiên
         let navigationController = CustomNavigationController(rootViewController: rootViewController)
         
         window?.rootViewController = navigationController
