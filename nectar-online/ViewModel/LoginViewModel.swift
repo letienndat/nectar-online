@@ -22,13 +22,18 @@ class LoginViewModel {
     func sendDataLogin(data: [String: Any]) {
         showLoading?()
         
-        loginService.sendDataLogin(data: data) { [weak self] success, error in
+        loginService.sendDataLogin(data: data) { [weak self] result in
             DispatchQueue.main.async {
                 self?.hideLoading?()
-                if success {
+                
+                switch result {
+                case .success(let token):
+                    AppConfig.isLogin = true
+                    saveToken(token: token, for: Const.KEYCHAIN_TOKEN)
+                    print(getToken(for: Const.KEYCHAIN_TOKEN) as Any)
                     self?.loginSuccess?()
-                } else {
-                    self?.showError?(error?.localizedDescription ?? "Error")
+                case .failure(let error):
+                    self?.showError?(error.localizedDescription)
                 }
             }
         }

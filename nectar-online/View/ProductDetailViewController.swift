@@ -10,6 +10,8 @@ import ImageSlideshow
 
 class ProductDetailViewController: UIViewController {
     
+    private let scrollView = UIScrollView()
+    private let refreshControl = UIRefreshControl()
     private let buttonHeart = UIButton(type: .system)
     private let labelProductDetail = CopyableLabel()
     private let iconArrowProductDetail = UIButton(type: .system)
@@ -23,6 +25,22 @@ class ProductDetailViewController: UIViewController {
     private let labelPrice = UILabel()
     private let iconSubtract = UIButton(type: .system)  
     private var arrayIconStars: [UIButton] = []
+    private let maxStars = 5
+    private var imageSources: [ImageSource] = []
+    private let slideShow = ImageSlideshow()
+    private let labelNameProduct = UILabel()
+    private let labelPieceAndPrice = UILabel()
+    private let labelNutritionalContent = UILabel()
+    
+    init(product: Product) {
+        self.productDetailViewModel.product = product
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,8 +61,20 @@ class ProductDetailViewController: UIViewController {
             self?.updateIconSubtract()
         }
         
-        productDetailViewModel.updateStars = { [weak self] in
+        productDetailViewModel.product?.updateRating = { [weak self] in
             self?.showStars()
+        }
+        
+        productDetailViewModel.loadProduct = { [weak self] in
+            self?.updateUI()
+        }
+        
+        productDetailViewModel.hideLoading = { [weak self] in
+            guard let _ = self else { return }
+        }
+        
+        productDetailViewModel.hideRefreshing = { [weak self] in
+            self?.refreshControl.endRefreshing()
         }
     }
     
@@ -52,6 +82,18 @@ class ProductDetailViewController: UIViewController {
         super.viewWillAppear(animated)
         
         self.navigationController?.setNavigationBarHidden(false, animated: true)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        self.productDetailViewModel.product?.quantity = 1
     }
     
     override func didReceiveMemoryWarning() {
@@ -74,8 +116,10 @@ class ProductDetailViewController: UIViewController {
     private func setupView() {
         self.view.backgroundColor = UIColor(hex: "#FFFFFF")
         
-        let scrollView = UIScrollView()
-        scrollView.bounces = false
+        // Thiết lập scrollView và refreshControl
+        scrollView.refreshControl = refreshControl
+        refreshControl.addTarget(self, action: #selector(refreshProductDetail), for: .valueChanged)
+        
         scrollView.delaysContentTouches = false
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
@@ -119,12 +163,10 @@ class ProductDetailViewController: UIViewController {
             viewImageProductDetail.heightAnchor.constraint(equalToConstant: 371.44)
         ])
         
-        var imageSources: [ImageSource] = []
-        DataTest.imageProductDetail.forEach { image in
-            imageSources.append(ImageSource(image: UIImage(named: image)!))
+        productDetailViewModel.product?.images.forEach { image in
+            imageSources.append(ImageSource(image: UIImage(named: image.imageUrl) ?? UIImage()))
         }
 
-        let slideShow = ImageSlideshow()
         slideShow.setImageInputs(imageSources)
         slideShow.slideshowInterval = Const.TIME_INTERVAL_SLIDESHOW
         viewImageProductDetail.addSubview(slideShow)
@@ -177,8 +219,7 @@ class ProductDetailViewController: UIViewController {
             viewInfoMainTop.trailingAnchor.constraint(equalTo: viewInfoMain.trailingAnchor)
         ])
         
-        let labelNameProduct = UILabel()
-        labelNameProduct.text = "Naturel Red Apple"
+        labelNameProduct.text = productDetailViewModel.product?.name
         labelNameProduct.font = UIFont(name: "Gilroy-Bold", size: 24)
         labelNameProduct.textColor = UIColor(hex: "#181725")
         labelNameProduct.textAlignment = .left
@@ -192,8 +233,7 @@ class ProductDetailViewController: UIViewController {
             labelNameProduct.trailingAnchor.constraint(equalTo: viewInfoMainTop.trailingAnchor, constant: -(22.8 + 10)) // Tối đa phải cách icon yêu thích 10,
         ])
         
-        let labelPieceAndPrice = UILabel()
-        labelPieceAndPrice.text = "1kg, Price"
+        labelPieceAndPrice.text = productDetailViewModel.product?.unitOfMeasure
         labelPieceAndPrice.font = UIFont(name: "Gilroy-Semibold", size: 16)
         labelPieceAndPrice.textColor = UIColor(hex: "#7C7C7C")
         viewInfoMainTop.addSubview(labelPieceAndPrice)
@@ -274,7 +314,7 @@ class ProductDetailViewController: UIViewController {
             viewNumberQuantity.widthAnchor.constraint(greaterThanOrEqualToConstant: 45.67)
         ])
         
-        labelNumberQuantity.text = "\(productDetailViewModel.productDetail.quantity)"
+        labelNumberQuantity.text = "\(productDetailViewModel.product?.quantity ?? 1)"
         labelNumberQuantity.font = UIFont(name: "Gilroy-Semibold", size: 18)
         labelNumberQuantity.textColor = UIColor(hex: "#181725")
         viewNumberQuantity.addSubview(labelNumberQuantity)
@@ -304,7 +344,7 @@ class ProductDetailViewController: UIViewController {
         
         iconAdd.addTarget(self, action: #selector(addOneQuantity(_:)), for: .touchUpInside)
         
-        labelPrice.text = "$\(productDetailViewModel.productDetail.price)"
+        labelPrice.text = "$\(productDetailViewModel.product?.price ?? 0.00)"
         labelPrice.font = UIFont(name: "Gilroy-Bold", size: 24)
         labelPrice.textColor = UIColor(hex: "#181725")
         viewInfoMainBottom.addSubview(labelPrice)
@@ -375,7 +415,7 @@ class ProductDetailViewController: UIViewController {
             iconArrowProductDetail.heightAnchor.constraint(equalToConstant: 14)
         ])
         
-        labelProductDetail.text = "Apples are nutritious. Apples may be good for weight loss. apples may be good for your heart. As part of a healtful and varied diet."
+        labelProductDetail.text = productDetailViewModel.product?.description
         labelProductDetail.font = UIFont(name: "Gilroy-Medium", size: 13)
         labelProductDetail.textColor = UIColor(hex: "#7C7C7C")
         labelProductDetail.numberOfLines = 0
@@ -465,8 +505,7 @@ class ProductDetailViewController: UIViewController {
             viewNutritionalContent.heightAnchor.constraint(equalToConstant: 18)
         ])
         
-        let labelNutritionalContent = UILabel()
-        labelNutritionalContent.text = "100gr"
+        labelNutritionalContent.text = productDetailViewModel.product?.nutrients
         labelNutritionalContent.font = UIFont(name: "Gilroy-Semibold", size: 9)
         labelNutritionalContent.textColor = UIColor(hex: "#7C7C7C")
         viewNutritionalContent.addSubview(labelNutritionalContent)
@@ -553,21 +592,15 @@ class ProductDetailViewController: UIViewController {
             stackViewReviewStars.heightAnchor.constraint(equalToConstant: 14)
         ])
         
-        (1...5).forEach { _ in
+        for index in 0..<maxStars {
             let iconStar = UIButton(type: .system)
             iconStar.setImage(UIImage(named: "icon-star"), for: .normal)
-            iconStar.tintColor = UIColor(hex: "#F3603F")
-            stackViewReviewStars.addArrangedSubview(iconStar)
-            
-            iconStar.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                iconStar.widthAnchor.constraint(equalToConstant: 14.72),
-                iconStar.heightAnchor.constraint(equalToConstant: 14)
-            ])
-            
+            iconStar.tintColor = index < self.productDetailViewModel.product?.rating ?? 5 ? UIColor(hex: "#F3603F") : UIColor(hex: "#DADADA")
+            iconStar.tag = index
             iconStar.addTarget(self, action: #selector(handleTapIconStar(_:)), for: .touchUpInside)
             
             arrayIconStars.append(iconStar)
+            stackViewReviewStars.addArrangedSubview(iconStar)
         }
         
         let viewEmpty = UIView()
@@ -602,6 +635,41 @@ class ProductDetailViewController: UIViewController {
         buttonAddToBasket.addTarget(self, action: #selector(handleAddToBasket(_:)), for: .touchUpInside)
     }
     
+    // Hàm xử lý sự kiện kéo màn hình xuống để load lại thông tin chi tiết sản phẩm
+    @objc private func refreshProductDetail() {
+        self.productDetailViewModel.fetchProduct(id: self.productDetailViewModel.product!.id, isRefresh: true)
+    }
+    
+    private func updateUI() {
+        let dispatchGroup = DispatchGroup() // Tạo DispatchGroup
+        
+        self.productDetailViewModel.product?.images.forEach { image in
+            // Bắt đầu một task mới trong DispatchGroup
+            dispatchGroup.enter()
+            loadImage(from: image.imageUrl) { ima in
+                if let downloadedImage = ima {
+                    self.imageSources.append(ImageSource(image: downloadedImage))
+                } else {
+                    //
+                }
+                // Thông báo rằng task đã hoàn thành
+                dispatchGroup.leave()
+            }
+        }
+        
+        // Khi tất cả các task đã hoàn thành
+        dispatchGroup.notify(queue: .main) {
+            self.slideShow.setImageInputs(self.imageSources)
+        }
+        
+        labelNameProduct.text = self.productDetailViewModel.product?.name
+        labelPieceAndPrice.text = self.productDetailViewModel.product?.unitOfMeasure
+        labelNumberQuantity.text = "$\(self.productDetailViewModel.product?.quantity ?? 1)"
+        labelPrice.text = "$\(self.productDetailViewModel.product?.price ?? 0.00)"
+        labelProductDetail.text = self.productDetailViewModel.product?.description
+        labelNutritionalContent.text = self.productDetailViewModel.product?.nutrients
+    }
+    
     // Hàm xử lý khi bấm vào share product
     @objc private func handleShareProduct(_ sender: UIButton) {
         //
@@ -629,8 +697,8 @@ class ProductDetailViewController: UIViewController {
     
     // Cập nhật số lượng và giá
     private func updateNumberQuantiyAndPrice() {
-        labelNumberQuantity.text = "\(productDetailViewModel.productDetail.quantity)"
-        labelPrice.text = "$\(String(format: "%.2f", Double(productDetailViewModel.productDetail.quantity) * productDetailViewModel.productDetail.price))"
+        labelNumberQuantity.text = "\(productDetailViewModel.product?.quantity ?? 1)"
+        labelPrice.text = "$\(String(format: "%.2f", Double(productDetailViewModel.product?.quantity ?? 1) * (productDetailViewModel.product?.price ?? 0.00)))"
     }
     
     // Cập nhật icon giảm sản phẩm
@@ -674,18 +742,19 @@ class ProductDetailViewController: UIViewController {
     
     // Hàm tính toán số sao đánh giá
     @objc private func handleTapIconStar(_ sender: UIButton) {
-        if let index = arrayIconStars.firstIndex(of: sender) {
-            self.productDetailViewModel.stars = index + 1
-        }
+        let starIndex = sender.tag + 1
+        self.productDetailViewModel.product?.rating = starIndex
     }
     
     // Hàm hiển thị số sao được đánh giá
     private func showStars() {
-        for i in stride(from: self.productDetailViewModel.stars - 1, to: -1, by: -1) {
-            arrayIconStars[i].tintColor = UIColor(hex: "#F3603F")
-        }
-        for i in stride(from: self.productDetailViewModel.stars, to: arrayIconStars.count, by: 1) {
-            arrayIconStars[i].tintColor = UIColor(hex: "#DADADA")
+        // Cập nhật các nút sao dựa trên sao được bấm
+        for (index, button) in arrayIconStars.enumerated() {
+            if index < self.productDetailViewModel.product?.rating ?? 5 {
+                button.tintColor = UIColor(hex: "#F3603F")
+            } else {
+                button.tintColor = UIColor(hex: "#DADADA")
+            }
         }
     }
     

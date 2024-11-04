@@ -9,13 +9,12 @@ import Foundation
 
 class ProductDetailViewModel {
     var productDetailService: ProductDetailService!
-    var productDetail: ProductDetail = {
-        let productDetail = ProductDetail()
-        productDetail.quantity = 1
-        productDetail.price = 4.99
-        
-        return productDetail
-    }()
+    var product: Product? {
+        didSet {
+            self.loadProduct?()
+        }
+    }
+    var loadProduct: (() -> Void)?
     var isFavorite: Bool = false {
         didSet {
             updateFavoriteIcon?()
@@ -29,30 +28,50 @@ class ProductDetailViewModel {
             updateIconSubtract?()
         }
     }
-    var stars: Int = 5 {
-        didSet {
-            updateStars?()
-        }
-    }
-    var updateStars: (() -> Void)?
+    var showLoading: (() -> Void)?
+    var hideLoading: (() -> Void)?
+    var hideRefreshing: (() -> Void)?
+    var showError: ((String) -> Void)?
     
     init(productDetailService: ProductDetailService = ProductDetailService()) {
         self.productDetailService = productDetailService
     }
     
     func addOneQuantity() {
-        productDetail.quantity += 1
+        product?.quantity += 1
         canSubtractQuantity = true
         updateQuantityView?()
     }
     
     func subtractOneQuantity() {
-        productDetail.quantity -= 1
+        product?.quantity -= 1
         if canSubtractQuantity {
             updateQuantityView?()
         }
-        if productDetail.quantity == 1 {
+        if product?.quantity == 1 {
             canSubtractQuantity = false
+        }
+    }
+    
+    func fetchProduct(id: Int, isRefresh: Bool = false) {
+        if !isRefresh {
+            self.showLoading?()
+        }
+        
+        productDetailService.fetchProduct(id: id) { [weak self] result in
+            DispatchQueue.main.async {
+                if !isRefresh {
+                    self?.hideLoading?()
+                } else {
+                    self?.hideRefreshing?()
+                }
+                switch result {
+                case .success(let product):
+                    self?.product = product
+                case .failure(let error):
+                    let _ = error
+                }
+            }
         }
     }
 }

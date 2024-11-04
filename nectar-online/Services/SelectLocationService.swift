@@ -32,6 +32,13 @@ class SelectLocationService {
                 return
             }
             
+            // Kiểm tra response và status code
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200...299).contains(httpResponse.statusCode) else {
+                completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid response from server"])))
+                return
+            }
+            
             guard let data = data else {
                 completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "No data"])))
                 return
@@ -39,8 +46,14 @@ class SelectLocationService {
             
             do {
                 let coder = JSONDecoder()
-                let zones = try coder.decode([Zone].self, from: data)
-                completion(.success(zones))
+                let response = try coder.decode(Response<[Zone]>.self, from: data)
+                
+                if response.status == 0 {
+                    completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Fail"])))
+                    return
+                } else if response.status == 1 {
+                    completion(.success(response.data ?? []))
+                }
             } catch {
                 completion(.failure(error))
             }

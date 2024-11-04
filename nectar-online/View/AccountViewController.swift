@@ -16,6 +16,25 @@ class AccountViewController: UIViewController {
         setupNav()
         setupView()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        let signInViewController = SignInViewController()
+        signInViewController.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(signInViewController, animated: true)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Tùy chỉnh màu sắc cho icon
+        self.navigationController?.navigationBar.tintColor = UIColor(hex: "#181725")
+        
+        // Đặt tiêu đề nút quay lại là trống
+        self.navigationController?.navigationBar.topItem?.title = ""
+        
+        self.navigationItem.title = ""
+    }
 
     private func setupNav() {
         

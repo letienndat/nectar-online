@@ -39,6 +39,33 @@ class SelectLocationViewController: UIViewController {
         setupNav()
         setupView()
         setupLoadingOverlay()
+        
+        self.selectLocationViewModel.hideLoading = { [weak self] in
+            guard let self = self else { return }
+            
+            self.view.isUserInteractionEnabled = true
+            self.loadingOverlay.hideLoadingOverlay()
+        }
+        
+        self.selectLocationViewModel.showLoading = { [weak self] in
+            guard let self = self else { return }
+            
+            self.view.isUserInteractionEnabled = false
+            self.loadingOverlay.showLoadingOverlay()
+        }
+        
+        self.selectLocationViewModel.showError = { [weak self] error in
+            guard let self = self else { return }
+            
+            self.showErrorAlert(message: error)
+        }
+        
+        self.selectLocationViewModel.updateUI = { [weak self] in
+            guard let self = self else { return }
+            
+            self.updateUI()
+        }
+        
         fetchData()
     }
     
@@ -312,36 +339,7 @@ class SelectLocationViewController: UIViewController {
     
     // Gọi API lấy dữ liệu zones và areas từ server
     private func fetchData() {
-        
-        self.selectLocationViewModel.hideLoading = { [weak self] in
-            guard let self = self else { return }
-            
-            self.view.isUserInteractionEnabled = true
-            self.loadingOverlay.hideLoadingOverlay()
-        }
-        
-        self.selectLocationViewModel.showLoading = { [weak self] in
-            guard let self = self else { return }
-            
-            self.view.isUserInteractionEnabled = false
-            self.loadingOverlay.showLoadingOverlay()
-        }
-        
-        self.selectLocationViewModel.showError = { [weak self] error in
-            guard let self = self else { return }
-            
-            self.showErrorAlert(message: error)
-        }
-        
-        self.selectLocationViewModel.updateUI = { [weak self] in
-            guard let self = self else { return }
-            
-            self.updateUI()
-        }
-        
         self.selectLocationViewModel.fetchData()
-        
-        self.updateUI()
     }
     
     // Cập nhật danh sách zone và area lên picker
@@ -350,9 +348,9 @@ class SelectLocationViewController: UIViewController {
         formControlArea.updateOptions(newOptions: self.selectLocationViewModel.zones?.first?.areas.map { Picker(from: $0) } ?? [])
         
         if self.selectLocationViewModel.zones?.count ?? 0 > 0 {
-            self.selectLocationViewModel.idZone = 0
+            self.selectLocationViewModel.idZone = self.selectLocationViewModel.zones?.first?.id
             if let area = self.selectLocationViewModel.zones?.first?.areas, area.count > 0 {
-                self.selectLocationViewModel.idArea = 0
+                self.selectLocationViewModel.idArea = self.selectLocationViewModel.zones?.first?.areas.first?.id
             }
         }
     }
@@ -361,6 +359,9 @@ class SelectLocationViewController: UIViewController {
     private func showErrorAlert(message: String) {
         let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
+        alert.addAction(UIAlertAction(title: "Reload", style: .default, handler: { _ in
+            self.fetchData()
+        }))
         present(alert, animated: true)
     }
     
@@ -376,7 +377,9 @@ class SelectLocationViewController: UIViewController {
             return
         }
         
-        self.navigationController?.setViewControllers([LogInViewController()], animated: true)
+        let logInViewController = LogInViewController()
+        logInViewController.hidesBottomBarWhenPushed = true
+        self.navigationController?.setViewControllers([logInViewController], animated: true)
     }
     
     // Hàm được gọi ngay trước khi ViewController xuất hiện

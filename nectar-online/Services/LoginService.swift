@@ -19,8 +19,8 @@ class LoginService {
         session = URLSession(configuration: configuration)
     }
     
-    func sendDataLogin(data: [String: Any], completion: @escaping (Bool, Error?) -> Void) {
-        guard let url = URL(string: "\(Const.BASE_URL)/login") else {
+    func sendDataLogin(data: [String: Any], completion: @escaping (Result<String, Error>) -> Void) {
+        guard let url = URL(string: "\(Const.BASE_URL)/auth/login") else {
             return
         }
         
@@ -33,7 +33,7 @@ class LoginService {
             request.httpBody = try JSONSerialization.data(withJSONObject: data, options: [])
         } catch {
             print("Lỗi khi chuyển đổi dữ liệu sang JSON:", error)
-            completion(false, error)
+            completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Don't convert to JSON"])))
             return
         }
         
@@ -41,16 +41,48 @@ class LoginService {
         let task = self.session.dataTask(with: request) { data, response, error in
             if let error = error {
                 print("Lỗi khi gửi request: \(error)")
-                completion(false, error)
+                completion(.failure(error))
                 return
             }
             
-            // Kiểm tra phản hồi từ server
-            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
-                completion(true, nil)
-            } else {
-                let responseError = NSError(domain: "", code: (response as? HTTPURLResponse)?.statusCode ?? 500, userInfo: nil)
-                completion(false, responseError)
+            // Kiểm tra response và status code
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200...299).contains(httpResponse.statusCode) else {
+                let httpResponse = response as? HTTPURLResponse
+                if httpResponse?.statusCode == 401 {
+                    completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Incorrect login information"])))
+                    return
+                }
+                
+                completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid response from server"])))
+                return
+            }
+            
+            guard let data = data else {
+                completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "No data"])))
+                return
+            }
+            
+            do {
+                let coder = JSONDecoder()
+                let response = try coder.decode(Response<LoginResponse>.self, from: data)
+
+                if response.status == 0 {
+                    completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: response.message ?? "Error"])))
+                    return
+                } else if response.status == 1 {
+                    // Kiểm tra xem response.data có giá trị hay không
+                    let loginResponse = response.data
+                    
+                    // Giả sử loginResponse có thuộc tính token
+                    if let token = loginResponse?.token {
+                        completion(.success(token))
+                    } else {
+                        completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Token not found"])))
+                    }
+                }
+            } catch {
+                completion(.failure(error))
             }
         }
         // Thực thi task

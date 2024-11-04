@@ -9,9 +9,47 @@ import UIKit
 import ImageSlideshow
 
 class HomeScreenViewController: UIViewController {
+    
+    private let refreshControl = UIRefreshControl()
+    private let loadingOverlay = LoadingOverlayView()
+    private let viewLocation = UIView()
+    private let labelLocation = UILabel()
+    private let viewSlideShow = UIView()
+    private let slideShow = ImageSlideshow()
+    private var imageSources: [ImageSource] = []
+    private let inputSearch = PaddedTextField()
+    private let iconClear = UIImageView(image: UIImage(named: "icon-clear-input"))
+    private let stackView = UIStackView()
+    private let scrollView = UIScrollView()
+    private let stackViewContent = UIStackView()
+    private let homeScreenViewModel = HomeScreenViewModel.shared
+    private lazy var gridCollectionProductSearch: UICollectionView = {
+        // Khởi tạo UICollectionView với layout
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 15
+        layout.minimumInteritemSpacing = 15
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.register(ProductCellView.self, forCellWithReuseIdentifier: "ProductCell")
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.showsHorizontalScrollIndicator = false
+        return collectionView
+    }()
+    private let subView = UIView()
+    private var subViewBottomConstraint: NSLayoutConstraint?
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if AppConfig.isFirstLaunch {
+            AppConfig.isFirstLaunch = false
+        }
+        
+        // Đăng ký thông báo khi bàn phím xuất hiện và ẩn đi
+//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         
         // Tạo UITapGestureRecognizer để phát hiện người dùng bấm ra ngoài view
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeybroad))
@@ -22,8 +60,187 @@ class HomeScreenViewController: UIViewController {
         // Do any additional setup after loading the view.
         setupNav()
         setupView()
+        setupLoadingOverlay()
         
-        self.tabBarController?.tabBar.layer.zPosition = 1
+        self.homeScreenViewModel.hideRefreshing = { [weak self] in
+            guard let self = self else { return }
+            
+            self.refreshControl.endRefreshing()
+        }
+        
+        self.homeScreenViewModel.hideLoading = { [weak self] in
+            guard let self = self else { return }
+            
+            self.view.isUserInteractionEnabled = true
+            self.loadingOverlay.hideLoadingOverlay()
+        }
+        
+        self.homeScreenViewModel.showLoading = { [weak self] in
+            guard let self = self else { return }
+            
+            self.view.isUserInteractionEnabled = false
+            self.loadingOverlay.showLoadingOverlay()
+        }
+        
+        self.homeScreenViewModel.showError = { [weak self] error in
+            guard let self = self else { return }
+            
+            self.showErrorAlert(message: error, isReload: true, handleReload: { self.fetchData() })
+        }
+        
+        self.homeScreenViewModel.updateProductClassifications = { [weak self] in
+            if let _ = self {
+                
+            }
+        }
+        
+        self.homeScreenViewModel.updateLocation = { [weak self] in
+            var loc: [String] = []
+            if let area = self?.homeScreenViewModel.location.areas.first?.name {
+                loc.append(area)
+            }
+            if let zone = self?.homeScreenViewModel.location.name {
+                loc.append(zone)
+            }
+            self?.labelLocation.text = loc.joined(separator: ", ")
+            self?.viewLocation.isHidden = false
+        }
+        
+        self.homeScreenViewModel.updateBanners = { [weak self] in
+            self?.imageSources = []
+            
+            let dispatchGroup = DispatchGroup() // Tạo DispatchGroup
+            
+            self?.homeScreenViewModel.banners.forEach { banner in
+                // Bắt đầu một task mới trong DispatchGroup
+                dispatchGroup.enter()
+                loadImage(from: banner.imageUrl) { image in
+                    if let downloadedImage = image {
+                        self?.imageSources.append(ImageSource(image: downloadedImage))
+                    } else {
+                        //
+                    }
+                    // Thông báo rằng task đã hoàn thành
+                    dispatchGroup.leave()
+                }
+            }
+            
+            // Khi tất cả các task đã hoàn thành
+            dispatchGroup.notify(queue: .main) {
+                self?.slideShow.setImageInputs(self?.imageSources ?? [])
+                if !(self?.imageSources.isEmpty)! {
+                    self?.viewSlideShow.isHidden = false
+                }
+            }
+        }
+        
+        self.homeScreenViewModel.updateProductClassifications = { [weak self] in
+
+            self?.homeScreenViewModel.productClassifications.forEach { productClassification in
+                let labelTitleType = UILabel()
+                labelTitleType.text = productClassification.name
+                labelTitleType.font = UIFont(name: "Gilroy-Semibold", size: 24)
+                labelTitleType.textColor = UIColor(hex: "#181725")
+
+                var viewsProduct: [ProductView] = []
+                productClassification.products.forEach { product in
+                    let imageProduct = UIImage(named: product.thumbnail.imageUrl)
+
+                    let nameProduct = UILabel()
+                    nameProduct.text = product.name
+                    nameProduct.font = UIFont(name: "Gilroy-Bold", size: 16)
+                    nameProduct.textColor = UIColor(hex: "#181725")
+
+                    let piecePriceProduct = UILabel()
+                    piecePriceProduct.text = product.unitOfMeasure
+                    piecePriceProduct.font = UIFont(name: "Gilroy-Medium", size: 14)
+                    piecePriceProduct.textColor = UIColor(hex: "#7C7C7C")
+
+                    let priceProduct = UILabel()
+                    priceProduct.text = "$\(product.price)"
+                    priceProduct.font = UIFont(name: "Gilroy-Semibold", size: 18)
+                    priceProduct.textColor = UIColor(hex: "#181725")
+
+                    let viewProduct = ProductView(idProduct: product.id,imageProduct: imageProduct!, nameProduct: nameProduct, piecePriceProduct: piecePriceProduct, priceProduct: priceProduct)
+                    
+                    viewProduct.translatesAutoresizingMaskIntoConstraints = false
+                    NSLayoutConstraint.activate([
+                        viewProduct.widthAnchor.constraint(equalToConstant: 173.32),
+                        viewProduct.heightAnchor.constraint(equalToConstant: 248.51)
+                    ])
+                    
+                    viewProduct.closureAddToCard = { _ in
+                        // Thêm sản phẩm vào giỏ hàng
+                    }
+                    
+                    viewProduct.closureTapProduct = { id in
+                        // Xem chi tiết sản phẩm
+                        let productDetailtViewController = ProductDetailViewController(product: product)
+                        productDetailtViewController.hidesBottomBarWhenPushed = true
+                        self?.navigationController?.pushViewController(productDetailtViewController, animated: true)
+                    }
+
+                    viewsProduct.append(viewProduct)
+                }
+
+                let productClassficationView = ProductClassificationView(labelTitle: labelTitleType, viewsProduct: viewsProduct)
+                self?.stackViewContent.addArrangedSubview(productClassficationView)
+            }
+            
+            self?.stackViewContent.isHidden = false
+        }
+        
+        self.homeScreenViewModel.updateListProductSearch = { [weak self] in
+            guard let self = self else { return }
+            
+            self.gridCollectionProductSearch.reloadData()
+        }
+        
+        self.homeScreenViewModel.showErrorSearch = { [weak self] error in
+            guard let _ = self else { return }
+            
+//            self.showErrorAlert(message: error, handleReload: nil)
+        }
+        
+        self.fetchData()
+    }
+    
+    private func fetchData() {
+        homeScreenViewModel.fetchLocation()
+        homeScreenViewModel.fetchBanner()
+//        homeScreenViewModel.fetchProductClassifications()
+    }
+    
+    @objc func keyboardWillShow(notification: NSNotification) {
+        // Lấy thông tin về bàn phím
+        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+            let keyboardHeight = keyboardFrame.cgRectValue.height
+            // Cập nhật kích thước của subView
+            UIView.animate(withDuration: 0.3) {
+                // Gỡ bỏ ràng buộc cũ nếu có
+                if let oldConstraint = self.subViewBottomConstraint {
+                    oldConstraint.isActive = false
+                }
+
+                // Tạo và lưu ràng buộc mới
+                self.subViewBottomConstraint = self.subView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -keyboardHeight)
+                self.subViewBottomConstraint?.isActive = true
+            }
+        }
+    }
+    
+    @objc func keyboardWillHide(notification: NSNotification) {
+        // Khôi phục kích thước ban đầu cho subView
+        UIView.animate(withDuration: 0.3) {
+            // Gỡ bỏ ràng buộc cũ nếu có
+            if let oldConstraint = self.subViewBottomConstraint {
+                oldConstraint.isActive = false
+            }
+
+            // Tạo và lưu ràng buộc mới
+            self.subViewBottomConstraint = self.subView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor)
+            self.subViewBottomConstraint?.isActive = true
+        }
     }
     
     // Hàm được gọi khi ViewController sắp được thêm vào màn hình
@@ -35,10 +252,10 @@ class HomeScreenViewController: UIViewController {
     // Hàm được gọi khi ViewController chuẩn bị xoá khỏi màn hình
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.navigationController?.setNavigationBarHidden(false, animated: true)  // Hiển thị lại ở màn hình kế tiếp
+        self.navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
-    @objc func hideKeybroad() {
+    @objc private func hideKeybroad() {
         self.view.endEditing(true)
     }
 
@@ -49,40 +266,21 @@ class HomeScreenViewController: UIViewController {
     private func setupView() {
         self.view.backgroundColor = UIColor(hex: "#FFFFFF")
         
-        let scrollView = UIScrollView()
-        scrollView.bounces = false
-        scrollView.delaysContentTouches = false
-        scrollView.showsVerticalScrollIndicator = false
-        scrollView.showsHorizontalScrollIndicator = false
-        self.view.addSubview(scrollView)
-        
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-        ])
-        
-        let subView = UIView()
-        subView.backgroundColor = .clear
-        scrollView.addSubview(subView)
+        view.addSubview(subView)
         
         subView.translatesAutoresizingMaskIntoConstraints = false
+        subViewBottomConstraint = subView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         NSLayoutConstraint.activate([
-            subView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            subView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            subView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            subView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            
-            subView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-            subView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.frameLayoutGuide.heightAnchor)
+            subView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            subView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            subView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            subViewBottomConstraint!,
         ])
         
         let stackViewTop = UIStackView()
         stackViewTop.axis = .vertical
         stackViewTop.distribution = .fill
-        stackViewTop.alignment = .fill
+        stackViewTop.alignment = .center
         stackViewTop.spacing = 20
         subView.addSubview(stackViewTop)
 
@@ -92,33 +290,33 @@ class HomeScreenViewController: UIViewController {
             stackViewTop.leadingAnchor.constraint(equalTo: subView.leadingAnchor, constant: 23),
             stackViewTop.trailingAnchor.constraint(equalTo: subView.trailingAnchor, constant: -23)
         ])
-
-        let viewLogoAndLocation = UIView()
-        stackViewTop.addArrangedSubview(viewLogoAndLocation)
+        
+        let viewLogo = UIView()
+        stackViewTop.addArrangedSubview(viewLogo)
 
         let iconLogo = UIImageView(image: UIImage(named: "icon-logo"))
-        viewLogoAndLocation.addSubview(iconLogo)
+        viewLogo.addSubview(iconLogo)
 
         iconLogo.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            iconLogo.topAnchor.constraint(equalTo: viewLogoAndLocation.topAnchor),
-            iconLogo.centerXAnchor.constraint(equalTo: viewLogoAndLocation.centerXAnchor),
+            iconLogo.topAnchor.constraint(equalTo: viewLogo.topAnchor),
+            iconLogo.centerXAnchor.constraint(equalTo: viewLogo.centerXAnchor),
 
             iconLogo.widthAnchor.constraint(equalToConstant: 26.48),
             iconLogo.heightAnchor.constraint(equalToConstant: 30.8)
         ])
-
-        let viewLocation = UIView()
-        viewLogoAndLocation.addSubview(viewLocation)
+        
+        stackViewTop.addArrangedSubview(viewLocation)
 
         viewLocation.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             viewLocation.topAnchor.constraint(equalTo: iconLogo.bottomAnchor, constant: 7.6),
-            viewLocation.bottomAnchor.constraint(equalTo: viewLogoAndLocation.bottomAnchor),
-            viewLocation.centerXAnchor.constraint(equalTo: viewLogoAndLocation.centerXAnchor),
+            viewLocation.centerXAnchor.constraint(equalTo: stackViewTop.centerXAnchor),
 
             viewLocation.heightAnchor.constraint(equalToConstant: 22.69)
         ])
+        
+        viewLocation.isHidden = true
 
         let iconLocation = UIImageView(image: UIImage(named: "icon-location"))
         viewLocation.addSubview(iconLocation)
@@ -132,8 +330,7 @@ class HomeScreenViewController: UIViewController {
             iconLocation.heightAnchor.constraint(equalToConstant: 18.17)
         ])
 
-        let labelLocation = UILabel()
-        labelLocation.text = "Dhaka, Banassre"
+        labelLocation.text = ""
         labelLocation.font = UIFont(name: "Gilroy-Semibold", size: 18)
         labelLocation.textColor = UIColor(hex: "#4C4F4D")
         viewLocation.addSubview(labelLocation)
@@ -146,7 +343,6 @@ class HomeScreenViewController: UIViewController {
             labelLocation.trailingAnchor.constraint(equalTo: viewLocation.trailingAnchor)
         ])
 
-        let inputSearch = PaddedTextField()
         inputSearch.backgroundColor = UIColor(hex: "#F2F3F2")
         inputSearch.textColor = UIColor(hex: "#181B19")
         inputSearch.font = UIFont(name: "Gilroy-Semibold", size: 14)
@@ -162,98 +358,284 @@ class HomeScreenViewController: UIViewController {
         inputSearch.leftViewPadding = 9.81
 
         let iconSearch = UIImageView(image: UIImage(named: "icon-search"))
-        iconSearch.tintColor = UIColor.gray
+        iconSearch.tintColor = UIColor(hex: "#181B19")
         iconSearch.contentMode = .scaleAspectFit
 
         inputSearch.leftView = iconSearch
         inputSearch.leftViewMode = .always
+        
+        iconClear.isUserInteractionEnabled = true
+        iconClear.contentMode = .scaleAspectFit
+        inputSearch.rightViewMode = .always
+        iconClear.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleClearTextInputSearch(_:))))
 
         inputSearch.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            inputSearch.heightAnchor.constraint(equalToConstant: 51.57)
+            inputSearch.heightAnchor.constraint(equalToConstant: 51.57),
+            
+            inputSearch.leadingAnchor.constraint(equalTo: stackViewTop.leadingAnchor),
+            inputSearch.trailingAnchor.constraint(equalTo: stackViewTop.trailingAnchor)
         ])
-
-        var imageSources: [ImageSource] = []
-        DataTest.imageBanner.forEach { image in
-            imageSources.append(ImageSource(image: UIImage(named: image)!))
-        }
-
-        let slideShow = ImageSlideshow()
-        slideShow.setImageInputs(imageSources)
-        slideShow.slideshowInterval = Const.TIME_INTERVAL_SLIDESHOW
-        slideShow.layer.cornerRadius = 8
-        slideShow.contentScaleMode = .scaleAspectFill
-        stackViewTop.addArrangedSubview(slideShow)
-
-        slideShow.translatesAutoresizingMaskIntoConstraints = false
+        
+        inputSearch.addTarget(self, action: #selector(handleSearch(_:)), for: .editingChanged)
+        
+        stackView.axis = .vertical
+        stackView.alignment = .center
+        stackView.distribution = .fill
+        subView.addSubview(stackView)
+        
+        stackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            slideShow.heightAnchor.constraint(greaterThanOrEqualToConstant: 114.99)
+            stackView.topAnchor.constraint(equalTo: stackViewTop.bottomAnchor, constant: 15),
+            stackView.leadingAnchor.constraint(equalTo: subView.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: subView.trailingAnchor)
         ])
+        
+        scrollView.refreshControl = refreshControl
+        refreshControl.addTarget(self, action: #selector(refreshProductClassificaions(_:)), for: .valueChanged)
+        scrollView.delaysContentTouches = false
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.showsHorizontalScrollIndicator = false
+        stackView.addArrangedSubview(scrollView)
 
-        let stackViewContent = UIStackView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            scrollView.leadingAnchor.constraint(equalTo: stackView.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: stackView.trailingAnchor),
+        ])
+        
         stackViewContent.axis = .vertical
         stackViewContent.spacing = 30
         stackViewContent.distribution = .fill
         stackViewContent.alignment = .fill
-        subView.addSubview(stackViewContent)
+        scrollView.addSubview(stackViewContent)
 
         stackViewContent.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            stackViewContent.topAnchor.constraint(equalTo: stackViewTop.bottomAnchor, constant: 30),
-            stackViewContent.bottomAnchor.constraint(equalTo: subView.bottomAnchor, constant: -50),
-            stackViewContent.leadingAnchor.constraint(equalTo: subView.leadingAnchor),
-            stackViewContent.trailingAnchor.constraint(equalTo: subView.trailingAnchor),
+            stackViewContent.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            stackViewContent.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            stackViewContent.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            stackViewContent.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
 
-            stackViewContent.widthAnchor.constraint(equalTo: subView.widthAnchor)
+            stackViewContent.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
+        
+        stackViewContent.addArrangedSubview(viewSlideShow)
 
-        Array(DataTest.productClassifications.keys).forEach { title in
+        slideShow.setImageInputs(imageSources)
+        slideShow.slideshowInterval = Const.TIME_INTERVAL_SLIDESHOW
+        slideShow.layer.cornerRadius = 8
+        slideShow.contentScaleMode = .scaleAspectFill
+        viewSlideShow.addSubview(slideShow)
+
+        slideShow.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            slideShow.topAnchor.constraint(equalTo: viewSlideShow.topAnchor, constant: 15),
+            slideShow.bottomAnchor.constraint(equalTo: viewSlideShow.bottomAnchor),
+            slideShow.leadingAnchor.constraint(equalTo: viewSlideShow.leadingAnchor, constant: 23),
+            slideShow.trailingAnchor.constraint(equalTo: viewSlideShow.trailingAnchor, constant: -23),
+            
+            slideShow.heightAnchor.constraint(greaterThanOrEqualToConstant: 114.99)
+        ])
+        
+        viewSlideShow.isHidden = true
+
+        self.homeScreenViewModel.productClassifications.forEach { productClassification in
             let labelTitleType = UILabel()
-            labelTitleType.text = title
+            labelTitleType.text = productClassification.name
             labelTitleType.font = UIFont(name: "Gilroy-Semibold", size: 24)
             labelTitleType.textColor = UIColor(hex: "#181725")
 
             var viewsProduct: [ProductView] = []
-            if let products = DataTest.productClassifications[title] {
-                products.forEach { product in
-                    let imageProduct = UIImage(named: product.pathImage)
+            productClassification.products.forEach { product in
+                let imageProduct = UIImage(named: product.thumbnail.imageUrl)
 
-                    let nameProduct = UILabel()
-                    nameProduct.text = product.name
-                    nameProduct.font = UIFont(name: "Gilroy-Bold", size: 16)
-                    nameProduct.textColor = UIColor(hex: "#181725")
+                let nameProduct = UILabel()
+                nameProduct.text = product.name
+                nameProduct.font = UIFont(name: "Gilroy-Bold", size: 16)
+                nameProduct.textColor = UIColor(hex: "#181725")
 
-                    let piecePriceProduct = UILabel()
-                    piecePriceProduct.text = product.pieceAndPrice
-                    piecePriceProduct.font = UIFont(name: "Gilroy-Medium", size: 14)
-                    piecePriceProduct.textColor = UIColor(hex: "#7C7C7C")
+                let piecePriceProduct = UILabel()
+                piecePriceProduct.text = product.unitOfMeasure
+                piecePriceProduct.font = UIFont(name: "Gilroy-Medium", size: 14)
+                piecePriceProduct.textColor = UIColor(hex: "#7C7C7C")
 
-                    let priceProduct = UILabel()
-                    priceProduct.text = "$\(product.price)"
-                    priceProduct.font = UIFont(name: "Gilroy-Semibold", size: 18)
-                    priceProduct.textColor = UIColor(hex: "#181725")
+                let priceProduct = UILabel()
+                priceProduct.text = "$\(product.price)"
+                priceProduct.font = UIFont(name: "Gilroy-Semibold", size: 18)
+                priceProduct.textColor = UIColor(hex: "#181725")
 
-                    let viewProduct = ProductView(idProduct: String(product.id),imageProduct: imageProduct!, nameProduct: nameProduct, piecePriceProduct: piecePriceProduct, priceProduct: priceProduct)
-                    
-                    viewProduct.closureAddToCard = { _ in
-                        // Thêm sản phẩm vào giỏ hàng
-                    }
-                    
-                    viewProduct.closureTapProduct = { _ in
-                        // Xem chi tiết sản phẩm
-                        let productDetailtViewController = ProductDetailViewController()
-                        productDetailtViewController.hidesBottomBarWhenPushed = true
-                        self.navigationController?.pushViewController(productDetailtViewController, animated: true)
-                    }
-
-                    viewsProduct.append(viewProduct)
+                let viewProduct = ProductView(idProduct: product.id,imageProduct: imageProduct!, nameProduct: nameProduct, piecePriceProduct: piecePriceProduct, priceProduct: priceProduct)
+                
+                viewProduct.translatesAutoresizingMaskIntoConstraints = false
+                NSLayoutConstraint.activate([
+                    viewProduct.widthAnchor.constraint(equalToConstant: 173.32),
+                    viewProduct.heightAnchor.constraint(equalToConstant: 248.51)
+                ])
+                
+                viewProduct.closureAddToCard = { _ in
+                    // Thêm sản phẩm vào giỏ hàng
+                }
+                
+                viewProduct.closureTapProduct = { id in
+                    // Xem chi tiết sản phẩm
+                    let productDetailtViewController = ProductDetailViewController(product: product)
+                    productDetailtViewController.hidesBottomBarWhenPushed = true
+                    self.navigationController?.pushViewController(productDetailtViewController, animated: true)
                 }
 
-                let productClassficationView = ProductClassificationView(labelTitle: labelTitleType, viewsProduct: viewsProduct)
-                stackViewContent.addArrangedSubview(productClassficationView)
-            } else {
-                // Products trống
+                viewsProduct.append(viewProduct)
             }
+
+            let productClassficationView = ProductClassificationView(labelTitle: labelTitleType, viewsProduct: viewsProduct)
+            stackViewContent.addArrangedSubview(productClassficationView)
         }
+        
+        let viewPaddingBottom = UIView()
+        stackViewContent.addArrangedSubview(viewPaddingBottom)
+        
+        stackView.addArrangedSubview(gridCollectionProductSearch)
+        
+//        gridCollectionProductSearch.isHidden = true
+        
+        gridCollectionProductSearch.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            gridCollectionProductSearch.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: 25),
+            gridCollectionProductSearch.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -25)
+        ])
+        
+        let viewEmpty = UIView()
+        subView.addSubview(viewEmpty)
+        
+        viewEmpty.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            viewEmpty.topAnchor.constraint(equalTo: stackView.bottomAnchor),
+            viewEmpty.bottomAnchor.constraint(equalTo: subView.bottomAnchor),
+            viewEmpty.leadingAnchor.constraint(equalTo: subView.leadingAnchor),
+            viewEmpty.trailingAnchor.constraint(equalTo: subView.trailingAnchor)
+        ])
+    }
+    
+    @objc private func refreshProductClassificaions(_ sender: AnyObject) {
+        self.homeScreenViewModel.fetchProductClassifications(reload: true)
+    }
+    
+    // Hàm xử lý khi nhập nội dung vào tìm kiếm
+    @objc private func handleSearch(_ sender: PaddedTextField) {
+        if let value = sender.text, !value.isEmpty {
+            self.inputSearch.rightView = iconClear
+            self.homeScreenViewModel.searchProduct(keyword: value)
+            stackView.insertArrangedSubview(gridCollectionProductSearch, at: 0)
+            return
+        }
+        inputSearch.rightView = nil
+        stackView.insertArrangedSubview(scrollView, at: 0)
+    }
+    
+    // Hàm xử lý khi bấm vào nút clear text input search
+    @objc private func handleClearTextInputSearch(_ sender: AnyObject) {
+        inputSearch.text = ""
+        inputSearch.rightView = nil
+        stackView.insertArrangedSubview(scrollView, at: 0)
+    }
+    
+    private func setupLoadingOverlay() {
+        view.addSubview(loadingOverlay)
+        
+        // Cài đặt Auto Layout cho lớp phủ mờ để nó bao phủ toàn bộ view
+        NSLayoutConstraint.activate([
+            loadingOverlay.topAnchor.constraint(equalTo: view.topAnchor),
+            loadingOverlay.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            loadingOverlay.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            loadingOverlay.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+    }
+    
+    // Hiển thị lỗi
+    private func showErrorAlert(message: String, isReload: Bool = false, handleReload: (() -> Void)?) {
+        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        if isReload {
+            alert.addAction(UIAlertAction(title: "Reload", style: .default, handler: { _ in
+                handleReload?()
+            }))
+        }
+        present(alert, animated: true)
+    }
+    
+    deinit {
+        // Hủy đăng ký thông báo khi không còn sử dụng
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+}
+
+extension HomeScreenViewController: UICollectionViewDataSource {
+    // Đặt số lượng mục trong chế độ xem bộ sưu tập. Không thêm số lượng phần nên nó sẽ gán giá trị mặc định là 1
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return self.homeScreenViewModel.listProductSearch.count
+    }
+    
+    // dequeueReusableCell với mã định danh ô được cung cấp từ phương thức setupCollectionView.
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductCell", for: indexPath) as! ProductCellView
+            
+        let product = self.homeScreenViewModel.listProductSearch[indexPath.item]
+
+        // Thiết lập id
+        cell.product = product
+
+        // Thiết lập màu nền
+        cell.backgroundColor = UIColor(hex: "#FFFFFF")
+        cell.layer.borderColor = UIColor(hex: "#E2E2E2").cgColor
+
+        // Thiết lập hình ảnh
+        cell.imageProduct.image = UIImage(named: product.thumbnail.imageUrl)
+        
+        // Thiết lập tiêu đề
+        cell.nameProduct.text = product.name
+        cell.nameProduct.font = UIFont(name: "Gilroy-Bold", size: 16)
+        cell.nameProduct.textColor = UIColor(hex: "#181725")
+        
+        cell.piecePriceProduct.text = product.unitOfMeasure
+        cell.piecePriceProduct.font = UIFont(name: "Gilroy-Medium", size: 14)
+        cell.piecePriceProduct.textColor = UIColor(hex: "#7C7C7C")
+        
+        cell.priceProduct.text = "$\(product.price)"
+        cell.priceProduct.font = UIFont(name: "Gilroy-Bold", size: 18)
+        cell.priceProduct.textColor = UIColor(hex: "#181725")
+        
+        cell.closureAddToCard = { [weak self] _ in
+            guard let _ = self else { return }
+        }
+
+        cell.closureTapProduct = { [weak self] product in
+            // Xem chi tiết sản phẩm
+            let productDetailtViewController = ProductDetailViewController(product: product)
+            productDetailtViewController.hidesBottomBarWhenPushed = true
+            self?.navigationController?.pushViewController(productDetailtViewController, animated: true)
+        }
+        
+        return cell
+    }
+}
+
+extension HomeScreenViewController: UICollectionViewDelegateFlowLayout {
+    // Đầu tiên thêm insetForSectionAt từ UICollectionViewDelegateFlowLayout.
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        // Thêm phần chèn cho các phần chế độ xem bộ sưu tập.
+        return UIEdgeInsets(top: 15, left: 0, bottom: 25, right: 0)
+    }
+    
+    // Thêm để chỉ định kích thước cho ô nên đã thêm phương thức từ UICollectionViewDelegateFlowLayout
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        // Nhận bố cục được chỉ định từ chế độ xem bộ sưu tập.
+        let lay =   collectionViewLayout as! UICollectionViewFlowLayout
+        
+        // Phân bổ chiều rộng của ô.
+        let widthPerItem = collectionView.frame.width / 2 - lay.minimumInteritemSpacing / 2
+        
+        // Trả về kích thước của mỗi ô nhưng đảm bảo khoảng cách giữa các dòng phải nhỏ hơn.
+        return CGSize(width: widthPerItem, height: 248.51)
     }
 }

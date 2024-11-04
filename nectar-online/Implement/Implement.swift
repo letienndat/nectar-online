@@ -127,14 +127,8 @@ class CopyableLabel: UILabel {
         UIPasteboard.general.string = self.text
     }
     
-    override func cut(_ sender: Any?) {
-        // Thực hiện hành động cắt (sao chép và xóa nội dung)
-        UIPasteboard.general.string = self.text
-        self.text = ""
-    }
-    
     override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
-        // Cho phép các hành động "copy" và "cut"
-        return action == #selector(copy(_:)) || action == #selector(cut(_:))
+        // Cho phép các hành động "copy"
+        return action == #selector(copy(_:))
     }
 }

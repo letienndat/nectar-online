@@ -9,15 +9,15 @@ import UIKit
 
 class ProductView: UIView {
     
-    private let idProduct: String
-    private let imageProduct: UIImage
-    private let nameProduct: UILabel
-    private let piecePriceProduct: UILabel
-    private let priceProduct: UILabel
-    var closureAddToCard: ((String) -> Void)?
-    var closureTapProduct: ((String) -> Void)?
+    var idProduct: Int
+    var imageProduct: UIImage
+    var nameProduct: UILabel
+    var piecePriceProduct: UILabel
+    var priceProduct: UILabel
+    var closureAddToCard: ((Int) -> Void)?
+    var closureTapProduct: ((Int) -> Void)?
 
-    init(idProduct: String, imageProduct: UIImage, nameProduct: UILabel, piecePriceProduct: UILabel, priceProduct: UILabel) {
+    init(idProduct: Int, imageProduct: UIImage, nameProduct: UILabel, piecePriceProduct: UILabel, priceProduct: UILabel) {
         
         self.idProduct = idProduct
         self.imageProduct = imageProduct
@@ -39,12 +39,6 @@ class ProductView: UIView {
         self.layer.borderWidth = 1
         self.layer.cornerRadius = 18
         self.backgroundColor = .clear
-        
-        self.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            self.widthAnchor.constraint(equalToConstant: 173.32),
-            self.heightAnchor.constraint(equalToConstant: 248.51)
-        ])
         
         self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapProduct(_:))))
         

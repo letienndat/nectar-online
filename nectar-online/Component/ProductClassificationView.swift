@@ -56,7 +56,7 @@ class ProductClassificationView: UIView {
             buttonSeeAll.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -25),
             buttonSeeAll.centerYAnchor.constraint(equalTo: buttonSeeAll.centerYAnchor),
             
-            buttonSeeAll.heightAnchor.constraint(equalToConstant: 20)
+            buttonSeeAll.heightAnchor.constraint(equalToConstant: 25)
         ])
         
         buttonSeeAll.addTarget(self, action: #selector(handleSeeAll(_:)), for: .touchUpInside)
