@@ -26,15 +26,63 @@ class ProductsCategoryViewController: UIViewController {
         return collectionView
     }()
     private let productsCategoryViewModel: ProductsCategoryViewModel = ProductsCategoryViewModel()
+    private var productsFilter: [Product] = [] {
+        didSet {
+            self.gridCollectionProduct.reloadData()
+        }
+    }
+    private let filterViewModel: FilterViewModel
     
     init(categoryProduct: CategoryProduct) {
         self.categoryProduct = categoryProduct
+        self.productsFilter = productsCategoryViewModel.listProductCategory
+        self.filterViewModel = FilterViewModel(sourcesFilter: [])
         
         super.init(nibName: nil, bundle: nil)
+        
+        self.addSourceFilter()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // Đẩy các tiêu chí lọc vào sourceFilter
+    private func addSourceFilter() {
+        var sourcesFilter: [SourceFilter] = []
+        
+        // Category
+        let sourceFilterCategory = SourceFilter(filterCriteria: .category, title: EnumFilterCriteria.category.rawValue)
+        var inputsCheckboxCategory: [InputCheckbox] = sourceFilterCategory.inputsCheckbox
+        self.productsCategoryViewModel.listProductCategory.forEach {
+            let category = $0.category
+            if !inputsCheckboxCategory.contains(where: { $0.id == category.id }) {
+                inputsCheckboxCategory.append(InputCheckbox(id: category.id, name: category.name, checked: false, tempChecked: false))
+            }
+        }
+        sourceFilterCategory.inputsCheckbox = inputsCheckboxCategory
+        sourcesFilter.append(sourceFilterCategory)
+        
+        // Price
+        let sourceFilterPrice = SourceFilter(
+            filterCriteria: .price,
+            title: EnumFilterCriteria.price.rawValue,
+            minRange: Const.MIN_RANGE_PRICE,
+            maxRange: Const.MAX_RANGE_PRICE,
+            startRange: Const.MIN_RANGE_PRICE,
+            endRange: Const.MAX_RANGE_PRICE,
+            tempStartRange: Const.MIN_RANGE_PRICE,
+            tempEndRange: Const.MAX_RANGE_PRICE,
+            rating: 0,
+            tempRating: 0
+        )
+        sourcesFilter.append(sourceFilterPrice)
+        
+        // Rating
+        let sourceFilterRating = SourceFilter(filterCriteria: .rating, title: EnumFilterCriteria.rating.rawValue)
+        sourcesFilter.append(sourceFilterRating)
+        
+        self.filterViewModel.sourcesFilter = sourcesFilter
     }
     
     override func viewDidLoad() {
@@ -79,9 +127,12 @@ class ProductsCategoryViewController: UIViewController {
         
         self.productsCategoryViewModel.updateListProductCategory = {
             self.gridCollectionProduct.reloadData()
+            
+            self.productsFilter = self.productsCategoryViewModel.listProductCategory
+            self.addSourceFilter()
         }
         
-        self.fetchData()
+//        self.fetchData()
     }
     
     private func fetchData() {
@@ -208,7 +259,58 @@ class ProductsCategoryViewController: UIViewController {
     
     // Hàm xử lý khi bấm vào filter
     @objc private func handleFilter(_ sender: UIButton) {
-        //
+        
+        // Tạo view controller của view bộ lọc
+        let filterViewController = FilterViewController(filterViewModel: filterViewModel)
+        
+        // Bọc nó trong UINavigationController
+        let navController = UINavigationController(rootViewController: filterViewController)
+        
+        // Tùy chọn hiển thị modally
+        navController.modalPresentationStyle = .overFullScreen
+        navController.modalTransitionStyle = .crossDissolve
+        
+        // Trình bày modally để nó chồng lên tabBar
+        self.present(navController, animated: true, completion: nil)
+        
+        filterViewController.closureApplyFilter = { [weak self] in
+            guard let self = self else { return }
+            
+            self.productsFilter = self.productsCategoryViewModel.listProductCategory.filter { product in
+                var res: Bool = true
+                
+                // Category
+                let sourceFilterCategory = self.filterViewModel.sourcesFilter.first(where: { $0.typeFilterCriteria == .category })
+                // Nếu tất cả checkbox không tick thì bỏ qua, còn nếu có ít nhất 1 tick thì kiểm tra
+                if let check = sourceFilterCategory?.inputsCheckbox.allSatisfy({ $0.checked == false }), check == true {
+                    res = true
+                } else {
+                    res = sourceFilterCategory?.inputsCheckbox.contains(where: { $0.id == product.category.id && $0.checked }) ?? false
+                }
+                if !res {
+                    return false
+                }
+                
+                // Price
+                let sourceFilterPrice = self.filterViewModel.sourcesFilter.first(where: { $0.typeFilterCriteria == .price })
+                // Nếu price nằm trong khoảng
+                if let startRange = sourceFilterPrice?.startRange, let endRange = sourceFilterPrice?.endRange,
+                   (startRange...endRange).contains(product.price) {
+                    res = true
+                } else {
+                    res = false
+                }
+                if !res {
+                    return false
+                }
+                
+                // Rating
+                let sourceFilterRating = self.filterViewModel.sourcesFilter.first(where: { $0.typeFilterCriteria == .rating })
+                res = product.rating >= sourceFilterRating?.rating ?? 0
+                
+                return res
+            }
+        }
     }
     
     // Hiển thị lỗi
@@ -235,14 +337,14 @@ class ProductsCategoryViewController: UIViewController {
 extension ProductsCategoryViewController: UICollectionViewDataSource {
     // Đặt số lượng mục trong chế độ xem bộ sưu tập. Không thêm số lượng phần nên nó sẽ gán giá trị mặc định là 1
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.productsCategoryViewModel.listProductCategory.count
+        return self.productsFilter.count
     }
     
     // dequeueReusableCell với mã định danh ô được cung cấp từ phương thức setupCollectionView.
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductCell", for: indexPath) as! ProductCellView
             
-        let product = self.productsCategoryViewModel.listProductCategory[indexPath.item]
+        let product = self.productsFilter[indexPath.item]
 
         // Thiết lập id
         cell.product = product

@@ -162,7 +162,7 @@ class HomeScreenService {
     }
     
     func search(keyword: String, completion: @escaping (Result<[Product], Error>) -> Void) {
-        guard let url = URL(string: "\(Const.BASE_URL)/search?keyword=\(keyword)") else {
+        guard let url = URL(string: "\(Const.BASE_URL)/products/search?keyword=\(keyword)") else {
             return
         }
         

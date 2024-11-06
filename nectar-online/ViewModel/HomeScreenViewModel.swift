@@ -27,7 +27,7 @@ class HomeScreenViewModel {
             self.updateBanners?()
         }
     }
-    var listProductSearch: [Product] = DataTest.listProductSearch {
+    var listProductSearch: [Product] = [] {
         didSet {
             self.updateListProductSearch?()
         }
@@ -41,7 +41,7 @@ class HomeScreenViewModel {
     var showError: ((String) -> Void)?
     var showErrorSearch: ((String) -> Void)?
     private var debounceTimer: DispatchWorkItem?
-    private let debounceInterval: TimeInterval = 0.5  // thời gian trễ để thực hiện tìm kiếm
+    static let debounceInterval: TimeInterval = 0.5  // thời gian trễ để thực hiện tìm kiếm
     
     func fetchLocation() {
         guard AppConfig.isLogin else { return }
@@ -109,19 +109,28 @@ class HomeScreenViewModel {
 
         // Lưu lại yêu cầu và lên lịch thực hiện
         debounceTimer = request
-        DispatchQueue.main.asyncAfter(deadline: .now() + debounceInterval, execute: request)
+        DispatchQueue.main.asyncAfter(deadline: .now() + HomeScreenViewModel.debounceInterval, execute: request)
     }
     
     func fetchProducts(keyword: String) {
-        homeScreenService.search(keyword: keyword) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let products):
-                    self?.listProductSearch = products
-                case .failure(let error):
-                    self?.showErrorSearch?(error.localizedDescription)
-                }
-            }
+        
+        testSearch(keyword: keyword)
+        
+//        homeScreenService.search(keyword: keyword) { [weak self] result in
+//            DispatchQueue.main.async {
+//                switch result {
+//                case .success(let products):
+//                    self?.listProductSearch = products
+//                case .failure(let error):
+//                    self?.showErrorSearch?(error.localizedDescription)
+//                }
+//            }
+//        }
+    }
+    
+    func testSearch(keyword: String) {
+        self.listProductSearch = DataTest.listProductSearch.filter { product in
+            return product.name.lowercased().trimmingCharacters(in: .whitespaces).contains(keyword.lowercased().trimmingCharacters(in: .whitespaces))
         }
     }
 }

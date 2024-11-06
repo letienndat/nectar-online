@@ -16,4 +16,6 @@ class Const {
     public static let TIME_INTERVAL_SLIDESHOW: Double = 3
     public static let BASE_URL = "http://192.168.0.103:8000/api"
     public static let KEYCHAIN_TOKEN = "JjadA#$J!uhayQ27Ah2"
+    public static let MIN_RANGE_PRICE: CGFloat = 0
+    public static let MAX_RANGE_PRICE: CGFloat = 200
 }

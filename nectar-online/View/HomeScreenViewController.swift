@@ -39,6 +39,7 @@ class HomeScreenViewController: UIViewController {
     }()
     private let subView = UIView()
     private var subViewBottomConstraint: NSLayoutConstraint?
+    private var debounceWorkItem: DispatchWorkItem?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -247,6 +248,10 @@ class HomeScreenViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: true)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
     }
 
     // Hàm được gọi khi ViewController chuẩn bị xoá khỏi màn hình
@@ -522,13 +527,35 @@ class HomeScreenViewController: UIViewController {
     
     // Hàm xử lý khi nhập nội dung vào tìm kiếm
     @objc private func handleSearch(_ sender: PaddedTextField) {
+        // Hủy công việc đang chờ nếu có
+        debounceWorkItem?.cancel()
+        
         if let value = sender.text, !value.isEmpty {
+            // Hiển thị icon clear
             self.inputSearch.rightView = iconClear
             self.homeScreenViewModel.searchProduct(keyword: value)
-            stackView.insertArrangedSubview(gridCollectionProductSearch, at: 0)
+            
+            // Tạo một công việc mới và đặt thời gian chờ
+            let workItem = DispatchWorkItem { [weak self] in
+                guard let self = self else { return }
+                self.stackView.insertArrangedSubview(self.gridCollectionProductSearch, at: 0)
+            }
+            
+            // Lưu công việc và chạy nó sau khoảng debounceInterval
+            debounceWorkItem = workItem
+            DispatchQueue.main.asyncAfter(deadline: .now() + HomeScreenViewModel.debounceInterval, execute: workItem)
+            
             return
         }
+        
+        // Khi chuỗi tìm kiếm rỗng, hủy các sản phẩm tìm kiếm
+        self.homeScreenViewModel.listProductSearch = []
         inputSearch.rightView = nil
+        
+        // Hủy công việc đang chờ nếu có
+        debounceWorkItem?.cancel()
+        
+        // Hiển thị scrollView trở lại
         stackView.insertArrangedSubview(scrollView, at: 0)
     }
     
@@ -537,6 +564,7 @@ class HomeScreenViewController: UIViewController {
         inputSearch.text = ""
         inputSearch.rightView = nil
         stackView.insertArrangedSubview(scrollView, at: 0)
+        self.homeScreenViewModel.listProductSearch = []
     }
     
     private func setupLoadingOverlay() {

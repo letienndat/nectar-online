@@ -16,7 +16,7 @@ class ExploreViewModel {
         }
     }
     var updateListCategoryProduct: (() -> Void)?
-    var listProductSearch: [Product] = DataTest.listProductSearch {
+    var listProductSearch: [Product] = [] {
         didSet {
             self.updateListProductSearch?()
         }
@@ -76,15 +76,24 @@ class ExploreViewModel {
     }
     
     func fetchProducts(keyword: String) {
-        homeScreenService.search(keyword: keyword) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let products):
-                    self?.listProductSearch = products
-                case .failure(let error):
-                    self?.showErrorSearch?(error.localizedDescription)
-                }
-            }
+        
+        testSearch(keyword: keyword)
+        
+//        homeScreenService.search(keyword: keyword) { [weak self] result in
+//            DispatchQueue.main.async {
+//                switch result {
+//                case .success(let products):
+//                    self?.listProductSearch = products
+//                case .failure(let error):
+//                    self?.showErrorSearch?(error.localizedDescription)
+//                }
+//            }
+//        }
+    }
+    
+    func testSearch(keyword: String) {
+        self.listProductSearch = DataTest.listProductSearch.filter { product in
+            return product.name.lowercased().trimmingCharacters(in: .whitespaces).contains(keyword.lowercased().trimmingCharacters(in: .whitespaces))
         }
     }
 }

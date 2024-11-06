@@ -83,7 +83,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             UITabBarItem.appearance().setTitleTextAttributes(selectedAttributes, for: .selected)
             
             // Tạo UITabBarController và thêm các UINavigationController vào đó
-            let tabBarController = UITabBarController()
+            let tabBarController = MainTabViewController()
             tabBarController.setViewControllers([
                 homeScreenNavigationController,
                 exploreNavigationController,
@@ -95,7 +95,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             tabBarController.setValue(CustomTabBar(), forKey: "tabBar")
             
             // Mặc định chọn tab đầu tiên
-            // BUG: Nếu select index mặc định = 0 thì sẽ không select vào icon tab bar Shop nên để tạm sang 1 (ExploreView), viewDidLoad của ExploreViewController sẽ select lại index = 0
             tabBarController.selectedIndex = 0
             
             // Đặt tabBarController làm rootViewController mới

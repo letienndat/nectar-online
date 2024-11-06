@@ -45,6 +45,61 @@ class ExploreViewController: UIViewController {
     private let inputSearch = PaddedTextField()
     private let iconClear = UIImageView(image: UIImage(named: "icon-clear-input"))
     private let exploreViewModel: ExploreViewModel = ExploreViewModel()
+    private var productsFilter: [Product] = [] {
+        didSet {
+            self.gridCollectionProductSearch.reloadData()
+        }
+    }
+    private let filterViewModel: FilterViewModel
+    
+    init() {
+        self.productsFilter = self.exploreViewModel.listProductSearch
+        self.filterViewModel = FilterViewModel(sourcesFilter: [])
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // Đẩy các tiêu chí lọc vào sourceFilter
+    private func addSourceFilter() {
+        var sourcesFilter: [SourceFilter] = []
+        
+        // Category
+        let sourceFilterCategory = SourceFilter(filterCriteria: .category, title: EnumFilterCriteria.category.rawValue)
+        var inputsCheckboxCategory: [InputCheckbox] = sourceFilterCategory.inputsCheckbox
+        self.exploreViewModel.listProductSearch.forEach {
+            let category = $0.category
+            if !inputsCheckboxCategory.contains(where: { $0.id == category.id }) {
+                inputsCheckboxCategory.append(InputCheckbox(id: category.id, name: category.name, checked: false, tempChecked: false))
+            }
+        }
+        sourceFilterCategory.inputsCheckbox = inputsCheckboxCategory
+        sourcesFilter.append(sourceFilterCategory)
+        
+        // Price
+        let sourceFilterPrice = SourceFilter(
+            filterCriteria: .price,
+            title: EnumFilterCriteria.price.rawValue,
+            minRange: Const.MIN_RANGE_PRICE,
+            maxRange: Const.MAX_RANGE_PRICE,
+            startRange: Const.MIN_RANGE_PRICE,
+            endRange: Const.MAX_RANGE_PRICE,
+            tempStartRange: Const.MIN_RANGE_PRICE,
+            tempEndRange: Const.MAX_RANGE_PRICE,
+            rating: 0,
+            tempRating: 0
+        )
+        sourcesFilter.append(sourceFilterPrice)
+        
+        // Rating
+        let sourceFilterRating = SourceFilter(filterCriteria: .rating, title: EnumFilterCriteria.rating.rawValue)
+        sourcesFilter.append(sourceFilterRating)
+        
+        self.filterViewModel.sourcesFilter = sourcesFilter
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -88,8 +143,18 @@ class ExploreViewController: UIViewController {
             self.showErrorAlert(message: error, isReload: true, handleReload: { self.fetchData() })
         }
         
-        self.exploreViewModel.updateListCategoryProduct = {
+        self.exploreViewModel.updateListCategoryProduct = { [weak self] in
+            guard let self = self else { return }
+            
             self.gridCollectionCategory.reloadData()
+        }
+        
+        self.exploreViewModel.updateListProductSearch = { [weak self] in
+            guard let self = self else { return }
+            
+            self.productsFilter = self.exploreViewModel.listProductSearch
+            self.addSourceFilter()
+            self.gridCollectionProductSearch.reloadData()
         }
         
         self.exploreViewModel.showErrorSearch = { [weak self] error in
@@ -142,6 +207,7 @@ class ExploreViewController: UIViewController {
             self.iconFilter.isHidden = true
             self.gridCollectionProductSearch.isHidden = true
             self.gridCollectionCategory.isHidden = false
+            self.exploreViewModel.listProductSearch = []
         }
         self.keybroadShow = false
         self.view.endEditing(true)
@@ -252,6 +318,8 @@ class ExploreViewController: UIViewController {
         
         iconFilter.isHidden = true
         
+        iconFilter.addTarget(self, action: #selector(handleFilter(_:)), for: .touchUpInside)
+        
         iconFilter.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             iconFilter.widthAnchor.constraint(equalToConstant: 16.8),
@@ -310,6 +378,7 @@ class ExploreViewController: UIViewController {
     @objc private func handleClearTextInputSearch(_ sender: AnyObject) {
         inputSearch.text = ""
         inputSearch.rightView = nil
+        self.exploreViewModel.listProductSearch = []
         
         if !keybroadShow {
             self.navigationController?.setNavigationBarHidden(false, animated: true)
@@ -321,7 +390,63 @@ class ExploreViewController: UIViewController {
     
     // Hàm xử lý khi người dùng bấm vào icon filter
     @objc private func handleFilter(_ sender: AnyObject) {
-        //
+        if self.exploreViewModel.listProductSearch.isEmpty {
+            return
+        }
+        
+        print("pass")
+        
+        // Tạo view controller của view bộ lọc
+        let filterViewController = FilterViewController(filterViewModel: filterViewModel)
+        
+        // Bọc nó trong UINavigationController
+        let navController = UINavigationController(rootViewController: filterViewController)
+        
+        // Tùy chọn hiển thị modally
+        navController.modalPresentationStyle = .overFullScreen
+        navController.modalTransitionStyle = .crossDissolve
+        
+        // Trình bày modally để nó chồng lên tabBar
+        self.present(navController, animated: true, completion: nil)
+        
+        filterViewController.closureApplyFilter = { [weak self] in
+            guard let self = self else { return }
+            
+            self.productsFilter = self.exploreViewModel.listProductSearch.filter { product in
+                var res: Bool = true
+                
+                // Category
+                let sourceFilterCategory = self.filterViewModel.sourcesFilter.first(where: { $0.typeFilterCriteria == .category })
+                // Nếu tất cả checkbox không tick thì bỏ qua, còn nếu có ít nhất 1 tick thì kiểm tra
+                if let check = sourceFilterCategory?.inputsCheckbox.allSatisfy({ $0.checked == false }), check == true {
+                    res = true
+                } else {
+                    res = sourceFilterCategory?.inputsCheckbox.contains(where: { $0.id == product.category.id && $0.checked }) ?? false
+                }
+                if !res {
+                    return false
+                }
+                
+                // Price
+                let sourceFilterPrice = self.filterViewModel.sourcesFilter.first(where: { $0.typeFilterCriteria == .price })
+                // Nếu price nằm trong khoảng
+                if let startRange = sourceFilterPrice?.startRange, let endRange = sourceFilterPrice?.endRange,
+                   (startRange...endRange).contains(product.price) {
+                    res = true
+                } else {
+                    res = false
+                }
+                if !res {
+                    return false
+                }
+                
+                // Rating
+                let sourceFilterRating = self.filterViewModel.sourcesFilter.first(where: { $0.typeFilterCriteria == .rating })
+                res = product.rating >= sourceFilterRating?.rating ?? 0
+                
+                return res
+            }
+        }
     }
     
     // Hàm xử lý khi người dùng bấm vào input
@@ -333,10 +458,13 @@ class ExploreViewController: UIViewController {
         self.gridCollectionProductSearch.isHidden = false
     }
     
+    // Hàm xử lý khi người dùng nhập ký tự vào input
     @objc private func handleChangValueInputSearch(_ sender: AnyObject) {
         if let text = inputSearch.text, !text.isEmpty {
             inputSearch.rightView = iconClear
             exploreViewModel.searchProduct(keyword: text)
+        } else {
+            self.exploreViewModel.listProductSearch = []
         }
     }
     
@@ -384,7 +512,7 @@ extension ExploreViewController: UICollectionViewDataSource {
         if collectionView == gridCollectionCategory {
             return self.exploreViewModel.listCategoryProduct.count
         } else if collectionView == gridCollectionProductSearch {
-            return self.exploreViewModel.listProductSearch.count
+            return self.productsFilter.count
         }
         
         return 0
@@ -422,7 +550,7 @@ extension ExploreViewController: UICollectionViewDataSource {
         } else if collectionView == gridCollectionProductSearch {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductSearchCell", for: indexPath) as! ProductCellView
                 
-            let product = self.exploreViewModel.listProductSearch[indexPath.item]
+            let product = self.productsFilter[indexPath.item]
 
             // Thiết lập id
             cell.product = product

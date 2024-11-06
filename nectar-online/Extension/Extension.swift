@@ -26,6 +26,14 @@ extension UIColor {
 }
 
 extension UIView {
+    func roundCorners(corners: CACornerMask, radius: CGFloat) {
+        self.layer.cornerRadius = radius
+        self.layer.maskedCorners = corners
+        self.layer.masksToBounds = true
+    }
+}
+
+extension UIView {
 
     enum BorderEdge {
         case top, left, bottom, right
