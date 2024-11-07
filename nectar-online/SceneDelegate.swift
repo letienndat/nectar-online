@@ -29,6 +29,24 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Khởi tạo UIWindow với kích thước của windowScene
         window = UIWindow(windowScene: windowScene)
         
+        if AppConfig.isLogin {
+            let appService = AppService()
+            let token: String? = getToken(for: Const.KEYCHAIN_TOKEN)
+            
+            appService.fetchCheckToken(token: token) { [weak self] result in
+                guard
+                    let _ = self
+                else { return }
+                
+                switch result {
+                case .success(let token):
+                    saveToken(token: token, for: Const.KEYCHAIN_TOKEN)
+                case .failure(_):
+                    break
+                }
+            }
+        }
+        
         // Tạo ViewController đầu tiên và gán làm rootViewController
         var rootViewController: UIViewController
         if AppConfig.isFirstLaunch {
@@ -42,9 +60,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let exploreViewController = ExploreViewController()
             let exploreNavigationController = UINavigationController(rootViewController: exploreViewController)
             
-            // Tạo nav cho tab Card
-            let cardViewController = CardViewController()
-            let cardNavigationController = UINavigationController(rootViewController: cardViewController)
+            // Tạo nav cho tab cart
+            let cartViewController = CartViewController()
+            let cartNavigationController = UINavigationController(rootViewController: cartViewController)
             
             // Tạo nav cho tab Favorite
             let favoriteViewController = FavoriteViewController()
@@ -57,7 +75,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // Thiết lập icon cho các tab
             homeScreenNavigationController.tabBarItem = UITabBarItem(title: "Shop", image: UIImage(named: "icon-tab-bar-shop"), tag: 0)
             exploreNavigationController.tabBarItem = UITabBarItem(title: "Explore", image: UIImage(named: "icon-tab-bar-explore"), tag: 1)
-            cardNavigationController.tabBarItem = UITabBarItem(title: "Card", image: UIImage(named: "icon-tab-bar-card"), tag: 2)
+            cartNavigationController.tabBarItem = UITabBarItem(title: "Cart", image: UIImage(named: "icon-tab-bar-cart"), tag: 2)
             favoriteNavigationController.tabBarItem = UITabBarItem(title: "Favorite", image: UIImage(named: "icon-tab-bar-favorite"), tag: 3)
             accountNavigationController.tabBarItem = UITabBarItem(title: "Account", image: UIImage(named: "icon-tab-bar-account"), tag: 4)
             
@@ -87,7 +105,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             tabBarController.setViewControllers([
                 homeScreenNavigationController,
                 exploreNavigationController,
-                cardNavigationController,
+                cartNavigationController,
                 favoriteNavigationController,
                 accountNavigationController
             ], animated: true)
@@ -109,9 +127,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
-        // This occurs shortly after the scene enters the background, or when its session is discarded.
+        // This occurs shortly after the scene enters the background, or when its session is discarted.
         // Release any resources associated with this scene that can be re-created the next time the scene connects.
-        // The scene may re-connect later, as its session was not necessarily discarded (see `application:didDiscardSceneSessions` instead).
+        // The scene may re-connect later, as its session was not necessarily discarted (see `application:didDiscartSceneSessions` instead).
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {

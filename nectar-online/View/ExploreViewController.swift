@@ -159,8 +159,37 @@ class ExploreViewController: UIViewController {
         
         self.exploreViewModel.showErrorSearch = { [weak self] error in
             guard let _ = self else { return }
+        }
+        
+        self.exploreViewModel.closureAddProductToCartSuccess = { [weak self] countProduct in
+            guard let _ = self else { return }
             
-//            self.showErrorAlert(message: error, handleReload: nil)
+            // Cập nhật lại số sản phẩm hiện có trong giỏ ở icon tabbar cart
+        }
+        
+        self.exploreViewModel.closureAddProductToCartFail = { [weak self] _ in
+            guard let self = self else { return }
+            
+            self.showErrorAlert(message: "Sorry, there was an error adding the product to the cart. Please try again later!", handleReload: nil)
+        }
+        
+        self.exploreViewModel.closureNoAccess = { [weak self] in
+            guard let self = self else { return }
+            
+            SessionManager.shared.indexTabbarView = 0
+            
+            // Tạo view controller của thông báo đăng nhập
+            let notifyRequireLoginViewController = NotifyRequireLoginViewController(content: "Your session has expired. Please login to use this feature!")
+            
+            // Bọc nó trong UINavigationController
+            let navController = UINavigationController(rootViewController: notifyRequireLoginViewController)
+            
+            // Tùy chọn hiển thị modally
+            navController.modalPresentationStyle = .overFullScreen
+            navController.modalTransitionStyle = .crossDissolve
+            
+            // Trình bày modally để nó chồng lên tabBar
+            self.present(navController, animated: true, completion: nil)
         }
         
 //        self.fetchData()
@@ -214,22 +243,7 @@ class ExploreViewController: UIViewController {
     }
 
     private func setupNav() {
-        // BUG: Nếu select index mặc định = 0 thì sẽ không select vào icon tab bar Shop nên để tạm sang 1 (ExploreView), viewDidLoad của ExploreViewController sẽ select lại index = 0
-//        self.tabBarController?.selectedIndex = 0
-        
         self.navigationItem.title = "Find Products"
-        
-        // Đặt font cho title trong navigation bar
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont(name: "Gilroy-Bold", size: 20)!, // Thay đổi kiểu font, kích cỡ và trọng lượng theo ý muốn
-            .foregroundColor: UIColor(hex: "#181725") // Màu chữ cho title
-        ]
-
-        // Áp dụng thuộc tính cho toàn bộ navigation bar
-        UINavigationBar.appearance().titleTextAttributes = attributes
-
-        // Hoặc áp dụng cho một navigation bar cụ thể trong view controller hiện tại
-        navigationController?.navigationBar.titleTextAttributes = attributes
     }
     
     private func setupView() {
@@ -575,8 +589,46 @@ extension ExploreViewController: UICollectionViewDataSource {
             cell.priceProduct.font = UIFont(name: "Gilroy-Bold", size: 18)
             cell.priceProduct.textColor = UIColor(hex: "#181725")
             
-            cell.closureAddToCard = { [weak self] _ in
-                guard let _ = self else { return }
+            cell.closureAddToCard = { [weak self] product in
+                
+                guard let self = self else { return }
+                
+                // Nếu người dùng chưa đăng nhập sẽ hiển thị thông báo đăng nhập để sử dụng tính năng này
+                if !AppConfig.isLogin {
+                    
+                    SessionManager.shared.indexTabbarView = 0
+                    
+                    // Tạo view controller của thông báo đăng nhập
+                    let notifyRequireLoginViewController = NotifyRequireLoginViewController(content: "Login required before using this feature!")
+                    
+                    notifyRequireLoginViewController.closureHandleConfirm = { [weak self] in
+                        guard let self = self else { return }
+                        
+                        HomeScreenViewController.redirectToSignin(for: self)
+                    }
+                    
+                    // Bọc nó trong UINavigationController
+                    let navController = UINavigationController(rootViewController: notifyRequireLoginViewController)
+                    
+                    // Tùy chọn hiển thị modally
+                    navController.modalPresentationStyle = .overFullScreen
+                    navController.modalTransitionStyle = .crossDissolve
+                    
+                    // Trình bày modally để nó chồng lên tabBar
+                    self.present(navController, animated: true, completion: nil)
+                } else {
+                    // Thêm sản phẩm vào giỏ hàng
+                    // Gửi API kèm token và danh sách sản phẩm để thêm và giỏ hàng, nếu 401 thì hiển thị phiên đăng nhập đã hết hạn (yêu cầu đăng nhập để sử dụng, nếu không thì sẽ không thêm vào giỏ), nếu lỗi khác thì sẽ hiển thị thông báo có lỗi, vui lòng thử lại sau
+                    
+                    let data: [[String: Any]] = [
+                        [
+                            "product_id": product.id,
+                            "quantity": 1
+                        ]
+                    ]
+                    
+                    self.exploreViewModel.addProductToCart(data: data)
+                }
             }
 
             cell.closureTapProduct = { [weak self] product in

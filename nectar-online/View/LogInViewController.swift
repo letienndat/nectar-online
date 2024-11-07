@@ -375,17 +375,17 @@ class LogInViewController: UIViewController {
         guard let idZone = selectLocationViewModel.idZone,
               let idArea = selectLocationViewModel.idArea
         else {
-            showErrorAlert(message: "Không thể nhận biết khu vực!")
+            showErrorAlert(message: "Unable to identify area!")
             return
         }
         
         guard let email = formControlEmail.formInput.text, !email.isEmpty, Validate.validate(type: .email, string: email) else {
-            showErrorAlert(message: "Không đúng định dạng email!")
+            showErrorAlert(message: "Invalid email format!")
             return
         }
         
         guard let password = formControlPassword.formInput.text, !password.isEmpty, Validate.validate(type: .password, string: password) else {
-            showErrorAlert(message: "Không đúng định dạng password!")
+            showErrorAlert(message: "Invalid password format!")
             return
         }
         
@@ -401,7 +401,7 @@ class LogInViewController: UIViewController {
     
     // Hàm xử lý khi login thành công
     private func loginSuccess() {
-        self.tabBarController?.selectedIndex = 0
+        self.tabBarController?.selectedIndex = SessionManager.shared.indexTabbarView
     }
     
     // Hiển thị lỗi

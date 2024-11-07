@@ -9,6 +9,7 @@ import Foundation
 
 class ProductDetailViewModel {
     var productDetailService: ProductDetailService!
+    private let homeScreenService: HomeScreenService = HomeScreenService.shared
     var product: Product? {
         didSet {
             self.loadProduct?()
@@ -28,10 +29,18 @@ class ProductDetailViewModel {
             updateIconSubtract?()
         }
     }
+    var closureFavoriteProductSuccess: ((Bool) -> Void)?
+    var closureFavoriteProductFail: ((String) -> Void)?
+    var closureNoAccess: (() -> Void)?
+    var closureAddProductToCartSuccess: ((Int) -> Void)?
+    var closureAddProductToCartFail: ((String) -> Void)?
+    var closureRatingProductSuccess: ((Int) -> Void)?
+    var closureRatingProductFail: ((String) -> Void)?
     var showLoading: (() -> Void)?
     var hideLoading: (() -> Void)?
     var hideRefreshing: (() -> Void)?
     var showError: ((String) -> Void)?
+    var ratingTemp: Int = 0
     
     init(productDetailService: ProductDetailService = ProductDetailService()) {
         self.productDetailService = productDetailService
@@ -70,6 +79,75 @@ class ProductDetailViewModel {
                     self?.product = product
                 case .failure(let error):
                     let _ = error
+                }
+            }
+        }
+    }
+    
+    func favoriteProduct(productId: Int) {
+        
+        let token = getToken(for: Const.KEYCHAIN_TOKEN)
+        
+        self.productDetailService.favoriteProduct(token: token, productId: productId) { [weak self] result in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let isFavorite):
+                    self.closureFavoriteProductSuccess?(isFavorite)
+                case .failure(let error):
+                    let error = error as NSError
+                    if error.code == 401 {
+                        self.closureNoAccess?()
+                    } else {
+                        self.closureFavoriteProductFail?(error.localizedDescription)
+                    }
+                }
+            }
+        }
+    }
+    
+    func ratingProduct(data: [String: Int]) {
+        
+        let token = getToken(for: Const.KEYCHAIN_TOKEN)
+        
+        self.productDetailService.ratingProduct(token: token, data: data) { [weak self] result in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(_):
+                    self.closureRatingProductSuccess?(self.ratingTemp)
+                case .failure(let error):
+                    let error = error as NSError
+                    if error.code == 401 {
+                        self.closureNoAccess?()
+                    } else {
+                        self.closureRatingProductFail?(error.localizedDescription)
+                    }
+                }
+            }
+        }
+    }
+    
+    func addProductToCart(data: [[String: Any]]) {
+        
+        let token = getToken(for: Const.KEYCHAIN_TOKEN)
+        
+        self.homeScreenService.addProductToCart(token: token, data: data) { [weak self] result in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let countProduct):
+                    self.closureAddProductToCartSuccess?(countProduct)
+                case .failure(let error):
+                    let error = error as NSError
+                    if error.code == 401 {
+                        self.closureNoAccess?()
+                    } else {
+                        self.closureAddProductToCartFail?(error.localizedDescription)
+                    }
                 }
             }
         }

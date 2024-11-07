@@ -23,6 +23,11 @@
 		FA3D74B12CD5E557005487E4 /* NullResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3D74B02CD5E557005487E4 /* NullResponse.swift */; };
 		FA3D74B42CD63161005487E4 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3D74B32CD63161005487E4 /* AppConfig.swift */; };
 		FA3D74B62CD63A81005487E4 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3D74B52CD63A81005487E4 /* Image.swift */; };
+		FA489AFA2CDC70D500FF52A3 /* NotifyRequireLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA489AF92CDC70D500FF52A3 /* NotifyRequireLoginViewController.swift */; };
+		FA489AFE2CDC7C4200FF52A3 /* AppService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA489AFD2CDC7C4200FF52A3 /* AppService.swift */; };
+		FA489B002CDCA75F00FF52A3 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA489AFF2CDCA75F00FF52A3 /* SessionManager.swift */; };
+		FA489B022CDCB08200FF52A3 /* FavoriteProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA489B012CDCB08200FF52A3 /* FavoriteProduct.swift */; };
+		FA489B042CDCBB8200FF52A3 /* AddProductToCartResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA489B032CDCBB8200FF52A3 /* AddProductToCartResponse.swift */; };
 		FA4F59142CCBC9F4009F09F1 /* FormControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F59132CCBC9F4009F09F1 /* FormControlView.swift */; };
 		FA4F59172CCC82C7009F09F1 /* Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F59162CCC82C7009F09F1 /* Validate.swift */; };
 		FA4F591A2CCC8410009F09F1 /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F59192CCC8410009F09F1 /* Constant.swift */; };
@@ -43,11 +48,10 @@
 		FA8D3BDC2CD1FC78005399F8 /* Picker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8D3BDB2CD1FC78005399F8 /* Picker.swift */; };
 		FA8D3BDE2CD20C53005399F8 /* LoadingOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8D3BDD2CD20C53005399F8 /* LoadingOverlayView.swift */; };
 		FA952ADE2CCDE76E0077DFB6 /* ExploreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA952ADD2CCDE76E0077DFB6 /* ExploreViewController.swift */; };
-		FA952AE02CCDE84C0077DFB6 /* CardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA952ADF2CCDE84C0077DFB6 /* CardViewController.swift */; };
+		FA952AE02CCDE84C0077DFB6 /* CartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA952ADF2CCDE84C0077DFB6 /* CartViewController.swift */; };
 		FA952AE22CCDECC60077DFB6 /* FavoriteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA952AE12CCDECC60077DFB6 /* FavoriteViewController.swift */; };
 		FA952AE42CCDECCE0077DFB6 /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA952AE32CCDECCE0077DFB6 /* AccountViewController.swift */; };
 		FA952AE62CCDF2D10077DFB6 /* CustomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA952AE52CCDF2D10077DFB6 /* CustomTabBar.swift */; };
-		FA952AE92CCE22B80077DFB6 /* ImageSlideshow in Frameworks */ = {isa = PBXBuildFile; productRef = FA952AE82CCE22B80077DFB6 /* ImageSlideshow */; };
 		FA952AEC2CCE27010077DFB6 /* ProductClassificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA952AEB2CCE27010077DFB6 /* ProductClassificationView.swift */; };
 		FA952AEE2CCE7C020077DFB6 /* ProductView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA952AED2CCE7C020077DFB6 /* ProductView.swift */; };
 		FA952AF12CCE91AD0077DFB6 /* DataTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA952AF02CCE91AD0077DFB6 /* DataTest.swift */; };
@@ -92,9 +96,7 @@
 		FABC7AAB2CC3F5D2005C5BCB /* Gilroy-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FABC7A972CC3F5D2005C5BCB /* Gilroy-Bold.ttf */; };
 		FABC7AAC2CC3F5D2005C5BCB /* Gilroy-Heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FABC7A982CC3F5D2005C5BCB /* Gilroy-Heavy.ttf */; };
 		FABC7AB02CC3F76C005C5BCB /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABC7AAF2CC3F76C005C5BCB /* SignInViewController.swift */; };
-		FABDD5A52CD65ED800AC88CD /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = FABDD5A42CD65ED800AC88CD /* SDWebImage */; };
-		FABDD5A72CD65ED800AC88CD /* SDWebImageMapKit in Frameworks */ = {isa = PBXBuildFile; productRef = FABDD5A62CD65ED800AC88CD /* SDWebImageMapKit */; };
-		FAEB98252CD5CE2A00A3AA0A /* LoginResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEB98242CD5CE2A00A3AA0A /* LoginResponse.swift */; };
+		FAEB98252CD5CE2A00A3AA0A /* TokenResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEB98242CD5CE2A00A3AA0A /* TokenResponse.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -117,6 +119,11 @@
 		FA3D74B02CD5E557005487E4 /* NullResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NullResponse.swift; sourceTree = "<group>"; };
 		FA3D74B32CD63161005487E4 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		FA3D74B52CD63A81005487E4 /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
+		FA489AF92CDC70D500FF52A3 /* NotifyRequireLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifyRequireLoginViewController.swift; sourceTree = "<group>"; };
+		FA489AFD2CDC7C4200FF52A3 /* AppService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppService.swift; sourceTree = "<group>"; };
+		FA489AFF2CDCA75F00FF52A3 /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
+		FA489B012CDCB08200FF52A3 /* FavoriteProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteProduct.swift; sourceTree = "<group>"; };
+		FA489B032CDCBB8200FF52A3 /* AddProductToCartResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductToCartResponse.swift; sourceTree = "<group>"; };
 		FA4F59132CCBC9F4009F09F1 /* FormControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormControlView.swift; sourceTree = "<group>"; };
 		FA4F59162CCC82C7009F09F1 /* Validate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Validate.swift; sourceTree = "<group>"; };
 		FA4F59192CCC8410009F09F1 /* Constant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
@@ -137,7 +144,7 @@
 		FA8D3BDB2CD1FC78005399F8 /* Picker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Picker.swift; sourceTree = "<group>"; };
 		FA8D3BDD2CD20C53005399F8 /* LoadingOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingOverlayView.swift; sourceTree = "<group>"; };
 		FA952ADD2CCDE76E0077DFB6 /* ExploreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreViewController.swift; sourceTree = "<group>"; };
-		FA952ADF2CCDE84C0077DFB6 /* CardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardViewController.swift; sourceTree = "<group>"; };
+		FA952ADF2CCDE84C0077DFB6 /* CartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartViewController.swift; sourceTree = "<group>"; };
 		FA952AE12CCDECC60077DFB6 /* FavoriteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteViewController.swift; sourceTree = "<group>"; };
 		FA952AE32CCDECCE0077DFB6 /* AccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
 		FA952AE52CCDF2D10077DFB6 /* CustomTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBar.swift; sourceTree = "<group>"; };
@@ -186,7 +193,7 @@
 		FABC7A982CC3F5D2005C5BCB /* Gilroy-Heavy.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gilroy-Heavy.ttf"; sourceTree = "<group>"; };
 		FABC7AAF2CC3F76C005C5BCB /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		FABDD5A22CD65E1400AC88CD /* nectar-online.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "nectar-online.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		FAEB98242CD5CE2A00A3AA0A /* LoginResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginResponse.swift; sourceTree = "<group>"; };
+		FAEB98242CD5CE2A00A3AA0A /* TokenResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenResponse.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -194,9 +201,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FABDD5A52CD65ED800AC88CD /* SDWebImage in Frameworks */,
-				FABDD5A72CD65ED800AC88CD /* SDWebImageMapKit in Frameworks */,
-				FA952AE92CCE22B80077DFB6 /* ImageSlideshow in Frameworks */,
 				AA160226AB52DE5F3E81E764 /* Pods_nectar_online.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -236,9 +240,10 @@
 				FA952ADD2CCDE76E0077DFB6 /* ExploreViewController.swift */,
 				FAADD7E02CD4E69C0067C5D9 /* ProductsCategoryViewController.swift */,
 				FA7FCB102CD9C68B00ED0C85 /* FilterViewController.swift */,
-				FA952ADF2CCDE84C0077DFB6 /* CardViewController.swift */,
+				FA952ADF2CCDE84C0077DFB6 /* CartViewController.swift */,
 				FA952AE12CCDECC60077DFB6 /* FavoriteViewController.swift */,
 				FA952AE32CCDECCE0077DFB6 /* AccountViewController.swift */,
+				FA489AF92CDC70D500FF52A3 /* NotifyRequireLoginViewController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -275,6 +280,7 @@
 				FA3B6E4D2CC36D61004DD798 /* AppDelegate.swift */,
 				FA3B6E4F2CC36D61004DD798 /* SceneDelegate.swift */,
 				FA75F24E2CDB95C400352D56 /* MainTabViewController.swift */,
+				FA489AFF2CDCA75F00FF52A3 /* SessionManager.swift */,
 				FABC7A842CC3F5D2005C5BCB /* fonts */,
 				FA3D74B22CD6314A005487E4 /* Config */,
 				FA4F59152CCC82B4009F09F1 /* Core */,
@@ -343,6 +349,7 @@
 		FA8D3BD32CD1E386005399F8 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				FA489AFD2CDC7C4200FF52A3 /* AppService.swift */,
 				FA8D3BD42CD1E3C1005399F8 /* SelectLocationService.swift */,
 				FAA3BBD62CD3430F00A2EFA8 /* LoginService.swift */,
 				FAA3BBDA2CD34F1D00A2EFA8 /* SignUpService.swift */,
@@ -413,8 +420,10 @@
 		FAEB98232CD5CDEF00A3AA0A /* Response */ = {
 			isa = PBXGroup;
 			children = (
-				FAEB98242CD5CE2A00A3AA0A /* LoginResponse.swift */,
+				FAEB98242CD5CE2A00A3AA0A /* TokenResponse.swift */,
 				FA3D74B02CD5E557005487E4 /* NullResponse.swift */,
+				FA489B012CDCB08200FF52A3 /* FavoriteProduct.swift */,
+				FA489B032CDCBB8200FF52A3 /* AddProductToCartResponse.swift */,
 			);
 			path = Response;
 			sourceTree = "<group>";
@@ -438,9 +447,6 @@
 			);
 			name = "nectar-online";
 			packageProductDependencies = (
-				FA952AE82CCE22B80077DFB6 /* ImageSlideshow */,
-				FABDD5A42CD65ED800AC88CD /* SDWebImage */,
-				FABDD5A62CD65ED800AC88CD /* SDWebImageMapKit */,
 			);
 			productName = "nectar-online";
 			productReference = FABDD5A22CD65E1400AC88CD /* nectar-online.app */;
@@ -471,8 +477,6 @@
 			);
 			mainGroup = FA3B6E412CC36D60004DD798;
 			packageReferences = (
-				FA952AE72CCE22B70077DFB6 /* XCRemoteSwiftPackageReference "ImageSlideshow" */,
-				FABDD5A32CD65ED700AC88CD /* XCRemoteSwiftPackageReference "SDWebImage" */,
 			);
 			productRefGroup = FA3B6E412CC36D60004DD798;
 			projectDirPath = "";
@@ -570,13 +574,14 @@
 				FA7FCB112CD9C68B00ED0C85 /* FilterViewController.swift in Sources */,
 				FA952AE42CCDECCE0077DFB6 /* AccountViewController.swift in Sources */,
 				FA31EC262CC91DD400ECE5D5 /* Implement.swift in Sources */,
-				FA952AE02CCDE84C0077DFB6 /* CardViewController.swift in Sources */,
+				FA952AE02CCDE84C0077DFB6 /* CartViewController.swift in Sources */,
 				FAADD7E92CD518F20067C5D9 /* ProductCellView.swift in Sources */,
 				FA7FCB132CDA087400ED0C85 /* CheckboxButton.swift in Sources */,
 				FAADD7F12CD5BC940067C5D9 /* ProductClassification.swift in Sources */,
 				FA952AF12CCE91AD0077DFB6 /* DataTest.swift in Sources */,
 				FA952AEC2CCE27010077DFB6 /* ProductClassificationView.swift in Sources */,
 				FA328A3E2CC53DE10026E843 /* Extension.swift in Sources */,
+				FA489AFA2CDC70D500FF52A3 /* NotifyRequireLoginViewController.swift in Sources */,
 				FA8D3BD52CD1E3C1005399F8 /* SelectLocationService.swift in Sources */,
 				FA4F59172CCC82C7009F09F1 /* Validate.swift in Sources */,
 				FAADD7DC2CD4C7000067C5D9 /* ExploreViewModel.swift in Sources */,
@@ -587,9 +592,10 @@
 				FA7FCB152CDA25D900ED0C85 /* FilterViewModel.swift in Sources */,
 				FA3D74AF2CD5E083005487E4 /* Security.swift in Sources */,
 				FAADD7D82CD3C95D0067C5D9 /* CategoryProductView.swift in Sources */,
-				FAEB98252CD5CE2A00A3AA0A /* LoginResponse.swift in Sources */,
+				FAEB98252CD5CE2A00A3AA0A /* TokenResponse.swift in Sources */,
 				FA8D3BDA2CD1E58F005399F8 /* Area.swift in Sources */,
 				FA7E09992CCA2848001FA9C3 /* SelectLocationViewController.swift in Sources */,
+				FA489AFE2CDC7C4200FF52A3 /* AppService.swift in Sources */,
 				FA3D74B12CD5E557005487E4 /* NullResponse.swift in Sources */,
 				FABC7AB02CC3F76C005C5BCB /* SignInViewController.swift in Sources */,
 				FA4F591C2CCCC1DD009F09F1 /* ButtonView.swift in Sources */,
@@ -598,14 +604,17 @@
 				FAADD7EB2CD525D30067C5D9 /* Response.swift in Sources */,
 				FA4F591E2CCCCD0F009F09F1 /* LogInViewController.swift in Sources */,
 				FA3D74B62CD63A81005487E4 /* Image.swift in Sources */,
+				FA489B002CDCA75F00FF52A3 /* SessionManager.swift in Sources */,
 				FA8D3BD82CD1E541005399F8 /* Zone.swift in Sources */,
 				FA3B6E4E2CC36D61004DD798 /* AppDelegate.swift in Sources */,
+				FA489B022CDCB08200FF52A3 /* FavoriteProduct.swift in Sources */,
 				FA4F59202CCD357B009F09F1 /* SignUpViewController.swift in Sources */,
 				FA952AE62CCDF2D10077DFB6 /* CustomTabBar.swift in Sources */,
 				FAA3BBDF2CD3584C00A2EFA8 /* ProductDetailService.swift in Sources */,
 				FA75F24F2CDB95C400352D56 /* MainTabViewController.swift in Sources */,
 				FAA3BBD92CD34EB300A2EFA8 /* SignUpViewModel.swift in Sources */,
 				FA56ABD52CD0969E007836C2 /* ProductDetailViewController.swift in Sources */,
+				FA489B042CDCBB8200FF52A3 /* AddProductToCartResponse.swift in Sources */,
 				FAADD7ED2CD5BB230067C5D9 /* HomeScreenViewModel.swift in Sources */,
 				FA952AEE2CCE7C020077DFB6 /* ProductView.swift in Sources */,
 				FAADD7EF2CD5BB390067C5D9 /* HomeScreenService.swift in Sources */,
@@ -835,43 +844,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		FA952AE72CCE22B70077DFB6 /* XCRemoteSwiftPackageReference "ImageSlideshow" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/zvonicek/ImageSlideshow";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
-		FABDD5A32CD65ED700AC88CD /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SDWebImage/SDWebImage";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.0.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		FA952AE82CCE22B80077DFB6 /* ImageSlideshow */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = FA952AE72CCE22B70077DFB6 /* XCRemoteSwiftPackageReference "ImageSlideshow" */;
-			productName = ImageSlideshow;
-		};
-		FABDD5A42CD65ED800AC88CD /* SDWebImage */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = FABDD5A32CD65ED700AC88CD /* XCRemoteSwiftPackageReference "SDWebImage" */;
-			productName = SDWebImage;
-		};
-		FABDD5A62CD65ED800AC88CD /* SDWebImageMapKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = FABDD5A32CD65ED700AC88CD /* XCRemoteSwiftPackageReference "SDWebImage" */;
-			productName = SDWebImageMapKit;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = FA3B6E422CC36D60004DD798 /* Project object */;
 }

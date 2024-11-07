@@ -27,6 +27,9 @@ class ExploreViewModel {
     var hideRefreshing: (() -> Void)?
     var showError: ((String) -> Void)?
     var showErrorSearch: ((String) -> Void)?
+    var closureAddProductToCartSuccess: ((Int) -> Void)?
+    var closureAddProductToCartFail: ((String) -> Void)?
+    var closureNoAccess: (() -> Void)?
     private var debounceTimer: DispatchWorkItem?
     private let debounceInterval: TimeInterval = 0.5  // thời gian trễ để thực hiện tìm kiếm
     
@@ -94,6 +97,29 @@ class ExploreViewModel {
     func testSearch(keyword: String) {
         self.listProductSearch = DataTest.listProductSearch.filter { product in
             return product.name.lowercased().trimmingCharacters(in: .whitespaces).contains(keyword.lowercased().trimmingCharacters(in: .whitespaces))
+        }
+    }
+    
+    func addProductToCart(data: [[String: Any]]) {
+        
+        let token = getToken(for: Const.KEYCHAIN_TOKEN)
+        
+        self.homeScreenService.addProductToCart(token: token, data: data) { [weak self] result in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let countProduct):
+                    self.closureAddProductToCartSuccess?(countProduct)
+                case .failure(let error):
+                    let error = error as NSError
+                    if error.code == 401 {
+                        self.closureNoAccess?()
+                    } else {
+                        self.closureAddProductToCartFail?(error.localizedDescription)
+                    }
+                }
+            }
         }
     }
 }

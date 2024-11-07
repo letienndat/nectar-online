@@ -76,6 +76,63 @@ class ProductDetailViewController: UIViewController {
         productDetailViewModel.hideRefreshing = { [weak self] in
             self?.refreshControl.endRefreshing()
         }
+        
+        self.productDetailViewModel.closureFavoriteProductSuccess = { [weak self] isFavorite in
+            guard let _ = self else { return }
+            
+            // Xử lý khi hiển thị yêu thích sản phẩm hay không
+            self?.productDetailViewModel.isFavorite = isFavorite
+        }
+        
+        self.productDetailViewModel.closureFavoriteProductFail = { [weak self] _ in
+            guard let self = self else { return }
+            
+            self.showErrorAlert(message: "Sorry, there was an error liking/unliking the product. Please try again later!", handleReload: nil)
+        }
+        
+        self.productDetailViewModel.closureNoAccess = { [weak self] in
+            guard let self = self else { return }
+            
+            SessionManager.shared.indexTabbarView = 0
+            
+            // Tạo view controller của thông báo đăng nhập
+            let notifyRequireLoginViewController = NotifyRequireLoginViewController(content: "Your session has expired. Please login to use this feature!")
+            
+            // Bọc nó trong UINavigationController
+            let navController = UINavigationController(rootViewController: notifyRequireLoginViewController)
+            
+            // Tùy chọn hiển thị modally
+            navController.modalPresentationStyle = .overFullScreen
+            navController.modalTransitionStyle = .crossDissolve
+            
+            // Trình bày modally để nó chồng lên tabBar
+            self.present(navController, animated: true, completion: nil)
+        }
+        
+        self.productDetailViewModel.closureAddProductToCartSuccess = { [weak self] countProduct in
+            guard let _ = self else { return }
+            
+            // Cập nhật lại số sản phẩm hiện có trong giỏ ở icon tabbar cart
+        }
+        
+        self.productDetailViewModel.closureAddProductToCartFail = { [weak self] _ in
+            guard let self = self else { return }
+            
+            self.showErrorAlert(message: "Sorry, there was an error adding the product to the cart. Please try again later!", handleReload: nil)
+        }
+        
+        self.productDetailViewModel.closureRatingProductSuccess = { [weak self] rating in
+            guard let self = self else { return }
+            
+            // Cập nhật số sao được đánh giá
+            self.productDetailViewModel.product?.rating = rating
+        }
+        
+        self.productDetailViewModel.closureRatingProductFail = { [weak self] _ in
+            guard let self = self else { return }
+            
+            self.showErrorAlert(message: "Sorry, there was an error while rating the product. Please try again later!", handleReload: nil)
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -163,11 +220,39 @@ class ProductDetailViewController: UIViewController {
             viewImageProductDetail.heightAnchor.constraint(equalToConstant: 371.44)
         ])
         
-        productDetailViewModel.product?.images.forEach { image in
-            imageSources.append(ImageSource(image: UIImage(named: image.imageUrl) ?? UIImage()))
+        let dispatchGroup = DispatchGroup() // Tạo DispatchGroup
+        
+        // Bắt đầu một task mới trong DispatchGroup
+        dispatchGroup.enter()
+        loadImage(from: productDetailViewModel.product?.thumbnail.imageUrl ?? "") { img in
+            if let downloadedImage = img {
+                self.imageSources.append(ImageSource(image: downloadedImage))
+            } else {
+                //
+            }
+            // Thông báo rằng task đã hoàn thành
+            dispatchGroup.leave()
+        }
+        
+        self.productDetailViewModel.product?.images.forEach { image in
+            // Bắt đầu một task mới trong DispatchGroup
+            dispatchGroup.enter()
+            loadImage(from: image.imageUrl) { img in
+                if let downloadedImage = img {
+                    self.imageSources.append(ImageSource(image: downloadedImage))
+                } else {
+                    //
+                }
+                // Thông báo rằng task đã hoàn thành
+                dispatchGroup.leave()
+            }
+        }
+        
+        // Khi tất cả các task đã hoàn thành
+        dispatchGroup.notify(queue: .main) {
+            self.slideShow.setImageInputs(self.imageSources)
         }
 
-        slideShow.setImageInputs(imageSources)
         slideShow.slideshowInterval = Const.TIME_INTERVAL_SLIDESHOW
         viewImageProductDetail.addSubview(slideShow)
 
@@ -640,14 +725,38 @@ class ProductDetailViewController: UIViewController {
         self.productDetailViewModel.fetchProduct(id: self.productDetailViewModel.product!.id, isRefresh: true)
     }
     
+    // Hiển thị lỗi
+    private func showErrorAlert(message: String, isReload: Bool = false, handleReload: (() -> Void)?) {
+        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        if isReload {
+            alert.addAction(UIAlertAction(title: "Reload", style: .default, handler: { _ in
+                handleReload?()
+            }))
+        }
+        present(alert, animated: true)
+    }
+    
     private func updateUI() {
         let dispatchGroup = DispatchGroup() // Tạo DispatchGroup
+        
+        // Bắt đầu một task mới trong DispatchGroup
+        dispatchGroup.enter()
+        loadImage(from: productDetailViewModel.product?.thumbnail.imageUrl ?? "") { img in
+            if let downloadedImage = img {
+                self.imageSources.append(ImageSource(image: downloadedImage))
+            } else {
+                //
+            }
+            // Thông báo rằng task đã hoàn thành
+            dispatchGroup.leave()
+        }
         
         self.productDetailViewModel.product?.images.forEach { image in
             // Bắt đầu một task mới trong DispatchGroup
             dispatchGroup.enter()
-            loadImage(from: image.imageUrl) { ima in
-                if let downloadedImage = ima {
+            loadImage(from: image.imageUrl) { img in
+                if let downloadedImage = img {
                     self.imageSources.append(ImageSource(image: downloadedImage))
                 } else {
                     //
@@ -677,7 +786,38 @@ class ProductDetailViewController: UIViewController {
     
     // Hàm xử lý khi bấm vào icon yêu thích
     @objc private func handleTapFavorite(_ sender: UIButton) {
-        productDetailViewModel.isFavorite.toggle()
+        // Nếu người dùng chưa đăng nhập sẽ hiển thị thông báo đăng nhập để sử dụng tính năng này
+        if !AppConfig.isLogin {
+            
+            SessionManager.shared.indexTabbarView = 0
+            
+            // Tạo view controller của thông báo đăng nhập
+            let notifyRequireLoginViewController = NotifyRequireLoginViewController(content: "Login required before using this feature!")
+            
+            notifyRequireLoginViewController.closureHandleConfirm = { [weak self] in
+                guard let self = self else { return }
+                
+                HomeScreenViewController.redirectToSignin(for: self)
+            }
+            
+            // Bọc nó trong UINavigationController
+            let navController = UINavigationController(rootViewController: notifyRequireLoginViewController)
+            
+            // Tùy chọn hiển thị modally
+            navController.modalPresentationStyle = .overFullScreen
+            navController.modalTransitionStyle = .crossDissolve
+            
+            // Trình bày modally để nó chồng lên tabBar
+            self.present(navController, animated: true, completion: nil)
+        } else {
+            // Thêm sản phẩm vào danh sách yêu thích
+            
+            guard let id = self.productDetailViewModel.product?.id else {
+                return
+            }
+            
+            self.productDetailViewModel.favoriteProduct(productId: id)
+        }
     }
     
     // Cập nhật màu cho icon yêu thích
@@ -742,15 +882,52 @@ class ProductDetailViewController: UIViewController {
     
     // Hàm tính toán số sao đánh giá
     @objc private func handleTapIconStar(_ sender: UIButton) {
-        let starIndex = sender.tag + 1
-        self.productDetailViewModel.product?.rating = starIndex
+        // Nếu người dùng chưa đăng nhập sẽ hiển thị thông báo đăng nhập để sử dụng tính năng này
+        if !AppConfig.isLogin {
+            
+            SessionManager.shared.indexTabbarView = 0
+            
+            // Tạo view controller của thông báo đăng nhập
+            let notifyRequireLoginViewController = NotifyRequireLoginViewController(content: "Login required before using this feature!")
+            
+            notifyRequireLoginViewController.closureHandleConfirm = { [weak self] in
+                guard let self = self else { return }
+                
+                HomeScreenViewController.redirectToSignin(for: self)
+            }
+            
+            // Bọc nó trong UINavigationController
+            let navController = UINavigationController(rootViewController: notifyRequireLoginViewController)
+            
+            // Tùy chọn hiển thị modally
+            navController.modalPresentationStyle = .overFullScreen
+            navController.modalTransitionStyle = .crossDissolve
+            
+            // Trình bày modally để nó chồng lên tabBar
+            self.present(navController, animated: true, completion: nil)
+        } else {
+            // Thêm sản phẩm vào danh sách yêu thích
+            
+            guard let id = self.productDetailViewModel.product?.id else {
+                return
+            }
+            let starIndex = sender.tag + 1
+            
+            let data: [String: Int] = [
+                "product_id": id,
+                "rating": starIndex
+            ]
+            
+            self.productDetailViewModel.ratingProduct(data: data)
+            self.productDetailViewModel.ratingTemp = starIndex
+        }
     }
     
     // Hàm hiển thị số sao được đánh giá
     private func showStars() {
         // Cập nhật các nút sao dựa trên sao được bấm
         for (index, button) in arrayIconStars.enumerated() {
-            if index < self.productDetailViewModel.product?.rating ?? 5 {
+            if index < self.productDetailViewModel.product?.rating ?? 0 {
                 button.tintColor = UIColor(hex: "#F3603F")
             } else {
                 button.tintColor = UIColor(hex: "#DADADA")
@@ -760,6 +937,44 @@ class ProductDetailViewController: UIViewController {
     
     // Hàm xử lý khi bấm vào Add To Basket
     @objc private func handleAddToBasket(_ sender: UIButton) {
-        //
+        // Nếu người dùng chưa đăng nhập sẽ hiển thị thông báo đăng nhập để sử dụng tính năng này
+        if !AppConfig.isLogin {
+            
+            SessionManager.shared.indexTabbarView = 0
+            
+            // Tạo view controller của thông báo đăng nhập
+            let notifyRequireLoginViewController = NotifyRequireLoginViewController(content: "Login required before using this feature!")
+            
+            notifyRequireLoginViewController.closureHandleConfirm = { [weak self] in
+                guard let self = self else { return }
+                
+                HomeScreenViewController.redirectToSignin(for: self)
+            }
+            
+            // Bọc nó trong UINavigationController
+            let navController = UINavigationController(rootViewController: notifyRequireLoginViewController)
+            
+            // Tùy chọn hiển thị modally
+            navController.modalPresentationStyle = .overFullScreen
+            navController.modalTransitionStyle = .crossDissolve
+            
+            // Trình bày modally để nó chồng lên tabBar
+            self.present(navController, animated: true, completion: nil)
+        } else {
+            // Thêm sản phẩm vào danh sách yêu thích
+            
+            guard let id = self.productDetailViewModel.product?.id else {
+                return
+            }
+            
+            let data: [[String: Any]] = [
+                [
+                    "product_id": id,
+                    "quantity": 1
+                ]
+            ]
+            
+            self.productDetailViewModel.addProductToCart(data: data)
+        }
     }
 }

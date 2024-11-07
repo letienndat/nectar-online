@@ -32,7 +32,7 @@ class SignUpService {
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: data, options: [])
         } catch {
-            print("Lỗi khi chuyển đổi dữ liệu sang JSON:", error)
+            print("Error converting data to JSON:", error)
             completion(false, error)
             return
         }

@@ -32,7 +32,7 @@ class LoginService {
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: data, options: [])
         } catch {
-            print("Lỗi khi chuyển đổi dữ liệu sang JSON:", error)
+            print("Error converting data to JSON:", error)
             completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Don't convert to JSON"])))
             return
         }
@@ -65,7 +65,7 @@ class LoginService {
             
             do {
                 let coder = JSONDecoder()
-                let response = try coder.decode(Response<LoginResponse>.self, from: data)
+                let response = try coder.decode(Response<TokenResponse>.self, from: data)
 
                 if response.status == 0 {
                     completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: response.message ?? "Error"])))

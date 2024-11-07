@@ -132,6 +132,37 @@ class ProductsCategoryViewController: UIViewController {
             self.addSourceFilter()
         }
         
+        self.productsCategoryViewModel.closureAddProductToCartSuccess = { [weak self] countProduct in
+            guard let _ = self else { return }
+            
+            // Cập nhật lại số sản phẩm hiện có trong giỏ ở icon tabbar cart
+        }
+        
+        self.productsCategoryViewModel.closureAddProductToCartFail = { [weak self] _ in
+            guard let self = self else { return }
+            
+            self.showErrorAlert(message: "Sorry, there was an error adding the product to the cart. Please try again later!", handleReload: nil)
+        }
+        
+        self.productsCategoryViewModel.closureNoAccess = { [weak self] in
+            guard let self = self else { return }
+            
+            SessionManager.shared.indexTabbarView = 0
+            
+            // Tạo view controller của thông báo đăng nhập
+            let notifyRequireLoginViewController = NotifyRequireLoginViewController(content: "Your session has expired. Please login to use this feature!")
+            
+            // Bọc nó trong UINavigationController
+            let navController = UINavigationController(rootViewController: notifyRequireLoginViewController)
+            
+            // Tùy chọn hiển thị modally
+            navController.modalPresentationStyle = .overFullScreen
+            navController.modalTransitionStyle = .crossDissolve
+            
+            // Trình bày modally để nó chồng lên tabBar
+            self.present(navController, animated: true, completion: nil)
+        }
+        
 //        self.fetchData()
     }
     
@@ -385,6 +416,48 @@ extension ProductsCategoryViewController: UICollectionViewDataSource {
             let productDetailtViewController = ProductDetailViewController(product: product)
             productDetailtViewController.hidesBottomBarWhenPushed = true
             self?.navigationController?.pushViewController(productDetailtViewController, animated: true)
+        }
+        
+        cell.closureAddToCard = { [weak self] product in
+            
+            guard let self = self else { return }
+            
+            // Nếu người dùng chưa đăng nhập sẽ hiển thị thông báo đăng nhập để sử dụng tính năng này
+            if !AppConfig.isLogin {
+                
+                SessionManager.shared.indexTabbarView = 0
+                
+                // Tạo view controller của thông báo đăng nhập
+                let notifyRequireLoginViewController = NotifyRequireLoginViewController(content: "Login required before using this feature!")
+                
+                notifyRequireLoginViewController.closureHandleConfirm = { [weak self] in
+                    guard let self = self else { return }
+                    
+                    HomeScreenViewController.redirectToSignin(for: self)
+                }
+                
+                // Bọc nó trong UINavigationController
+                let navController = UINavigationController(rootViewController: notifyRequireLoginViewController)
+                
+                // Tùy chọn hiển thị modally
+                navController.modalPresentationStyle = .overFullScreen
+                navController.modalTransitionStyle = .crossDissolve
+                
+                // Trình bày modally để nó chồng lên tabBar
+                self.present(navController, animated: true, completion: nil)
+            } else {
+                // Thêm sản phẩm vào giỏ hàng
+                // Gửi API kèm token và danh sách sản phẩm để thêm và giỏ hàng, nếu 401 thì hiển thị phiên đăng nhập đã hết hạn (yêu cầu đăng nhập để sử dụng, nếu không thì sẽ không thêm vào giỏ), nếu lỗi khác thì sẽ hiển thị thông báo có lỗi, vui lòng thử lại sau
+                
+                let data: [[String: Any]] = [
+                    [
+                        "product_id": product.id,
+                        "quantity": 1
+                    ]
+                ]
+                
+                self.productsCategoryViewModel.addProductToCart(data: data)
+            }
         }
         
         return cell

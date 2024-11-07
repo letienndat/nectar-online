@@ -48,6 +48,8 @@ class HomeScreenViewController: UIViewController {
             AppConfig.isFirstLaunch = false
         }
         
+        self.view.overrideUserInterfaceStyle = .dark
+        
         // Đăng ký thông báo khi bàn phím xuất hiện và ẩn đi
 //        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
 //        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -203,11 +205,41 @@ class HomeScreenViewController: UIViewController {
 //            self.showErrorAlert(message: error, handleReload: nil)
         }
         
+        self.homeScreenViewModel.closureAddProductToCartSuccess = { [weak self] countProduct in
+            guard let _ = self else { return }
+            
+            // Cập nhật lại số sản phẩm hiện có trong giỏ ở icon tabbar cart
+        }
+        
+        self.homeScreenViewModel.closureAddProductToCartFail = { [weak self] _ in
+            guard let self = self else { return }
+            
+            self.showErrorAlert(message: "Sorry, there was an error adding the product to the cart. Please try again later!", handleReload: nil)
+        }
+        
+        self.homeScreenViewModel.closureNoAccess = { [weak self] in
+            guard let self = self else { return }
+            
+            SessionManager.shared.indexTabbarView = 0
+            
+            // Tạo view controller của thông báo đăng nhập
+            let notifyRequireLoginViewController = NotifyRequireLoginViewController(content: "Your session has expired. Please login to use this feature!")
+            
+            // Bọc nó trong UINavigationController
+            let navController = UINavigationController(rootViewController: notifyRequireLoginViewController)
+            
+            // Tùy chọn hiển thị modally
+            navController.modalPresentationStyle = .overFullScreen
+            navController.modalTransitionStyle = .crossDissolve
+            
+            // Trình bày modally để nó chồng lên tabBar
+            self.present(navController, animated: true, completion: nil)
+        }
+        
         self.fetchData()
     }
     
     private func fetchData() {
-        homeScreenViewModel.fetchLocation()
         homeScreenViewModel.fetchBanner()
 //        homeScreenViewModel.fetchProductClassifications()
     }
@@ -248,6 +280,8 @@ class HomeScreenViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: true)
+        
+        homeScreenViewModel.fetchLocation()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -257,7 +291,7 @@ class HomeScreenViewController: UIViewController {
     // Hàm được gọi khi ViewController chuẩn bị xoá khỏi màn hình
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.navigationController?.setNavigationBarHidden(true, animated: true)
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
     }
     
     @objc private func hideKeybroad() {
@@ -265,7 +299,17 @@ class HomeScreenViewController: UIViewController {
     }
 
     private func setupNav() {
-        //
+        // Đặt font cho title trong navigation bar
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont(name: "Gilroy-Bold", size: 20)!, // Thay đổi kiểu font, kích cỡ và trọng lượng theo ý muốn
+            .foregroundColor: UIColor(hex: "#181725") // Màu chữ cho title
+        ]
+
+        // Áp dụng thuộc tính cho toàn bộ navigation bar
+        UINavigationBar.appearance().titleTextAttributes = attributes
+
+        // Hoặc áp dụng cho một navigation bar cụ thể trong view controller hiện tại
+        navigationController?.navigationBar.titleTextAttributes = attributes
     }
     
     private func setupView() {
@@ -478,11 +522,46 @@ class HomeScreenViewController: UIViewController {
                     viewProduct.heightAnchor.constraint(equalToConstant: 248.51)
                 ])
                 
-                viewProduct.closureAddToCard = { _ in
-                    // Thêm sản phẩm vào giỏ hàng
+                viewProduct.closureAddToCard = { idProduct in
+                    // Nếu người dùng chưa đăng nhập sẽ hiển thị thông báo đăng nhập để sử dụng tính năng này
+                    if !AppConfig.isLogin {
+                        
+                        SessionManager.shared.indexTabbarView = 0
+                        
+                        // Tạo view controller của thông báo đăng nhập
+                        let notifyRequireLoginViewController = NotifyRequireLoginViewController(content: "Login required before using this feature!")
+                        
+                        notifyRequireLoginViewController.closureHandleConfirm = { [weak self] in
+                            guard let self = self else { return }
+                            
+                            HomeScreenViewController.redirectToSignin(for: self)
+                        }
+                        
+                        // Bọc nó trong UINavigationController
+                        let navController = UINavigationController(rootViewController: notifyRequireLoginViewController)
+                        
+                        // Tùy chọn hiển thị modally
+                        navController.modalPresentationStyle = .overFullScreen
+                        navController.modalTransitionStyle = .crossDissolve
+                        
+                        // Trình bày modally để nó chồng lên tabBar
+                        self.present(navController, animated: true, completion: nil)
+                    } else {
+                        // Thêm sản phẩm vào giỏ hàng
+                        // Gửi API kèm token và danh sách sản phẩm để thêm và giỏ hàng, nếu 401 thì hiển thị phiên đăng nhập đã hết hạn (yêu cầu đăng nhập để sử dụng, nếu không thì sẽ không thêm vào giỏ), nếu lỗi khác thì sẽ hiển thị thông báo có lỗi, vui lòng thử lại sau
+                        
+                        let data: [[String: Any]] = [
+                            [
+                                "product_id": idProduct,
+                                "quantity": 1
+                            ]
+                        ]
+                        
+                        self.homeScreenViewModel.addProductToCart(data: data)
+                    }
                 }
                 
-                viewProduct.closureTapProduct = { id in
+                viewProduct.closureTapProduct = { _ in
                     // Xem chi tiết sản phẩm
                     let productDetailtViewController = ProductDetailViewController(product: product)
                     productDetailtViewController.hidesBottomBarWhenPushed = true
@@ -519,6 +598,12 @@ class HomeScreenViewController: UIViewController {
             viewEmpty.leadingAnchor.constraint(equalTo: subView.leadingAnchor),
             viewEmpty.trailingAnchor.constraint(equalTo: subView.trailingAnchor)
         ])
+    }
+    
+    static func redirectToSignin(for self: UIViewController) {
+        let signInViewController = SignInViewController()
+        signInViewController.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(signInViewController, animated: true)
     }
     
     @objc private func refreshProductClassificaions(_ sender: AnyObject) {

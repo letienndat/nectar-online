@@ -368,12 +368,12 @@ class SelectLocationViewController: UIViewController {
     // Xử lý sự kiện khi bấm vào button submit
     @objc func handleSubmit(_ sender: UIButton) {
         guard let _ = self.selectLocationViewModel.idZone else {
-            showErrorAlert(message: "Vui lòng chọn zone của bạn")
+            showErrorAlert(message: "Please choose your zone!")
             return
         }
         
         guard let _ = self.selectLocationViewModel.idArea else {
-            showErrorAlert(message: "Vui lòng chọn area của bạn")
+            showErrorAlert(message: "Please choose your area!")
             return
         }
         

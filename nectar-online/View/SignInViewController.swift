@@ -9,7 +9,18 @@ class SignInViewController: UIViewController {
         
         view.backgroundColor = UIColor(hex: "#FCFCFC")
     
+        setupNav()
         setupView()
+    }
+    
+    private func setupNav() {
+        // Tùy chỉnh màu sắc cho icon
+        self.navigationController?.navigationBar.tintColor = UIColor(hex: "#181725")
+        
+        // Đặt tiêu đề nút quay lại là trống
+        self.navigationController?.navigationBar.topItem?.title = ""
+        
+        self.navigationItem.title = ""
     }
     
     private func setupView() {
