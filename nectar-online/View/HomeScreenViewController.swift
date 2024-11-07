@@ -172,7 +172,7 @@ class HomeScreenViewController: UIViewController {
                         viewProduct.heightAnchor.constraint(equalToConstant: 248.51)
                     ])
                     
-                    viewProduct.closureAddToCard = { _ in
+                    viewProduct.closureAddToCart = { _ in
                         // Thêm sản phẩm vào giỏ hàng
                     }
                     
@@ -522,7 +522,7 @@ class HomeScreenViewController: UIViewController {
                     viewProduct.heightAnchor.constraint(equalToConstant: 248.51)
                 ])
                 
-                viewProduct.closureAddToCard = { idProduct in
+                viewProduct.closureAddToCart = { idProduct in
                     // Nếu người dùng chưa đăng nhập sẽ hiển thị thông báo đăng nhập để sử dụng tính năng này
                     if !AppConfig.isLogin {
                         
@@ -718,7 +718,7 @@ extension HomeScreenViewController: UICollectionViewDataSource {
         cell.priceProduct.font = UIFont(name: "Gilroy-Bold", size: 18)
         cell.priceProduct.textColor = UIColor(hex: "#181725")
         
-        cell.closureAddToCard = { [weak self] _ in
+        cell.closureAddToCart = { [weak self] _ in
             guard let _ = self else { return }
         }
 

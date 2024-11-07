@@ -14,7 +14,7 @@ class ProductCellView: UICollectionViewCell {
     var nameProduct: UILabel
     var piecePriceProduct: UILabel
     var priceProduct: UILabel
-    var closureAddToCard: ((Product) -> Void)?
+    var closureAddToCart: ((Product) -> Void)?
     var closureTapProduct: ((Product) -> Void)?
     
     override init(frame: CGRect) {
@@ -95,44 +95,44 @@ class ProductCellView: UICollectionViewCell {
             piecePriceProduct.trailingAnchor.constraint(equalTo: viewContent.trailingAnchor)
         ])
         
-        let viewPriceAndButtonAddCard = UIView()
-        viewContent.addSubview(viewPriceAndButtonAddCard)
+        let viewPriceAndButtonAddCart = UIView()
+        viewContent.addSubview(viewPriceAndButtonAddCart)
         
-        viewPriceAndButtonAddCard.translatesAutoresizingMaskIntoConstraints = false
+        viewPriceAndButtonAddCart.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            viewPriceAndButtonAddCard.topAnchor.constraint(equalTo: piecePriceProduct.bottomAnchor, constant: 20),
-            viewPriceAndButtonAddCard.leadingAnchor.constraint(equalTo: viewContent.leadingAnchor),
-            viewPriceAndButtonAddCard.trailingAnchor.constraint(equalTo: viewContent.trailingAnchor),
+            viewPriceAndButtonAddCart.topAnchor.constraint(equalTo: piecePriceProduct.bottomAnchor, constant: 20),
+            viewPriceAndButtonAddCart.leadingAnchor.constraint(equalTo: viewContent.leadingAnchor),
+            viewPriceAndButtonAddCart.trailingAnchor.constraint(equalTo: viewContent.trailingAnchor),
             
-            viewPriceAndButtonAddCard.heightAnchor.constraint(lessThanOrEqualToConstant: 45.67)
+            viewPriceAndButtonAddCart.heightAnchor.constraint(lessThanOrEqualToConstant: 45.67)
         ])
         
-        viewPriceAndButtonAddCard.addSubview(priceProduct)
+        viewPriceAndButtonAddCart.addSubview(priceProduct)
         priceProduct.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            priceProduct.leadingAnchor.constraint(equalTo: viewPriceAndButtonAddCard.leadingAnchor),
-            priceProduct.centerYAnchor.constraint(equalTo: viewPriceAndButtonAddCard.centerYAnchor)
+            priceProduct.leadingAnchor.constraint(equalTo: viewPriceAndButtonAddCart.leadingAnchor),
+            priceProduct.centerYAnchor.constraint(equalTo: viewPriceAndButtonAddCart.centerYAnchor)
         ])
         
-        let buttonAddToCard = UIButton()
-        buttonAddToCard.setImage(UIImage(named: "button-add-to-card"), for: .normal)
-        viewPriceAndButtonAddCard.addSubview(buttonAddToCard)
+        let buttonAddToCart = UIButton()
+        buttonAddToCart.setImage(UIImage(named: "button-add-to-cart"), for: .normal)
+        viewPriceAndButtonAddCart.addSubview(buttonAddToCart)
         
-        buttonAddToCard.translatesAutoresizingMaskIntoConstraints = false
+        buttonAddToCart.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            buttonAddToCard.trailingAnchor.constraint(equalTo: viewPriceAndButtonAddCard.trailingAnchor),
+            buttonAddToCart.trailingAnchor.constraint(equalTo: viewPriceAndButtonAddCart.trailingAnchor),
             
-            buttonAddToCard.widthAnchor.constraint(lessThanOrEqualToConstant: 45.67),
-            buttonAddToCard.heightAnchor.constraint(lessThanOrEqualToConstant: 45.67)
+            buttonAddToCart.widthAnchor.constraint(lessThanOrEqualToConstant: 45.67),
+            buttonAddToCart.heightAnchor.constraint(lessThanOrEqualToConstant: 45.67)
         ])
         
-        buttonAddToCard.addTarget(self, action: #selector(handleAddToCard(_:)), for: .touchUpInside)
+        buttonAddToCart.addTarget(self, action: #selector(handleAddToCart(_:)), for: .touchUpInside)
     }
     
     // Hàm xử lý khi bấm thêm sản phẩm vào giỏ hàng
-    @objc func handleAddToCard(_ sender: UIButton) {
+    @objc func handleAddToCart(_ sender: UIButton) {
         //
-        self.closureAddToCard?(product!)
+        self.closureAddToCart?(product!)
     }
     
     // Hàm xử lý khi bấm vào sảm phẩm

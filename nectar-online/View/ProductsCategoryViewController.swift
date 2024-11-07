@@ -406,7 +406,7 @@ extension ProductsCategoryViewController: UICollectionViewDataSource {
         cell.priceProduct.font = UIFont(name: "Gilroy-Bold", size: 18)
         cell.priceProduct.textColor = UIColor(hex: "#181725")
         
-        cell.closureAddToCard = { [weak self] product in
+        cell.closureAddToCart = { [weak self] product in
             guard let _ = self else { return }
             let _ = product
         }
@@ -418,7 +418,7 @@ extension ProductsCategoryViewController: UICollectionViewDataSource {
             self?.navigationController?.pushViewController(productDetailtViewController, animated: true)
         }
         
-        cell.closureAddToCard = { [weak self] product in
+        cell.closureAddToCart = { [weak self] product in
             
             guard let self = self else { return }
             

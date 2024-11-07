@@ -589,7 +589,7 @@ extension ExploreViewController: UICollectionViewDataSource {
             cell.priceProduct.font = UIFont(name: "Gilroy-Bold", size: 18)
             cell.priceProduct.textColor = UIColor(hex: "#181725")
             
-            cell.closureAddToCard = { [weak self] product in
+            cell.closureAddToCart = { [weak self] product in
                 
                 guard let self = self else { return }
                 
