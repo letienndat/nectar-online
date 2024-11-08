@@ -46,7 +46,6 @@
 		FA8D3BD82CD1E541005399F8 /* Zone.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8D3BD72CD1E541005399F8 /* Zone.swift */; };
 		FA8D3BDA2CD1E58F005399F8 /* Area.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8D3BD92CD1E58F005399F8 /* Area.swift */; };
 		FA8D3BDC2CD1FC78005399F8 /* Picker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8D3BDB2CD1FC78005399F8 /* Picker.swift */; };
-		FA8D3BDE2CD20C53005399F8 /* LoadingOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8D3BDD2CD20C53005399F8 /* LoadingOverlayView.swift */; };
 		FA952ADE2CCDE76E0077DFB6 /* ExploreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA952ADD2CCDE76E0077DFB6 /* ExploreViewController.swift */; };
 		FA952AE02CCDE84C0077DFB6 /* CartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA952ADF2CCDE84C0077DFB6 /* CartViewController.swift */; };
 		FA952AE22CCDECC60077DFB6 /* FavoriteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA952AE12CCDECC60077DFB6 /* FavoriteViewController.swift */; };
@@ -97,6 +96,7 @@
 		FABC7AAC2CC3F5D2005C5BCB /* Gilroy-Heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FABC7A982CC3F5D2005C5BCB /* Gilroy-Heavy.ttf */; };
 		FABC7AB02CC3F76C005C5BCB /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABC7AAF2CC3F76C005C5BCB /* SignInViewController.swift */; };
 		FAEB98252CD5CE2A00A3AA0A /* TokenResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEB98242CD5CE2A00A3AA0A /* TokenResponse.swift */; };
+		FAF2374D2CDDCEF10065317A /* AnimationLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF2374C2CDDCEF10065317A /* AnimationLoadingView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -142,7 +142,6 @@
 		FA8D3BD72CD1E541005399F8 /* Zone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Zone.swift; sourceTree = "<group>"; };
 		FA8D3BD92CD1E58F005399F8 /* Area.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Area.swift; sourceTree = "<group>"; };
 		FA8D3BDB2CD1FC78005399F8 /* Picker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Picker.swift; sourceTree = "<group>"; };
-		FA8D3BDD2CD20C53005399F8 /* LoadingOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingOverlayView.swift; sourceTree = "<group>"; };
 		FA952ADD2CCDE76E0077DFB6 /* ExploreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreViewController.swift; sourceTree = "<group>"; };
 		FA952ADF2CCDE84C0077DFB6 /* CartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartViewController.swift; sourceTree = "<group>"; };
 		FA952AE12CCDECC60077DFB6 /* FavoriteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteViewController.swift; sourceTree = "<group>"; };
@@ -194,6 +193,7 @@
 		FABC7AAF2CC3F76C005C5BCB /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		FABDD5A22CD65E1400AC88CD /* nectar-online.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "nectar-online.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAEB98242CD5CE2A00A3AA0A /* TokenResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenResponse.swift; sourceTree = "<group>"; };
+		FAF2374C2CDDCEF10065317A /* AnimationLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationLoadingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -320,7 +320,7 @@
 			isa = PBXGroup;
 			children = (
 				FA328A422CC5479E0026E843 /* BlurView.swift */,
-				FA8D3BDD2CD20C53005399F8 /* LoadingOverlayView.swift */,
+				FAF2374C2CDDCEF10065317A /* AnimationLoadingView.swift */,
 				FA4F59132CCBC9F4009F09F1 /* FormControlView.swift */,
 				FA4F591B2CCCC1DD009F09F1 /* ButtonView.swift */,
 				FA952AE52CCDF2D10077DFB6 /* CustomTabBar.swift */,
@@ -596,10 +596,10 @@
 				FA8D3BDA2CD1E58F005399F8 /* Area.swift in Sources */,
 				FA7E09992CCA2848001FA9C3 /* SelectLocationViewController.swift in Sources */,
 				FA489AFE2CDC7C4200FF52A3 /* AppService.swift in Sources */,
+				FAF2374D2CDDCEF10065317A /* AnimationLoadingView.swift in Sources */,
 				FA3D74B12CD5E557005487E4 /* NullResponse.swift in Sources */,
 				FABC7AB02CC3F76C005C5BCB /* SignInViewController.swift in Sources */,
 				FA4F591C2CCCC1DD009F09F1 /* ButtonView.swift in Sources */,
-				FA8D3BDE2CD20C53005399F8 /* LoadingOverlayView.swift in Sources */,
 				FA3B6E522CC36D61004DD798 /* OnbordingViewController.swift in Sources */,
 				FAADD7EB2CD525D30067C5D9 /* Response.swift in Sources */,
 				FA4F591E2CCCCD0F009F09F1 /* LogInViewController.swift in Sources */,

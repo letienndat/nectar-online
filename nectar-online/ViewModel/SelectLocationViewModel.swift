@@ -14,6 +14,7 @@ class SelectLocationViewModel {
     var updateUI: (() -> Void)?
     var showLoading: (() -> Void)?
     var hideLoading: (() -> Void)?
+    var hideRefreshing: (() -> Void)?
     var showError: ((String) -> Void)?
     var idZone: Int?
     var idArea: Int?
@@ -22,18 +23,27 @@ class SelectLocationViewModel {
         self.selectLocationService = selectLocationService
     }
     
-    func fetchData() {
-        showLoading?()
+    func fetchData(isRefresh: Bool = false) {
+        if !isRefresh {
+            self.showLoading?()
+        }
+        
         selectLocationService.fetchZones { [weak self] result in
             DispatchQueue.main.async {
-                self?.hideLoading?()
+                if !isRefresh {
+                    self?.hideLoading?()
+                } else {
+                    self?.hideRefreshing?()
+                }
                 
                 switch result {
                 case .success(let zones):
                     self?.zones = zones
                     self?.updateUI?()
                 case .failure(let error):
-                    self?.showError?(error.localizedDescription)
+                    if !isRefresh {
+                        self?.showError?(error.localizedDescription)
+                    }
                 }
             }
         }

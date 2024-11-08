@@ -22,7 +22,7 @@ class SignUpViewController: UIViewController {
     private lazy var formControlPassword = {
         return FormControllView(label: "Password", typeInput: .password, placeholder: "Enter your password")
     }()
-    private let loadingOverlay = LoadingOverlayView()
+    private let loading = AnimationLoadingView()
     private let selectLocationViewModel = SelectLocationViewModel.shared
     private let signUpViewModel = SignUpViewModel()
     private let loginViewModel = LoginViewModel.shared
@@ -43,6 +43,32 @@ class SignUpViewController: UIViewController {
         setupNav()
         setupView()
         setupLoadingOverlay()
+        
+        signUpViewModel.showLoading = { [weak self] in
+            guard let self = self else { return }
+            
+            self.view.isUserInteractionEnabled = false
+            self.loading.startAnimation()
+        }
+        
+        signUpViewModel.hideLoading = { [weak self] in
+            guard let self = self else { return }
+            
+            self.view.isUserInteractionEnabled = true
+            self.loading.stopAnimation()
+        }
+        
+        signUpViewModel.showError = { [weak self] error in
+            guard let self = self else { return }
+            
+            self.showErrorAlert(message: error)
+        }
+        
+        signUpViewModel.signUpSuccess = { [weak self] in
+            guard let self = self else { return }
+            
+            self.signUpSuccess()
+        }
     }
     
     @objc func hideKeybroad() {
@@ -376,44 +402,19 @@ class SignUpViewController: UIViewController {
     }
     
     private func setupLoadingOverlay() {
-        view.addSubview(loadingOverlay)
+        view.addSubview(loading)
         
         // Cài đặt Auto Layout cho lớp phủ mờ để nó bao phủ toàn bộ view
         NSLayoutConstraint.activate([
-            loadingOverlay.topAnchor.constraint(equalTo: view.topAnchor),
-            loadingOverlay.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            loadingOverlay.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            loadingOverlay.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            loading.topAnchor.constraint(equalTo: view.topAnchor),
+            loading.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            loading.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            loading.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
     }
     
     // Xử lý sự kiện khi bấm vào đăng ký
     @objc func handleSignup(_ sender: UIButton) {
-        signUpViewModel.showLoading = { [weak self] in
-            guard let self = self else { return }
-            
-            self.view.isUserInteractionEnabled = false
-            self.loadingOverlay.showLoadingOverlay()
-        }
-        
-        signUpViewModel.hideLoading = { [weak self] in
-            guard let self = self else { return }
-            
-            self.view.isUserInteractionEnabled = true
-            self.loadingOverlay.hideLoadingOverlay()
-        }
-        
-        signUpViewModel.showError = { [weak self] error in
-            guard let self = self else { return }
-            
-            self.showErrorAlert(message: error)
-        }
-        
-        signUpViewModel.signUpSuccess = { [weak self] in
-            guard let self = self else { return }
-            
-            self.signUpSuccess()
-        }
         
         guard let idZone = selectLocationViewModel.idZone,
               let idArea = selectLocationViewModel.idArea
@@ -454,14 +455,14 @@ class SignUpViewController: UIViewController {
             guard let self = self else { return }
             
             self.view.isUserInteractionEnabled = false
-            self.loadingOverlay.showLoadingOverlay()
+            self.loading.startAnimation()
         }
         
         loginViewModel.hideLoading = { [weak self] in
             guard let self = self else { return }
             
             self.view.isUserInteractionEnabled = true
-            self.loadingOverlay.hideLoadingOverlay()
+            self.loading.stopAnimation()
         }
         
         loginViewModel.showError = { [weak self] error in
@@ -559,6 +560,10 @@ class SignUpViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: true)
+        
+        if loading.isAnimating {
+            loading.startAnimation()
+        }
     }
     
     // Hàm được gọi trước khi ViewController biến mất

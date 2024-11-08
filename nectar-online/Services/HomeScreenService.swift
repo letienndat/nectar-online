@@ -298,4 +298,71 @@ class HomeScreenService {
         // Thực thi task
         task.resume()
     }
+    
+    func fetchCountProductInCart(token: String?, completion: @escaping (Result<Int, Error>) -> Void) {
+        guard let token = token else {
+            AppConfig.isLogin = false
+            completion(.failure(NSError(domain: "", code: 401, userInfo: [NSLocalizedDescriptionKey: "Token is empty"])))
+            return
+        }
+        
+        guard let url = URL(string: "\(Const.BASE_URL)/count-product-in-cart") else {
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        // Thêm token JWT vào header của request
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        // Tạo task để gửi request
+        let task = self.session.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Lỗi khi gửi request: \(error)")
+                completion(.failure(error))
+                return
+            }
+            
+            // Kiểm tra response và status code
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200...299).contains(httpResponse.statusCode) else {
+                
+                if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 401 {
+                    AppConfig.isLogin = false
+                    deleteToken(for: Const.KEYCHAIN_TOKEN)
+                    completion(.failure(NSError(domain: "", code: 401, userInfo: [NSLocalizedDescriptionKey: "No access"])))
+                    return
+                }
+                
+                completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid response from server"])))
+                return
+            }
+            
+            guard let data = data else {
+                completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "No data"])))
+                return
+            }
+            
+            do {
+                let coder = JSONDecoder()
+                let response = try coder.decode(Response<Int>.self, from: data)
+                
+                if response.status == 0 {
+                    completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Fail"])))
+                    return
+                } else if response.status == 1 {
+                    if let countProductInCart = response.data {
+                        completion(.success(countProductInCart))
+                    } else {
+                        completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Not login"])))
+                    }
+                }
+            } catch {
+                completion(.failure(error))
+            }
+        }
+        // Thực thi task
+        task.resume()
+    }
 }

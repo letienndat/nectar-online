@@ -85,6 +85,7 @@ class ProductDetailViewModel {
     }
     
     func favoriteProduct(productId: Int) {
+        self.showLoading?()
         
         let token = getToken(for: Const.KEYCHAIN_TOKEN)
         
@@ -92,6 +93,8 @@ class ProductDetailViewModel {
             guard let self = self else { return }
             
             DispatchQueue.main.async {
+                self.hideLoading?()
+                
                 switch result {
                 case .success(let isFavorite):
                     self.closureFavoriteProductSuccess?(isFavorite)
@@ -108,6 +111,7 @@ class ProductDetailViewModel {
     }
     
     func ratingProduct(data: [String: Int]) {
+        self.showLoading?()
         
         let token = getToken(for: Const.KEYCHAIN_TOKEN)
         
@@ -115,6 +119,8 @@ class ProductDetailViewModel {
             guard let self = self else { return }
             
             DispatchQueue.main.async {
+                self.hideLoading?()
+                
                 switch result {
                 case .success(_):
                     self.closureRatingProductSuccess?(self.ratingTemp)
@@ -131,6 +137,7 @@ class ProductDetailViewModel {
     }
     
     func addProductToCart(data: [[String: Any]]) {
+        self.showLoading?()
         
         let token = getToken(for: Const.KEYCHAIN_TOKEN)
         
@@ -138,6 +145,8 @@ class ProductDetailViewModel {
             guard let self = self else { return }
             
             DispatchQueue.main.async {
+                self.hideLoading?()
+                
                 switch result {
                 case .success(let countProduct):
                     self.closureAddProductToCartSuccess?(countProduct)

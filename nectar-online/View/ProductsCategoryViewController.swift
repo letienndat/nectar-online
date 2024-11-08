@@ -9,7 +9,7 @@ import UIKit
 
 class ProductsCategoryViewController: UIViewController {
     private let categoryProduct: CategoryProduct
-    private let loadingOverlay = LoadingOverlayView()
+    private let loading = AnimationLoadingView()
     private let refreshControl = UIRefreshControl()
     private lazy var gridCollectionProduct: UICollectionView = {
         // Khởi tạo UICollectionView với layout
@@ -109,14 +109,14 @@ class ProductsCategoryViewController: UIViewController {
             guard let self = self else { return }
             
             self.view.isUserInteractionEnabled = true
-            self.loadingOverlay.hideLoadingOverlay()
+            self.loading.stopAnimation()
         }
         
         self.productsCategoryViewModel.showLoading = { [weak self] in
             guard let self = self else { return }
             
             self.view.isUserInteractionEnabled = false
-            self.loadingOverlay.showLoadingOverlay()
+            self.loading.startAnimation()
         }
         
         self.productsCategoryViewModel.showError = { [weak self] error in
@@ -174,6 +174,10 @@ class ProductsCategoryViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupNav()
+        
+        if loading.isAnimating {
+            loading.startAnimation()
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -272,14 +276,14 @@ class ProductsCategoryViewController: UIViewController {
     }
     
     private func setupLoadingOverlay() {
-        view.addSubview(loadingOverlay)
+        view.addSubview(loading)
         
         // Cài đặt Auto Layout cho lớp phủ mờ để nó bao phủ toàn bộ view
         NSLayoutConstraint.activate([
-            loadingOverlay.topAnchor.constraint(equalTo: view.topAnchor),
-            loadingOverlay.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            loadingOverlay.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            loadingOverlay.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            loading.topAnchor.constraint(equalTo: view.topAnchor),
+            loading.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            loading.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            loading.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
     }
     

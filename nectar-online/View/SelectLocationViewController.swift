@@ -10,6 +10,7 @@ import UIKit
 class SelectLocationViewController: UIViewController {
     
     private let (blurTop, blurBottom) = BlurView.getBlur()
+    private let refreshControl = UIRefreshControl()
     private let scrollView = UIScrollView()
     private var scrollViewBottomConstraint: NSLayoutConstraint?
     private lazy var formControlZone: FormControllView = {
@@ -18,46 +19,52 @@ class SelectLocationViewController: UIViewController {
     private lazy var formControlArea: FormControllView = {
         return FormControllView(label: "Your Area", typeInput: .select, options: [], placeholder: "Types of your area")
     }()
-    private let loadingOverlay = LoadingOverlayView()
+    private let loadding = AnimationLoadingView()
     private lazy var selectLocationViewModel = {
         return SelectLocationViewModel.shared
     }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Đăng ký thông báo khi bàn phím xuất hiện và ẩn đi
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
-
+        
         // Tạo UITapGestureRecognizer để phát hiện người dùng bấm ra ngoài view
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeybroad))
         
         // Thêm gesture vào view cha
         self.view.addGestureRecognizer(tapGesture)
-
+        
         setupNav()
         setupView()
         setupLoadingOverlay()
+        
+        self.selectLocationViewModel.hideRefreshing = { [weak self] in
+            guard let self = self else { return }
+            
+            self.refreshControl.endRefreshing()
+        }
         
         self.selectLocationViewModel.hideLoading = { [weak self] in
             guard let self = self else { return }
             
             self.view.isUserInteractionEnabled = true
-            self.loadingOverlay.hideLoadingOverlay()
+            self.loadding.stopAnimation()
         }
         
         self.selectLocationViewModel.showLoading = { [weak self] in
             guard let self = self else { return }
             
             self.view.isUserInteractionEnabled = false
-            self.loadingOverlay.showLoadingOverlay()
+            self.loadding.startAnimation()
         }
         
         self.selectLocationViewModel.showError = { [weak self] error in
             guard let self = self else { return }
             
-            self.showErrorAlert(message: error)
+            self.showErrorAlert(message: error, reload: true)
         }
         
         self.selectLocationViewModel.updateUI = { [weak self] in
@@ -83,7 +90,7 @@ class SelectLocationViewController: UIViewController {
                 if let oldConstraint = self.scrollViewBottomConstraint {
                     oldConstraint.isActive = false
                 }
-
+                
                 // Tạo và lưu ràng buộc mới
                 self.scrollViewBottomConstraint = self.scrollView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -keyboardHeight)
                 self.scrollViewBottomConstraint?.isActive = true
@@ -98,7 +105,7 @@ class SelectLocationViewController: UIViewController {
             if let oldConstraint = self.scrollViewBottomConstraint {
                 oldConstraint.isActive = false
             }
-
+            
             // Tạo và lưu ràng buộc mới
             self.scrollViewBottomConstraint = self.scrollView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
             self.scrollViewBottomConstraint?.isActive = true
@@ -118,11 +125,13 @@ class SelectLocationViewController: UIViewController {
         
         view.addSubview(scrollView)
         
-        scrollView.bounces = false
         scrollView.delaysContentTouches = false
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
+        
+        scrollView.refreshControl = refreshControl
+        refreshControl.addTarget(self, action: #selector(handleRefresh(_:)), for: .valueChanged)
         
         scrollViewBottomConstraint = scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         NSLayoutConstraint.activate([
@@ -213,16 +222,16 @@ class SelectLocationViewController: UIViewController {
         descriptionIllustrationLocation.font = UIFont(name: "Gilroy-Medium", size: 16)
         descriptionIllustrationLocation.textColor = UIColor(hex: "#7C7C7C")
         descriptionIllustrationLocation.numberOfLines = 3
-
+        
         // Tạo NSMutableParagraphStyle để cài đặt line height
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 5 // Khoảng cách giữa các dòng (line height)
         paragraphStyle.alignment = .center
-
+        
         // Tạo NSAttributedString với đoạn text và paragraphStyle
         let attributedString = NSMutableAttributedString(string: descriptionIllustrationLocation.text!)
         attributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attributedString.length))
-
+        
         // Gán NSAttributedString vào UILabel
         descriptionIllustrationLocation.attributedText = attributedString
         
@@ -256,13 +265,13 @@ class SelectLocationViewController: UIViewController {
             self.selectLocationViewModel.idZone = Int($0) ?? nil
             self.reloadOptionsArea(idOption: Int($0) ?? nil)
         }
-
+        
         formControlZone.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             formControlZone.topAnchor.constraint(equalTo: viewForm.topAnchor),
             formControlZone.leadingAnchor.constraint(equalTo: viewForm.leadingAnchor),
             formControlZone.trailingAnchor.constraint(equalTo: viewForm.trailingAnchor),
-
+            
             formControlZone.widthAnchor.constraint(equalTo: viewForm.widthAnchor)
         ])
         
@@ -271,13 +280,13 @@ class SelectLocationViewController: UIViewController {
         formControlArea.handleSelectOption = {
             self.selectLocationViewModel.idArea = Int($0) ?? nil
         }
-
+        
         formControlArea.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             formControlArea.topAnchor.constraint(equalTo: formControlZone.bottomAnchor, constant: 30),
             formControlArea.leadingAnchor.constraint(equalTo: viewForm.leadingAnchor),
             formControlArea.trailingAnchor.constraint(equalTo: viewForm.trailingAnchor),
-
+            
             formControlArea.widthAnchor.constraint(equalTo: viewForm.widthAnchor)
         ])
         
@@ -317,15 +326,19 @@ class SelectLocationViewController: UIViewController {
         ])
     }
     
+    @objc private func handleRefresh(_ sender: AnyObject) {
+        self.selectLocationViewModel.fetchData(isRefresh: true)
+    }
+    
     private func setupLoadingOverlay() {
-        view.addSubview(loadingOverlay)
+        view.addSubview(loadding)
         
         // Cài đặt Auto Layout cho lớp phủ mờ để nó bao phủ toàn bộ view
         NSLayoutConstraint.activate([
-            loadingOverlay.topAnchor.constraint(equalTo: view.topAnchor),
-            loadingOverlay.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            loadingOverlay.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            loadingOverlay.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            loadding.topAnchor.constraint(equalTo: view.topAnchor),
+            loadding.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            loadding.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            loadding.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
     }
     
@@ -336,7 +349,7 @@ class SelectLocationViewController: UIViewController {
         }
         formControlArea.updateOptions(newOptions: self.selectLocationViewModel.zones?.first { $0.id == idOption }?.areas.map { Picker(from: $0) } ?? [])
     }
-    
+        
     // Gọi API lấy dữ liệu zones và areas từ server
     private func fetchData() {
         self.selectLocationViewModel.fetchData()
@@ -356,24 +369,26 @@ class SelectLocationViewController: UIViewController {
     }
     
     // Hiển thị lỗi
-    private func showErrorAlert(message: String) {
+    private func showErrorAlert(message: String, reload: Bool = true) {
         let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
-        alert.addAction(UIAlertAction(title: "Reload", style: .default, handler: { _ in
-            self.fetchData()
-        }))
+        if reload {
+            alert.addAction(UIAlertAction(title: "Reload", style: .default, handler: { _ in
+                self.fetchData()
+            }))
+        }
         present(alert, animated: true)
     }
     
     // Xử lý sự kiện khi bấm vào button submit
     @objc func handleSubmit(_ sender: UIButton) {
         guard let _ = self.selectLocationViewModel.idZone else {
-            showErrorAlert(message: "Please choose your zone!")
+            showErrorAlert(message: "Please choose your zone!", reload: false)
             return
         }
         
         guard let _ = self.selectLocationViewModel.idArea else {
-            showErrorAlert(message: "Please choose your area!")
+            showErrorAlert(message: "Please choose your area!", reload: false)
             return
         }
         

@@ -10,7 +10,7 @@ import UIKit
 class ExploreViewController: UIViewController {
     
     private var keybroadShow: Bool = false
-    private let loadingOverlay = LoadingOverlayView()
+    private let loading = AnimationLoadingView()
     private let refreshControl = UIRefreshControl()
     private lazy var gridCollectionCategory: UICollectionView = {
         // Khởi tạo UICollectionView với layout
@@ -127,14 +127,14 @@ class ExploreViewController: UIViewController {
             guard let self = self else { return }
             
             self.view.isUserInteractionEnabled = true
-            self.loadingOverlay.hideLoadingOverlay()
+            self.loading.stopAnimation()
         }
         
         self.exploreViewModel.showLoading = { [weak self] in
             guard let self = self else { return }
             
             self.view.isUserInteractionEnabled = false
-            self.loadingOverlay.showLoadingOverlay()
+            self.loading.startAnimation()
         }
         
         self.exploreViewModel.showError = { [weak self] error in
@@ -158,7 +158,9 @@ class ExploreViewController: UIViewController {
         }
         
         self.exploreViewModel.showErrorSearch = { [weak self] error in
-            guard let _ = self else { return }
+            guard let self = self else { return }
+            
+            self.showErrorAlert(message: error, handleReload: { self.fetchData() })
         }
         
         self.exploreViewModel.closureAddProductToCartSuccess = { [weak self] countProduct in
@@ -192,7 +194,7 @@ class ExploreViewController: UIViewController {
             self.present(navController, animated: true, completion: nil)
         }
         
-//        self.fetchData()
+        self.fetchData()
     }
     
     private func fetchData() {
@@ -202,6 +204,7 @@ class ExploreViewController: UIViewController {
     // Hàm được gọi khi ViewController sắp được thêm vào màn hình
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         if let text = inputSearch.text, text.isEmpty {
             self.navigationController?.setNavigationBarHidden(false, animated: false)
         } else {
@@ -221,6 +224,10 @@ class ExploreViewController: UIViewController {
 
         // Hoặc áp dụng cho một navigation bar cụ thể trong view controller hiện tại
         navigationController?.navigationBar.titleTextAttributes = attributes
+        
+        if loading.isAnimating {
+            loading.startAnimation()
+        }
     }
     
     // Hàm được gọi sau khi ViewController bị xoá khỏi màn hình
@@ -377,14 +384,14 @@ class ExploreViewController: UIViewController {
     }
     
     private func setupLoadingOverlay() {
-        view.addSubview(loadingOverlay)
+        view.addSubview(loading)
         
         // Cài đặt Auto Layout cho lớp phủ mờ để nó bao phủ toàn bộ view
         NSLayoutConstraint.activate([
-            loadingOverlay.topAnchor.constraint(equalTo: view.topAnchor),
-            loadingOverlay.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            loadingOverlay.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            loadingOverlay.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            loading.topAnchor.constraint(equalTo: view.topAnchor),
+            loading.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            loading.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            loading.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
     }
     

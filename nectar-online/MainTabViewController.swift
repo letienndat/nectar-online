@@ -8,11 +8,23 @@
 import UIKit
 
 class MainTabViewController: UITabBarController {
+    
+    lazy var homeScreenService: HomeScreenService = HomeScreenService.shared
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.delegate = self
+        
+        self.selectedIndex = 0
+        
         // Do any additional setup after loading the view.
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        self.updateCartBadge()
     }
     
 
@@ -56,5 +68,63 @@ class MainTabViewController: UITabBarController {
             }
         }
     }
+    
+    private func updateCartBadge() {
+        if let tabItems = tabBar.items {
+            let cartTabItem = tabItems[2]
+            
+            if AppConfig.isLogin {
+                
+                let token = getToken(for: Const.KEYCHAIN_TOKEN)
+                
+                homeScreenService.fetchCountProductInCart(token: token) { [weak self] result in
+                    guard let _ = self else { return }
+                    
+                    DispatchQueue.main.async {
+                        switch result {
+                        case .success(let countProductInCart):
+                            let resShow: String = countProductInCart > 99 ? "99+" : String(countProductInCart)
+                            cartTabItem.badgeValue = resShow
+                            
+                            cartTabItem.setBadgeTextAttributes([
+                                .font: UIFont(name: "Gilroy-Semibol", size: 12)!,
+                                .foregroundColor: UIColor(hex: "#FFFFFF")
+                            ], for: .normal)
+                        case .failure(let error):
+                            let error = error as NSError
+                            if error.code == 401 {
+                                cartTabItem.badgeValue = nil
+                            } else {
+                                cartTabItem.badgeValue = "0"
+                                
+                                cartTabItem.setBadgeTextAttributes([
+                                    .font: UIFont(name: "Gilroy-Semibold", size: 12) ?? .systemFont(ofSize: 12),
+                                    .foregroundColor: UIColor(hex: "#FFFFFF")
+                                ], for: .normal)
+                            }
+                        }
+                    }
+                }
+                
+            } else {
+                cartTabItem.badgeValue = nil
+            }
+        }
+    }
+}
 
+extension MainTabViewController: UITabBarControllerDelegate {
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        if let selectedIndex = tabBarController.viewControllers?.firstIndex(of: viewController), selectedIndex != 0 {
+            if let tabItems = tabBarController.tabBar.items {
+                let tabItem = tabItems[0]
+                // Tạo một hình ảnh mới với màu sắc mong muốn
+                if let originalImage = tabItem.image {
+                    let tintedImage = originalImage.withTintColor(UIColor(hex: "#181725")).withRenderingMode(.alwaysOriginal)
+                    // Đặt màu của biểu tượng của tabbar item Home khi không được chọn (tùy chọn)
+                    tabItem.image = tintedImage
+                }
+            }
+        }
+    }
 }

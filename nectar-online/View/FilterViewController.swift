@@ -56,8 +56,8 @@ class FilterViewController: UIViewController {
         subView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             subView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            subView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            subView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            subView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            subView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             subView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
         

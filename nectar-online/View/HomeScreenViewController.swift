@@ -11,7 +11,7 @@ import ImageSlideshow
 class HomeScreenViewController: UIViewController {
     
     private let refreshControl = UIRefreshControl()
-    private let loadingOverlay = LoadingOverlayView()
+    private let loading = AnimationLoadingView()
     private let viewLocation = UIView()
     private let labelLocation = UILabel()
     private let viewSlideShow = UIView()
@@ -48,7 +48,17 @@ class HomeScreenViewController: UIViewController {
             AppConfig.isFirstLaunch = false
         }
         
-        self.view.overrideUserInterfaceStyle = .dark
+        if let tabItems = tabBarController?.tabBar.items {
+            let tabItem = tabItems[0]
+            // Tạo một hình ảnh mới với màu sắc mong muốn
+            if let originalImage = tabItem.image {
+                let tintedImage = originalImage.withTintColor(UIColor(hex: "#53B175")).withRenderingMode(.alwaysOriginal)
+                // Đặt màu của biểu tượng khi không được chọn (tùy chọn)
+                tabItem.image = tintedImage
+                // Đặt màu của biểu tượng khi được chọn (tùy chọn)
+                tabItem.selectedImage = tintedImage
+            }
+        }
         
         // Đăng ký thông báo khi bàn phím xuất hiện và ẩn đi
 //        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -75,14 +85,14 @@ class HomeScreenViewController: UIViewController {
             guard let self = self else { return }
             
             self.view.isUserInteractionEnabled = true
-            self.loadingOverlay.hideLoadingOverlay()
+            self.loading.stopAnimation()
         }
         
         self.homeScreenViewModel.showLoading = { [weak self] in
             guard let self = self else { return }
             
             self.view.isUserInteractionEnabled = false
-            self.loadingOverlay.showLoadingOverlay()
+            self.loading.startAnimation()
         }
         
         self.homeScreenViewModel.showError = { [weak self] error in
@@ -172,8 +182,45 @@ class HomeScreenViewController: UIViewController {
                         viewProduct.heightAnchor.constraint(equalToConstant: 248.51)
                     ])
                     
-                    viewProduct.closureAddToCart = { _ in
-                        // Thêm sản phẩm vào giỏ hàng
+                    viewProduct.closureAddToCart = { [weak self] idProduct in
+                        guard let self = self else { return }
+                        
+                        // Nếu người dùng chưa đăng nhập sẽ hiển thị thông báo đăng nhập để sử dụng tính năng này
+                        if !AppConfig.isLogin {
+                            
+                            SessionManager.shared.indexTabbarView = 0
+                            
+                            // Tạo view controller của thông báo đăng nhập
+                            let notifyRequireLoginViewController = NotifyRequireLoginViewController(content: "Login required before using this feature!")
+                            
+                            notifyRequireLoginViewController.closureHandleConfirm = { [weak self] in
+                                guard let self = self else { return }
+                                
+                                HomeScreenViewController.redirectToSignin(for: self)
+                            }
+                            
+                            // Bọc nó trong UINavigationController
+                            let navController = UINavigationController(rootViewController: notifyRequireLoginViewController)
+                            
+                            // Tùy chọn hiển thị modally
+                            navController.modalPresentationStyle = .overFullScreen
+                            navController.modalTransitionStyle = .crossDissolve
+                            
+                            // Trình bày modally để nó chồng lên tabBar
+                            self.present(navController, animated: true, completion: nil)
+                        } else {
+                            // Thêm sản phẩm vào giỏ hàng
+                            // Gửi API kèm token và danh sách sản phẩm để thêm và giỏ hàng, nếu 401 thì hiển thị phiên đăng nhập đã hết hạn (yêu cầu đăng nhập để sử dụng, nếu không thì sẽ không thêm vào giỏ), nếu lỗi khác thì sẽ hiển thị thông báo có lỗi, vui lòng thử lại sau
+                            
+                            let data: [[String: Any]] = [
+                                [
+                                    "product_id": idProduct,
+                                    "quantity": 1
+                                ]
+                            ]
+                            
+                            self.homeScreenViewModel.addProductToCart(data: data)
+                        }
                     }
                     
                     viewProduct.closureTapProduct = { id in
@@ -241,7 +288,7 @@ class HomeScreenViewController: UIViewController {
     
     private func fetchData() {
         homeScreenViewModel.fetchBanner()
-//        homeScreenViewModel.fetchProductClassifications()
+        homeScreenViewModel.fetchProductClassifications()
     }
     
     @objc func keyboardWillShow(notification: NSNotification) {
@@ -282,6 +329,10 @@ class HomeScreenViewController: UIViewController {
         self.navigationController?.setNavigationBarHidden(true, animated: true)
         
         homeScreenViewModel.fetchLocation()
+        
+        if loading.isAnimating {
+            loading.startAnimation()
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -292,6 +343,10 @@ class HomeScreenViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: true)
+        
+        if loading.isAnimating {
+            loading.startAnimation()
+        }
     }
     
     @objc private func hideKeybroad() {
@@ -653,14 +708,14 @@ class HomeScreenViewController: UIViewController {
     }
     
     private func setupLoadingOverlay() {
-        view.addSubview(loadingOverlay)
+        view.addSubview(loading)
         
         // Cài đặt Auto Layout cho lớp phủ mờ để nó bao phủ toàn bộ view
         NSLayoutConstraint.activate([
-            loadingOverlay.topAnchor.constraint(equalTo: view.topAnchor),
-            loadingOverlay.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            loadingOverlay.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            loadingOverlay.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            loading.topAnchor.constraint(equalTo: view.topAnchor),
+            loading.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            loading.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            loading.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
     }
     

@@ -64,7 +64,7 @@ class AccountViewController: UIViewController {
     private func setupViewLogin() {
         self.view.addSubview(viewLogin)
         
-        viewLogin.backgroundColor = .blue
+        viewLogin.backgroundColor = .systemBrown
         
         viewLogin.isHidden = true
         

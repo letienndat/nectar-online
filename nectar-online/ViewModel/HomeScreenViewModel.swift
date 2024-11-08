@@ -138,6 +138,7 @@ class HomeScreenViewModel {
     }
     
     func addProductToCart(data: [[String: Any]]) {
+        self.showLoading?()
         
         let token = getToken(for: Const.KEYCHAIN_TOKEN)
         
@@ -145,6 +146,8 @@ class HomeScreenViewModel {
             guard let self = self else { return }
             
             DispatchQueue.main.async {
+                self.hideLoading?()
+                
                 switch result {
                 case .success(let countProduct):
                     self.closureAddProductToCartSuccess?(countProduct)

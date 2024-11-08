@@ -55,6 +55,7 @@ class ProductsCategoryViewModel {
     }
     
     func addProductToCart(data: [[String: Any]]) {
+        self.showLoading?()
         
         let token = getToken(for: Const.KEYCHAIN_TOKEN)
         
@@ -62,6 +63,8 @@ class ProductsCategoryViewModel {
             guard let self = self else { return }
             
             DispatchQueue.main.async {
+                self.hideLoading?()
+                
                 switch result {
                 case .success(let countProduct):
                     self.closureAddProductToCartSuccess?(countProduct)

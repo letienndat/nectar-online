@@ -12,6 +12,7 @@ class ProductDetailViewController: UIViewController {
     
     private let scrollView = UIScrollView()
     private let refreshControl = UIRefreshControl()
+    private let loading = AnimationLoadingView()
     private let buttonHeart = UIButton(type: .system)
     private let labelProductDetail = CopyableLabel()
     private let iconArrowProductDetail = UIButton(type: .system)
@@ -48,6 +49,7 @@ class ProductDetailViewController: UIViewController {
         // Do any additional setup after loading the view.
         setupNav()
         setupView()
+        setupLoadingOverlay()
         
         productDetailViewModel.updateFavoriteIcon = { [weak self] in
             self?.updateIconFavoriteColor()
@@ -70,7 +72,17 @@ class ProductDetailViewController: UIViewController {
         }
         
         productDetailViewModel.hideLoading = { [weak self] in
-            guard let _ = self else { return }
+            guard let self = self else { return }
+            
+            self.view.isUserInteractionEnabled = true
+            self.loading.stopAnimation()
+        }
+        
+        productDetailViewModel.showLoading = { [weak self] in
+            guard let self = self else { return }
+            
+            self.view.isUserInteractionEnabled = false
+            self.loading.startAnimation()
         }
         
         productDetailViewModel.hideRefreshing = { [weak self] in
@@ -718,6 +730,18 @@ class ProductDetailViewController: UIViewController {
         ])
         
         buttonAddToBasket.addTarget(self, action: #selector(handleAddToBasket(_:)), for: .touchUpInside)
+    }
+    
+    private func setupLoadingOverlay() {
+        view.addSubview(loading)
+        
+        // Cài đặt Auto Layout cho lớp phủ mờ để nó bao phủ toàn bộ view
+        NSLayoutConstraint.activate([
+            loading.topAnchor.constraint(equalTo: view.topAnchor),
+            loading.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            loading.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            loading.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
     }
     
     // Hàm xử lý sự kiện kéo màn hình xuống để load lại thông tin chi tiết sản phẩm
