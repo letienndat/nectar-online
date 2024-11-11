@@ -24,7 +24,8 @@ class ProductDetailViewController: UIViewController {
     private var productDetailViewModel = ProductDetailViewModel()
     private let labelNumberQuantity = UILabel()
     private let labelPrice = UILabel()
-    private let iconSubtract = UIButton(type: .system)  
+    private let iconSubtract = UIButton(type: .system)
+    private let labelContentReview = UILabel()
     private var arrayIconStars: [UIButton] = []
     private let maxStars = 5
     private var imageSources: [ImageSource] = []
@@ -61,6 +62,10 @@ class ProductDetailViewController: UIViewController {
         
         productDetailViewModel.updateIconSubtract = { [weak self] in
             self?.updateIconSubtract()
+        }
+        
+        productDetailViewModel.product?.updateReview = { [weak self] in
+            self?.showReview()
         }
         
         productDetailViewModel.product?.updateRating = { [weak self] in
@@ -121,10 +126,24 @@ class ProductDetailViewController: UIViewController {
             self.present(navController, animated: true, completion: nil)
         }
         
-        self.productDetailViewModel.closureAddProductToCartSuccess = { [weak self] countProduct in
-            guard let _ = self else { return }
+        self.productDetailViewModel.closureAddProductToCartSuccess = { [weak self] totalProduct in
+            guard let self = self else { return }
             
             // Cập nhật lại số sản phẩm hiện có trong giỏ ở icon tabbar cart
+            if let tabItems = self.tabBarController?.tabBar.items {
+                let cartTabItem = tabItems[2]
+                
+                let resShow: String = totalProduct > 99 ? "99+" : String(totalProduct)
+                cartTabItem.badgeValue = resShow
+                
+                cartTabItem.setBadgeTextAttributes([
+                    .font: UIFont(name: "Gilroy-Semibold", size: 12) ?? .systemFont(ofSize: 12),
+                    .foregroundColor: UIColor(hex: "#FFFFFF")
+                ], for: .normal)
+            }
+            
+            let banner = NotificationBanner(message: "Product has been added to cart")
+            banner.show()
         }
         
         self.productDetailViewModel.closureAddProductToCartFail = { [weak self] _ in
@@ -133,10 +152,11 @@ class ProductDetailViewController: UIViewController {
             self.showErrorAlert(message: "Sorry, there was an error adding the product to the cart. Please try again later!", handleReload: nil)
         }
         
-        self.productDetailViewModel.closureRatingProductSuccess = { [weak self] rating in
+        self.productDetailViewModel.closureRatingProductSuccess = { [weak self] review, rating in
             guard let self = self else { return }
             
             // Cập nhật số sao được đánh giá
+            self.productDetailViewModel.product?.review = review
             self.productDetailViewModel.product?.rating = rating
         }
         
@@ -387,11 +407,9 @@ class ProductDetailViewController: UIViewController {
         
         iconSubtract.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            iconSubtract.leadingAnchor.constraint(equalTo: viewQuantity.leadingAnchor),
-            iconSubtract.centerYAnchor.constraint(equalTo: viewQuantity.centerYAnchor),
-            
-            iconSubtract.widthAnchor.constraint(equalToConstant: 17),
-            iconSubtract.heightAnchor.constraint(equalToConstant: 2.84)
+            iconSubtract.topAnchor.constraint(equalTo: viewQuantity.topAnchor),
+            iconSubtract.bottomAnchor.constraint(equalTo: viewQuantity.bottomAnchor),
+            iconSubtract.leadingAnchor.constraint(equalTo: viewQuantity.leadingAnchor)
         ])
         
         iconSubtract.addTarget(self, action: #selector(subtractOneQuantity(_:)), for: .touchUpInside)
@@ -431,12 +449,10 @@ class ProductDetailViewController: UIViewController {
         
         iconAdd.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            iconAdd.leadingAnchor.constraint(equalTo: viewNumberQuantity.trailingAnchor, constant: 20),
+            iconAdd.topAnchor.constraint(equalTo: viewQuantity.topAnchor),
+            iconAdd.bottomAnchor.constraint(equalTo: viewQuantity.bottomAnchor),
             iconAdd.trailingAnchor.constraint(equalTo: viewQuantity.trailingAnchor),
-            iconAdd.centerYAnchor.constraint(equalTo: viewQuantity.centerYAnchor),
-            
-            iconAdd.widthAnchor.constraint(equalToConstant: 17),
-            iconAdd.heightAnchor.constraint(equalToConstant: 17)
+            iconAdd.leadingAnchor.constraint(equalTo: viewNumberQuantity.trailingAnchor, constant: 20)
         ])
         
         iconAdd.addTarget(self, action: #selector(addOneQuantity(_:)), for: .touchUpInside)
@@ -647,7 +663,7 @@ class ProductDetailViewController: UIViewController {
         viewTopReview.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapArrowReview(_:))))
         
         let labelTitleReview = UILabel()
-        labelTitleReview.text = "Review "
+        labelTitleReview.text = "Review"
         labelTitleReview.font = UIFont(name: "Gilroy-Semibold", size: 16)
         labelTitleReview.textColor = UIColor(hex: "#181725")
         viewTopReview.addSubview(labelTitleReview)
@@ -656,6 +672,17 @@ class ProductDetailViewController: UIViewController {
         NSLayoutConstraint.activate([
             labelTitleReview.leadingAnchor.constraint(equalTo: viewTopReview.leadingAnchor),
             labelTitleReview.centerYAnchor.constraint(equalTo: viewTopReview.centerYAnchor),
+        ])
+        
+        labelContentReview.text = "(" + String(format: "%.1f", self.productDetailViewModel.product?.review ?? 0.0) + " star)"
+        labelContentReview.font = UIFont(name: "Gilroy-Semibold", size: 16)
+        labelContentReview.textColor = UIColor(hex: "#7C7C7C")
+        viewTopReview.addSubview(labelContentReview)
+        
+        labelContentReview.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            labelContentReview.leadingAnchor.constraint(equalTo: labelTitleReview.trailingAnchor, constant: 5),
+            labelContentReview.centerYAnchor.constraint(equalTo: viewTopReview.centerYAnchor),
         ])
         
         iconArrowReview.setImage(UIImage(named: "icon-arrow-right"), for: .normal)
@@ -682,7 +709,7 @@ class ProductDetailViewController: UIViewController {
         
         stackViewReviewStars.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            stackViewReviewStars.leadingAnchor.constraint(greaterThanOrEqualTo: labelTitleReview.trailingAnchor, constant: 20),
+            stackViewReviewStars.leadingAnchor.constraint(greaterThanOrEqualTo: labelContentReview.trailingAnchor, constant: 20),
             stackViewReviewStars.trailingAnchor.constraint(equalTo: iconArrowReview.leadingAnchor, constant: -20.6),
             stackViewReviewStars.centerYAnchor.constraint(equalTo: viewTopReview.centerYAnchor),
             
@@ -801,6 +828,8 @@ class ProductDetailViewController: UIViewController {
         labelPrice.text = "$\(self.productDetailViewModel.product?.price ?? 0.00)"
         labelProductDetail.text = self.productDetailViewModel.product?.description
         labelNutritionalContent.text = self.productDetailViewModel.product?.nutrients
+        showReview()
+        showStars()
     }
     
     // Hàm xử lý khi bấm vào share product
@@ -947,7 +976,12 @@ class ProductDetailViewController: UIViewController {
         }
     }
     
-    // Hàm hiển thị số sao được đánh giá
+    // Hàm hiển thị số sao trung bình của sản phẩm
+    private func showReview() {
+        self.labelContentReview.text = "(" + String(format: "%.1f", self.productDetailViewModel.product?.review ?? 0.0) + " star)"
+    }
+    
+    // Hàm hiển thị số sao mình đánh giá
     private func showStars() {
         // Cập nhật các nút sao dựa trên sao được bấm
         for (index, button) in arrayIconStars.enumerated() {

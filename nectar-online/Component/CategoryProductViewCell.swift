@@ -1,5 +1,5 @@
 //
-//  GroupProductView.swift
+//  GroupProductViewCell.swift
 //  nectar-online
 //
 //  Created by Macbook on 31/10/2024.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CategoryProductView: UICollectionViewCell {
+class CategoryProductViewCell: UICollectionViewCell {
     
     var id: Int
     var imageView: UIImageView

@@ -286,7 +286,7 @@ class HomeScreenService {
                     return
                 } else if response.status == 1 {
                     if let addProductToCartResponse = response.data {
-                        completion(.success(addProductToCartResponse.countProduct))
+                        completion(.success(addProductToCartResponse.totalProduct))
                     } else {
                         completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Fail"])))
                     }
@@ -299,7 +299,7 @@ class HomeScreenService {
         task.resume()
     }
     
-    func fetchCountProductInCart(token: String?, completion: @escaping (Result<Int, Error>) -> Void) {
+    func fetchTotalProductInCart(token: String?, completion: @escaping (Result<Int, Error>) -> Void) {
         guard let token = token else {
             AppConfig.isLogin = false
             completion(.failure(NSError(domain: "", code: 401, userInfo: [NSLocalizedDescriptionKey: "Token is empty"])))
@@ -352,8 +352,8 @@ class HomeScreenService {
                     completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Fail"])))
                     return
                 } else if response.status == 1 {
-                    if let countProductInCart = response.data {
-                        completion(.success(countProductInCart))
+                    if let totalProductInCart = response.data {
+                        completion(.success(totalProductInCart))
                     } else {
                         completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Not login"])))
                     }

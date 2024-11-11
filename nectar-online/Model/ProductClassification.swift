@@ -12,6 +12,12 @@ class ProductClassification: Decodable {
     var name: String
     var products: [Product]
     
+    init() {
+        self.id = 0
+        self.name = ""
+        self.products = []
+    }
+    
     // Custom initializer
     init(id: Int, name: String, products: [Product]) {
         self.id = id

@@ -11,6 +11,11 @@ class Area: Decodable {
     let id: Int
     let name: String
     
+    init() {
+        self.id = 0
+        self.name = ""
+    }
+    
     // Custom initializer
     init(id: Int, name: String) {
         self.id = id

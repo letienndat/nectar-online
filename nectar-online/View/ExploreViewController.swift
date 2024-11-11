@@ -19,7 +19,7 @@ class ExploreViewController: UIViewController {
         layout.minimumLineSpacing = 15
         layout.minimumInteritemSpacing = 15
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.register(CategoryProductView.self, forCellWithReuseIdentifier: "CategoryProductCell")
+        collectionView.register(CategoryProductViewCell.self, forCellWithReuseIdentifier: "CategoryProductCell")
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.showsVerticalScrollIndicator = false
@@ -33,7 +33,7 @@ class ExploreViewController: UIViewController {
         layout.minimumLineSpacing = 15
         layout.minimumInteritemSpacing = 15
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.register(ProductCellView.self, forCellWithReuseIdentifier: "ProductSearchCell")
+        collectionView.register(ProductViewCell.self, forCellWithReuseIdentifier: "ProductSearchCell")
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.showsVerticalScrollIndicator = false
@@ -163,10 +163,24 @@ class ExploreViewController: UIViewController {
             self.showErrorAlert(message: error, handleReload: { self.fetchData() })
         }
         
-        self.exploreViewModel.closureAddProductToCartSuccess = { [weak self] countProduct in
-            guard let _ = self else { return }
+        self.exploreViewModel.closureAddProductToCartSuccess = { [weak self] totalProduct in
+            guard let self = self else { return }
             
             // Cập nhật lại số sản phẩm hiện có trong giỏ ở icon tabbar cart
+            if let tabItems = self.tabBarController?.tabBar.items {
+                let cartTabItem = tabItems[2]
+                
+                let resShow: String = totalProduct > 99 ? "99+" : String(totalProduct)
+                cartTabItem.badgeValue = resShow
+                
+                cartTabItem.setBadgeTextAttributes([
+                    .font: UIFont(name: "Gilroy-Semibold", size: 12) ?? .systemFont(ofSize: 12),
+                    .foregroundColor: UIColor(hex: "#FFFFFF")
+                ], for: .normal)
+            }
+            
+            let banner = NotificationBanner(message: "Product has been added to cart")
+            banner.show()
         }
         
         self.exploreViewModel.closureAddProductToCartFail = { [weak self] _ in
@@ -496,7 +510,7 @@ class ExploreViewController: UIViewController {
     
     // Hàm xử lý khi bấm vào ô nhóm sản phẩm
     @objc private func handleTapGroupProduct(_ sender: UITapGestureRecognizer) {
-        if let tappedView = sender.view as? CategoryProductView {
+        if let tappedView = sender.view as? CategoryProductViewCell {
             let id = tappedView.id
             let categoryProduct = self.exploreViewModel.listCategoryProduct.first(where: { $0.id == id })
             // Xem các sản phẩm của loại được bấm chọn
@@ -542,7 +556,7 @@ extension ExploreViewController: UICollectionViewDataSource {
     // dequeueReusableCell với mã định danh ô được cung cấp từ phương thức setupCollectionView.
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == gridCollectionCategory {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CategoryProductCell", for: indexPath) as! CategoryProductView
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CategoryProductCell", for: indexPath) as! CategoryProductViewCell
                 
             let categoryProduct = self.exploreViewModel.listCategoryProduct[indexPath.item]
             
@@ -569,7 +583,7 @@ extension ExploreViewController: UICollectionViewDataSource {
             
             return cell
         } else if collectionView == gridCollectionProductSearch {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductSearchCell", for: indexPath) as! ProductCellView
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductSearchCell", for: indexPath) as! ProductViewCell
                 
             let product = self.productsFilter[indexPath.item]
 

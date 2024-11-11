@@ -77,17 +77,17 @@ class MainTabViewController: UITabBarController {
                 
                 let token = getToken(for: Const.KEYCHAIN_TOKEN)
                 
-                homeScreenService.fetchCountProductInCart(token: token) { [weak self] result in
+                homeScreenService.fetchTotalProductInCart(token: token) { [weak self] result in
                     guard let _ = self else { return }
                     
                     DispatchQueue.main.async {
                         switch result {
-                        case .success(let countProductInCart):
-                            let resShow: String = countProductInCart > 99 ? "99+" : String(countProductInCart)
+                        case .success(let totalProductInCart):
+                            let resShow: String = totalProductInCart > 99 ? "99+" : String(totalProductInCart)
                             cartTabItem.badgeValue = resShow
                             
                             cartTabItem.setBadgeTextAttributes([
-                                .font: UIFont(name: "Gilroy-Semibol", size: 12)!,
+                                .font: UIFont(name: "Gilroy-Semibold", size: 12) ?? .systemFont(ofSize: 12),
                                 .foregroundColor: UIColor(hex: "#FFFFFF")
                             ], for: .normal)
                         case .failure(let error):
@@ -95,7 +95,9 @@ class MainTabViewController: UITabBarController {
                             if error.code == 401 {
                                 cartTabItem.badgeValue = nil
                             } else {
-                                cartTabItem.badgeValue = "0"
+//                                cartTabItem.badgeValue = "0"
+                                
+                                cartTabItem.badgeValue = String(DataTest.cart.products.count)
                                 
                                 cartTabItem.setBadgeTextAttributes([
                                     .font: UIFont(name: "Gilroy-Semibold", size: 12) ?? .systemFont(ofSize: 12),

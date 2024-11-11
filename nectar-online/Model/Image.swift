@@ -12,6 +12,12 @@ class Image: Decodable {
     var title: String
     var imageUrl: String
     
+    init() {
+        self.id = 0
+        self.title = ""
+        self.imageUrl = ""
+    }
+    
     init(id: Int, title: String, imageUrl: String) {
         self.id = id
         self.title = title

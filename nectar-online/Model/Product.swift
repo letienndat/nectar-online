@@ -10,9 +10,9 @@ import Foundation
 class Product: Decodable {
     let id: Int
     let name: String
-    var quantity: UInt = 1 {
+    var quantity: Int = 1 {
         didSet {
-            if quantity == 0 {
+            if quantity < 1 {
                 quantity = 1
             }
         }
@@ -27,6 +27,11 @@ class Product: Decodable {
         }
     }
     let nutrients: String
+    var review: Double {
+        didSet {
+            self.updateReview?()
+        }
+    }
     var rating: Int {
         didSet {
             self.updateRating?()
@@ -38,10 +43,28 @@ class Product: Decodable {
     let thumbnail: Image
     let images: [Image]
     
+    var updateReview: (() -> Void)?
     var updateRating: (() -> Void)?
     
+    init() {
+        self.id = 0
+        self.name = ""
+        self.quantity = 0
+        self.description = ""
+        self.unitOfMeasure = ""
+        self.price = 0
+        self.nutrients = ""
+        self.review = 0
+        self.rating = 0
+        self.sold = 0
+        self.stock = 0
+        self.category = Category()
+        self.thumbnail = Image()
+        self.images = []
+    }
+    
     // Custom initializer matching all properties
-    init(id: Int, name: String, quantity: UInt = 1, description: String, unitOfMeasure: String, price: Double, nutrients: String, rating: Int, sold: Int, stock: Int, category: Category, thumbnail: Image, images: [Image]) {
+    init(id: Int, name: String, quantity: Int = 1, description: String, unitOfMeasure: String, price: Double, nutrients: String, review: Double, rating: Int, sold: Int, stock: Int, category: Category, thumbnail: Image, images: [Image]) {
         self.id = id
         self.name = name
         self.quantity = quantity
@@ -49,6 +72,7 @@ class Product: Decodable {
         self.unitOfMeasure = unitOfMeasure
         self.price = price
         self.nutrients = nutrients
+        self.review = review
         self.rating = rating
         self.sold = sold
         self.stock = stock
@@ -62,11 +86,12 @@ class Product: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(Int.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)
-        quantity = try container.decode(UInt.self, forKey: .quantity)
+        quantity = try container.decode(Int.self, forKey: .quantity)
         description = try container.decode(String.self, forKey: .description)
         unitOfMeasure = try container.decode(String.self, forKey: .unitOfMeasure)
         price = try container.decode(Double.self, forKey: .price)
         nutrients = try container.decode(String.self, forKey: .nutrients)
+        review = try container.decode(Double.self, forKey: .review)
         rating = try container.decode(Int.self, forKey: .rating)
         sold = try container.decode(Int.self, forKey: .sold)
         stock = try container.decode(Int.self, forKey: .stock)
@@ -84,6 +109,7 @@ class Product: Decodable {
         case unitOfMeasure = "unit_of_measure"
         case price = "price"
         case nutrients = "nutrients"
+        case review = "review"
         case rating = "rating"
         case sold = "sold"
         case stock = "stock"
@@ -96,6 +122,11 @@ class Product: Decodable {
 class Category: Decodable {
     let id: Int
     let name: String
+    
+    init() {
+        self.id = 0
+        self.name = ""
+    }
     
     init(id: Int, name: String) {
         self.id = id

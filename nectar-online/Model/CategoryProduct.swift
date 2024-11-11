@@ -13,6 +13,13 @@ class CategoryProduct: Decodable {
     var color: String
     var image: Image
     
+    init() {
+        self.id = 0
+        self.name = ""
+        self.color = ""
+        self.image = Image()
+    }
+    
     init(id: Int, name: String, color: String, image: Image) {
         self.id = id
         self.name = name

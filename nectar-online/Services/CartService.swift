@@ -1,13 +1,13 @@
 //
-//  ProductDetailService.swift
+//  CartService.swift
 //  nectar-online
 //
-//  Created by Macbook on 31/10/2024.
+//  Created by Macbook on 09/11/2024.
 //
 
 import Foundation
 
-class ProductDetailService {
+class CartService {
     
     private let session: URLSession
     
@@ -20,69 +20,20 @@ class ProductDetailService {
         session = URLSession(configuration: configuration)
     }
     
-    func fetchProduct(id: Int, completion: @escaping (Result<Product, Error>) -> Void) {
-        guard let url = URL(string: "\(Const.BASE_URL)/product-detail/\(id)") else {
-            return
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        // Tạo task để gửi request
-        let task = self.session.dataTask(with: request) { data, response, error in
-            if let error = error {
-                print("Lỗi khi gửi request: \(error)")
-                completion(.failure(error))
-                return
-            }
-            
-            // Kiểm tra response và status code
-            guard let httpResponse = response as? HTTPURLResponse,
-                  (200...299).contains(httpResponse.statusCode) else {
-                completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid response from server"])))
-                return
-            }
-            
-            guard let data = data else {
-                completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "No data"])))
-                return
-            }
-            
-            do {
-                let coder = JSONDecoder()
-                let response = try coder.decode(Response<Product>.self, from: data)
-                
-                if response.status == 0 {
-                    completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Fail"])))
-                    return
-                } else if response.status == 1 {
-                    if let product = response.data {
-                        completion(.success(product))
-                    } else {
-                        completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Not login"])))
-                    }
-                }
-            } catch {
-                completion(.failure(error))
-            }
-        }
-        // Thực thi task
-        task.resume()
-    }
-    
-    func favoriteProduct(token: String?, productId: Int, completion: @escaping (Result<Bool, Error>) -> Void) {
+    func fetchCart(token: String?, completion: @escaping (Result<Cart ,Error>) -> Void) {
         guard let token = token else {
             AppConfig.isLogin = false
             completion(.failure(NSError(domain: "", code: 401, userInfo: [NSLocalizedDescriptionKey: "Token is empty"])))
             return
         }
         
-        guard let url = URL(string: "\(Const.BASE_URL)/favorite-product/\(productId)") else {
+        guard let url = URL(string: "\(Const.BASE_URL)/basket") else {
             return
         }
         
         var request = URLRequest(url: url)
-        request.httpMethod = "PUT"
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         // Thêm token JWT vào header của request
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
@@ -98,13 +49,6 @@ class ProductDetailService {
             // Kiểm tra response và status code
             guard let httpResponse = response as? HTTPURLResponse,
                   (200...299).contains(httpResponse.statusCode) else {
-                
-                if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 401 {
-                    AppConfig.isLogin = false
-                    completion(.failure(NSError(domain: "", code: 401, userInfo: [NSLocalizedDescriptionKey: "No access"])))
-                    return
-                }
-                
                 completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid response from server"])))
                 return
             }
@@ -116,22 +60,14 @@ class ProductDetailService {
             
             do {
                 let coder = JSONDecoder()
-                let response = try coder.decode(Response<FavoriteProductResponse>.self, from: data)
+                let response = try coder.decode(Response<Cart>.self, from: data)
                 
                 if response.status == 0 {
                     completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Fail"])))
                     return
                 } else if response.status == 1 {
-                    if let favoriteProductResponse = response.data {
-                        // Yêu thích sản phẩm hoặc huỷ yêu thích sản phẩm (do đã yêu thích sản phẩm trước đó rồi
-                        if favoriteProductResponse.isFavorite {
-                            completion(.success(true))
-                        } else {
-                            completion(.success(false))
-                        }
-                    } else {
-                        completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Fail"])))
-                    }
+                    let cart: Cart = response.data ?? Cart(totalPrice: 0, products: [])
+                    completion(.success(cart))
                 }
             } catch {
                 completion(.failure(error))
@@ -141,19 +77,19 @@ class ProductDetailService {
         task.resume()
     }
     
-    func ratingProduct(token: String?, data: [String: Int], completion: @escaping (Result<RatingProductResponse, Error>) -> Void) {
+    func changeQuantity(token: String?, productId: Int, data: [String: Int], completion: @escaping (Result<UpdateQuantityProductInCartResponse ,Error>) -> Void) {
         guard let token = token else {
             AppConfig.isLogin = false
             completion(.failure(NSError(domain: "", code: 401, userInfo: [NSLocalizedDescriptionKey: "Token is empty"])))
             return
         }
         
-        guard let url = URL(string: "\(Const.BASE_URL)/rating-product") else {
+        guard let url = URL(string: "\(Const.BASE_URL)/basket/\(productId)") else {
             return
         }
         
         var request = URLRequest(url: url)
-        request.httpMethod = "POST"
+        request.httpMethod = "PATCH"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         // Thêm token JWT vào header của request
@@ -179,13 +115,6 @@ class ProductDetailService {
             // Kiểm tra response và status code
             guard let httpResponse = response as? HTTPURLResponse,
                   (200...299).contains(httpResponse.statusCode) else {
-                
-                if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 401 {
-                    AppConfig.isLogin = false
-                    completion(.failure(NSError(domain: "", code: 401, userInfo: [NSLocalizedDescriptionKey: "No access"])))
-                    return
-                }
-                
                 completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid response from server"])))
                 return
             }
@@ -197,14 +126,71 @@ class ProductDetailService {
             
             do {
                 let coder = JSONDecoder()
-                let response = try coder.decode(Response<RatingProductResponse>.self, from: data)
+                let response = try coder.decode(Response<UpdateQuantityProductInCartResponse>.self, from: data)
                 
                 if response.status == 0 {
                     completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Fail"])))
                     return
                 } else if response.status == 1 {
-                    let ratingProductResponse = response.data ?? RatingProductResponse()
-                    completion(.success(ratingProductResponse))
+                    let updateQuantityProductInCartResponse: UpdateQuantityProductInCartResponse = response.data ?? UpdateQuantityProductInCartResponse(totalProduct: 0, totalPrice: 0, product: Product())
+                    completion(.success(updateQuantityProductInCartResponse))
+                }
+            } catch {
+                completion(.failure(error))
+            }
+        }
+        // Thực thi task
+        task.resume()
+    }
+    
+    func removeProduct(token: String?, productId: Int, completion: @escaping (Result<RemoveProductInCartResponse ,Error>) -> Void) {
+        guard let token = token else {
+            AppConfig.isLogin = false
+            completion(.failure(NSError(domain: "", code: 401, userInfo: [NSLocalizedDescriptionKey: "Token is empty"])))
+            return
+        }
+        
+        guard let url = URL(string: "\(Const.BASE_URL)/basket/\(productId)") else {
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        // Thêm token JWT vào header của request
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        // Tạo task để gửi request
+        let task = self.session.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Lỗi khi gửi request: \(error)")
+                completion(.failure(error))
+                return
+            }
+            
+            // Kiểm tra response và status code
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200...299).contains(httpResponse.statusCode) else {
+                completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid response from server"])))
+                return
+            }
+            
+            guard let data = data else {
+                completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "No data"])))
+                return
+            }
+            
+            do {
+                let coder = JSONDecoder()
+                let response = try coder.decode(Response<RemoveProductInCartResponse>.self, from: data)
+                
+                if response.status == 0 {
+                    completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Fail"])))
+                    return
+                } else if response.status == 1 {
+                    let removeProductInCartResponse: RemoveProductInCartResponse = response.data ?? RemoveProductInCartResponse(totalProduct: 0, totalPrice: 0, product: Product())
+                    completion(.success(removeProductInCartResponse))
                 }
             } catch {
                 completion(.failure(error))

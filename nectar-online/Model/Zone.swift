@@ -12,6 +12,12 @@ class Zone: Decodable {
     let name: String
     let areas: [Area]
     
+    init() {
+        self.id = 0
+        self.name = ""
+        self.areas = []
+    }
+    
     // Custom initializer
     init(id: Int, name: String, areas: [Area]) {
         self.id = id

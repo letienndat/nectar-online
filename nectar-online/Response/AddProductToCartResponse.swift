@@ -8,21 +8,21 @@
 import Foundation
 
 class AddProductToCartResponse: Decodable {
-    let countProduct: Int
+    let totalProduct: Int
     
     // Custom initializer
-    init(countProduct: Int) {
-        self.countProduct = countProduct
+    init(totalProduct: Int) {
+        self.totalProduct = totalProduct
     }
     
     // Decodable initializer
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        countProduct = try container.decode(Int.self, forKey: .countProduct)
+        totalProduct = try container.decode(Int.self, forKey: .totalProduct)
     }
     
     // Coding keys to match JSON keys
     private enum CodingKeys: String, CodingKey {
-        case countProduct = "count_product"
+        case totalProduct = "total_product"
     }
 }

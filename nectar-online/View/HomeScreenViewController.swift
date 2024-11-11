@@ -30,7 +30,7 @@ class HomeScreenViewController: UIViewController {
         layout.minimumLineSpacing = 15
         layout.minimumInteritemSpacing = 15
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.register(ProductCellView.self, forCellWithReuseIdentifier: "ProductCell")
+        collectionView.register(ProductViewCell.self, forCellWithReuseIdentifier: "ProductCell")
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.showsVerticalScrollIndicator = false
@@ -252,10 +252,24 @@ class HomeScreenViewController: UIViewController {
 //            self.showErrorAlert(message: error, handleReload: nil)
         }
         
-        self.homeScreenViewModel.closureAddProductToCartSuccess = { [weak self] countProduct in
-            guard let _ = self else { return }
+        self.homeScreenViewModel.closureAddProductToCartSuccess = { [weak self] totalProduct in
+            guard let self = self else { return }
             
             // Cập nhật lại số sản phẩm hiện có trong giỏ ở icon tabbar cart
+            if let tabItems = self.tabBarController?.tabBar.items {
+                let cartTabItem = tabItems[2]
+                
+                let resShow: String = totalProduct > 99 ? "99+" : String(totalProduct)
+                cartTabItem.badgeValue = resShow
+                
+                cartTabItem.setBadgeTextAttributes([
+                    .font: UIFont(name: "Gilroy-Semibold", size: 12) ?? .systemFont(ofSize: 12),
+                    .foregroundColor: UIColor(hex: "#FFFFFF")
+                ], for: .normal)
+            }
+            
+            let banner = NotificationBanner(message: "Product has been added to cart")
+            banner.show()
         }
         
         self.homeScreenViewModel.closureAddProductToCartFail = { [weak self] _ in
@@ -746,7 +760,7 @@ extension HomeScreenViewController: UICollectionViewDataSource {
     
     // dequeueReusableCell với mã định danh ô được cung cấp từ phương thức setupCollectionView.
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductCell", for: indexPath) as! ProductCellView
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductCell", for: indexPath) as! ProductViewCell
             
         let product = self.homeScreenViewModel.listProductSearch[indexPath.item]
 

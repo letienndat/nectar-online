@@ -149,8 +149,8 @@ class HomeScreenViewModel {
                 self.hideLoading?()
                 
                 switch result {
-                case .success(let countProduct):
-                    self.closureAddProductToCartSuccess?(countProduct)
+                case .success(let totalProduct):
+                    self.closureAddProductToCartSuccess?(totalProduct)
                 case .failure(let error):
                     let error = error as NSError
                     if error.code == 401 {

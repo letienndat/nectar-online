@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ProductCellView: UICollectionViewCell {
+class ProductViewCell: UICollectionViewCell {
     
     var product: Product?
     var imageProduct: UIImageView
