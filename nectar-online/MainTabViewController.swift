@@ -41,10 +41,25 @@ class MainTabViewController: UITabBarController {
     override var selectedIndex: Int { // Mark 1
         didSet {
             guard let selectedViewController = viewControllers?[selectedIndex] else { return }
-            selectedViewController.tabBarItem.setTitleTextAttributes([
-                .font: UIFont(name: "Gilroy-Semibold", size: 12)!,
-                .foregroundColor: UIColor(hex: "#53B175")
-            ], for: .normal)
+//            selectedViewController.tabBarItem.setTitleTextAttributes([
+//                .font: UIFont(name: "Gilroy-Semibold", size: 12) ?? .systemFont(ofSize: 12),
+//                .foregroundColor: UIColor(hex: "#53B175")
+//            ], for: .normal)
+            guard let viewControllers = viewControllers else { return }
+            for viewController in viewControllers {
+                if viewController == selectedViewController {
+                    viewController.tabBarItem.setTitleTextAttributes([
+                        .font: UIFont(name: "Gilroy-Semibold", size: 12) ?? .systemFont(ofSize: 12),
+                        .foregroundColor: UIColor(hex: "#53B175")
+                    ], for: .normal)
+                    
+                } else {
+                    viewController.tabBarItem.setTitleTextAttributes([
+                        .font: UIFont(name: "Gilroy-Semibold", size: 12) ?? .systemFont(ofSize: 12),
+                        .foregroundColor: UIColor(hex: "#181725")
+                    ], for: .normal)
+                }
+            }
         }
     }
     
@@ -55,13 +70,13 @@ class MainTabViewController: UITabBarController {
             for viewController in viewControllers {
                 if viewController == selectedViewController {
                     viewController.tabBarItem.setTitleTextAttributes([
-                        .font: UIFont(name: "Gilroy-Semibold", size: 12)!,
+                        .font: UIFont(name: "Gilroy-Semibold", size: 12) ?? .systemFont(ofSize: 12),
                         .foregroundColor: UIColor(hex: "#53B175")
                     ], for: .normal)
                     
                 } else {
                     viewController.tabBarItem.setTitleTextAttributes([
-                        .font: UIFont(name: "Gilroy-Semibold", size: 12)!,
+                        .font: UIFont(name: "Gilroy-Semibold", size: 12) ?? .systemFont(ofSize: 12),
                         .foregroundColor: UIColor(hex: "#181725")
                     ], for: .normal)
                 }

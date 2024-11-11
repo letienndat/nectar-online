@@ -71,6 +71,18 @@ class AccountViewController: UIViewController {
             self.showErrorAlert(message: error, isReload: true, handleReload: { self.fetchData() })
         }
         
+        self.accountViewModel.closureLogOutSuccess = { [weak self] in
+            guard let self = self else { return }
+            
+            self.tabBarController?.selectedIndex = 0
+        }
+        
+        self.accountViewModel.closureLogOutFail = { [weak self] error in
+            guard let self = self else { return }
+            
+            self.showErrorAlert(message: error, isReload: false, handleReload: nil)
+        }
+        
         self.accountViewModel.updateAccount = { [weak self] in
             guard let self = self else { return }
             
@@ -424,6 +436,6 @@ class AccountViewController: UIViewController {
     
     // Hàm xử lý đăng xuất
     @objc private func handleLogOut(_ sender: AnyObject) {
-        //
+        self.accountViewModel.logout()
     }
 }

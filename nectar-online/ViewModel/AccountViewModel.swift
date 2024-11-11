@@ -31,6 +31,8 @@ class AccountViewModel {
     var hideLoading: (() -> Void)?
     var hideRefreshing: (() -> Void)?
     var showError: ((String) -> Void)?
+    var closureLogOutSuccess: (() -> Void)?
+    var closureLogOutFail: ((String) -> Void)?
     var closureNoAccess: (() -> Void)?
     
     init(accountService: AccountService = AccountService()) {
@@ -64,6 +66,34 @@ class AccountViewModel {
                 }
             }
         }
+    }
+    
+    func logout() {
+        AppConfig.isLogin = false
+        deleteToken(for: Const.KEYCHAIN_TOKEN)
+        self.closureLogOutSuccess?()
+        
+//        self.showLoading?()
+//
+//        let token: String? = getToken(for: Const.KEYCHAIN_TOKEN)
+//
+//        self.accountService.logout(token: token) { [weak self] result in
+//            guard let self = self else { return }
+//
+//            DispatchQueue.main.async {
+//                self.hideLoading?()
+//
+//                switch result {
+//                case .success(_):
+//                    AppConfig.isLogin = false
+//                    deleteToken(for: Const.KEYCHAIN_TOKEN)
+//
+//                    self.closureLogOutSuccess?()
+//                case .failure(let error):
+//                    self.closureLogOutFail?(error.localizedDescription)
+//                }
+//            }
+//        }
     }
 }
 
