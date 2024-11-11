@@ -1019,7 +1019,7 @@ class ProductDetailViewController: UIViewController {
             // Trình bày modally để nó chồng lên tabBar
             self.present(navController, animated: true, completion: nil)
         } else {
-            // Thêm sản phẩm vào danh sách yêu thích
+            // Thêm sản phẩm vào giỏ hàng
             
             guard let id = self.productDetailViewModel.product?.id else {
                 return

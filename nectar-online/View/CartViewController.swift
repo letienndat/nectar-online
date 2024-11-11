@@ -277,6 +277,24 @@ class CartViewController: UIViewController {
             buttonGoToCheckout.leadingAnchor.constraint(equalTo: viewLogin.leadingAnchor, constant: 25),
             buttonGoToCheckout.trailingAnchor.constraint(equalTo: viewLogin.trailingAnchor, constant: -25)
         ])
+        
+        buttonGoToCheckout.addTarget(self, action: #selector(handleGoToCheckout(_:)), for: .touchUpInside)
+        
+        // Tạo rightView
+        priceLabel.text = ""
+        priceLabel.font = UIFont(name: "Gilroy-Semibold", size: 12)
+        priceLabel.textColor = UIColor(hex: "#FCFCFC")
+        priceLabel.backgroundColor = UIColor(hex: "#489E67")
+        priceLabel.layer.cornerRadius = 4
+        priceLabel.clipsToBounds = true
+        priceLabel.textAlignment = .center
+        priceLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            priceLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 22)
+        ])
+        buttonGoToCheckout.rightView = priceLabel
+        
+        buttonGoToCheckout.rightView?.isHidden = true
     }
     
     private func setupViewNoLigin() {
@@ -330,22 +348,6 @@ class CartViewController: UIViewController {
         ])
         
         buttonConfirmNoLogin.addTarget(self, action: #selector(handleConfirm(_:)), for: .touchUpInside)
-        
-        // Tạo rightView
-        priceLabel.text = ""
-        priceLabel.font = UIFont(name: "Gilroy-Semibold", size: 12)
-        priceLabel.textColor = UIColor(hex: "#FCFCFC")
-        priceLabel.backgroundColor = UIColor(hex: "#489E67")
-        priceLabel.layer.cornerRadius = 4
-        priceLabel.clipsToBounds = true
-        priceLabel.textAlignment = .center
-        priceLabel.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            priceLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 22)
-        ])
-        buttonGoToCheckout.rightView = priceLabel
-        
-        buttonGoToCheckout.rightView?.isHidden = true
     }
     
     private func setupLoadingOverlay() {
@@ -396,6 +398,11 @@ class CartViewController: UIViewController {
     
     @objc private func handleConfirm(_ sender: AnyObject) {
         HomeScreenViewController.redirectToSignin(for: self)
+    }
+    
+    // Hàm xử lý Go to Checkout
+    @objc private func handleGoToCheckout(_ sender: AnyObject) {
+        //
     }
 }
 
@@ -459,7 +466,7 @@ extension CartViewController: UICollectionViewDataSource {
         cell.quantityProduct.textColor = UIColor(hex: "#181725")
         cell.canBeSubtracted(product?.quantity ?? 1 > 1)
         
-        cell.priceProduct.text = "$" + String(format: "%.2f", (product?.price ?? 0) * Double(product?.quantity ?? 0))
+        cell.priceProduct.text = "$" + String(format: "%.2f", (product?.price ?? 0) * Double(product?.quantity ?? 1))
         cell.priceProduct.font = UIFont(name: "Gilroy-Bold", size: 18)
         cell.priceProduct.textColor = UIColor(hex: "#181725")
 
