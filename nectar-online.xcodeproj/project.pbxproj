@@ -328,7 +328,7 @@
 				FA3B6E4F2CC36D61004DD798 /* SceneDelegate.swift */,
 				FA75F24E2CDB95C400352D56 /* MainTabViewController.swift */,
 				FA489AFF2CDCA75F00FF52A3 /* SessionManager.swift */,
-				FABC7A842CC3F5D2005C5BCB /* fonts */,
+				FABC7A842CC3F5D2005C5BCB /* Fonts */,
 				FA3D74B22CD6314A005487E4 /* Config */,
 				FA4F59152CCC82B4009F09F1 /* Core */,
 				FA3D74AD2CD5E06A005487E4 /* Security */,
@@ -453,7 +453,7 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		FABC7A842CC3F5D2005C5BCB /* fonts */ = {
+		FABC7A842CC3F5D2005C5BCB /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
 				FABC7A852CC3F5D2005C5BCB /* Gilroy-UltraLightItalic.ttf */,
@@ -477,7 +477,7 @@
 				FABC7A972CC3F5D2005C5BCB /* Gilroy-Bold.ttf */,
 				FABC7A982CC3F5D2005C5BCB /* Gilroy-Heavy.ttf */,
 			);
-			path = fonts;
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 		FAEB98232CD5CDEF00A3AA0A /* Response */ = {
