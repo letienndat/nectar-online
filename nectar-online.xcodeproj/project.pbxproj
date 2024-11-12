@@ -111,6 +111,12 @@
 		FABC7AB02CC3F76C005C5BCB /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABC7AAF2CC3F76C005C5BCB /* SignInViewController.swift */; };
 		FADE3C642CE066E0007C594D /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADE3C632CE066E0007C594D /* PaddingLabel.swift */; };
 		FADE3C662CE09719007C594D /* Cart.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADE3C652CE09719007C594D /* Cart.swift */; };
+		FAE32DB02CE3072700F1A822 /* CheckoutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE32DAF2CE3072700F1A822 /* CheckoutViewController.swift */; };
+		FAE32DB22CE33F5300F1A822 /* OptionInCheckoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE32DB12CE33F5300F1A822 /* OptionInCheckoutView.swift */; };
+		FAE32DB42CE340A200F1A822 /* CheckoutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE32DB32CE340A200F1A822 /* CheckoutService.swift */; };
+		FAE32DB62CE3414900F1A822 /* CheckoutViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE32DB52CE3414900F1A822 /* CheckoutViewModel.swift */; };
+		FAE32DB82CE3621C00F1A822 /* OrderAcceptedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE32DB72CE3621C00F1A822 /* OrderAcceptedViewController.swift */; };
+		FAE32DBA2CE3623200F1A822 /* OrderFailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE32DB92CE3623200F1A822 /* OrderFailViewController.swift */; };
 		FAEB98252CD5CE2A00A3AA0A /* TokenResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEB98242CD5CE2A00A3AA0A /* TokenResponse.swift */; };
 		FAF2374D2CDDCEF10065317A /* AnimationLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF2374C2CDDCEF10065317A /* AnimationLoadingView.swift */; };
 /* End PBXBuildFile section */
@@ -224,6 +230,12 @@
 		FABDD5A22CD65E1400AC88CD /* nectar-online.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "nectar-online.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FADE3C632CE066E0007C594D /* PaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
 		FADE3C652CE09719007C594D /* Cart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cart.swift; sourceTree = "<group>"; };
+		FAE32DAF2CE3072700F1A822 /* CheckoutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutViewController.swift; sourceTree = "<group>"; };
+		FAE32DB12CE33F5300F1A822 /* OptionInCheckoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionInCheckoutView.swift; sourceTree = "<group>"; };
+		FAE32DB32CE340A200F1A822 /* CheckoutService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutService.swift; sourceTree = "<group>"; };
+		FAE32DB52CE3414900F1A822 /* CheckoutViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutViewModel.swift; sourceTree = "<group>"; };
+		FAE32DB72CE3621C00F1A822 /* OrderAcceptedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderAcceptedViewController.swift; sourceTree = "<group>"; };
+		FAE32DB92CE3623200F1A822 /* OrderFailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderFailViewController.swift; sourceTree = "<group>"; };
 		FAEB98242CD5CE2A00A3AA0A /* TokenResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenResponse.swift; sourceTree = "<group>"; };
 		FAF2374C2CDDCEF10065317A /* AnimationLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationLoadingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -275,6 +287,9 @@
 				FA952ADF2CCDE84C0077DFB6 /* CartViewController.swift */,
 				FA952AE12CCDECC60077DFB6 /* FavoriteViewController.swift */,
 				FA952AE32CCDECCE0077DFB6 /* AccountViewController.swift */,
+				FAE32DAF2CE3072700F1A822 /* CheckoutViewController.swift */,
+				FAE32DB72CE3621C00F1A822 /* OrderAcceptedViewController.swift */,
+				FAE32DB92CE3623200F1A822 /* OrderFailViewController.swift */,
 				FA489AF92CDC70D500FF52A3 /* NotifyRequireLoginViewController.swift */,
 			);
 			path = View;
@@ -366,6 +381,7 @@
 				FA9681D92CE1A32A00FC95FD /* NotificationBanner.swift */,
 				FA9681E52CE1ECB300FC95FD /* ProductFavoriteViewCell.swift */,
 				FA9681ED2CE2194F00FC95FD /* OptionInAccountView.swift */,
+				FAE32DB12CE33F5300F1A822 /* OptionInCheckoutView.swift */,
 			);
 			path = Component;
 			sourceTree = "<group>";
@@ -397,6 +413,7 @@
 				FAAAB85E2CDF376700103C4C /* CartService.swift */,
 				FA9681E12CE1DE9300FC95FD /* FavoriteService.swift */,
 				FA9681E92CE2020100FC95FD /* AccountService.swift */,
+				FAE32DB32CE340A200F1A822 /* CheckoutService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -431,6 +448,7 @@
 				FAAAB85C2CDF373600103C4C /* CartViewModel.swift */,
 				FA9681E32CE1DF4400FC95FD /* FavoriteViewModel.swift */,
 				FA9681EB2CE202DF00FC95FD /* AccountViewModel.swift */,
+				FAE32DB52CE3414900F1A822 /* CheckoutViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -623,10 +641,12 @@
 				FA952AE42CCDECCE0077DFB6 /* AccountViewController.swift in Sources */,
 				FA31EC262CC91DD400ECE5D5 /* Implement.swift in Sources */,
 				FA952AE02CCDE84C0077DFB6 /* CartViewController.swift in Sources */,
+				FAE32DB62CE3414900F1A822 /* CheckoutViewModel.swift in Sources */,
 				FA9681EA2CE2020100FC95FD /* AccountService.swift in Sources */,
 				FAAAB85D2CDF373600103C4C /* CartViewModel.swift in Sources */,
 				FAADD7E92CD518F20067C5D9 /* ProductViewCell.swift in Sources */,
 				FA7FCB132CDA087400ED0C85 /* CheckboxButton.swift in Sources */,
+				FAE32DB42CE340A200F1A822 /* CheckoutService.swift in Sources */,
 				FA9681E42CE1DF4400FC95FD /* FavoriteViewModel.swift in Sources */,
 				FA9681EC2CE202DF00FC95FD /* AccountViewModel.swift in Sources */,
 				FAADD7F12CD5BC940067C5D9 /* ProductClassification.swift in Sources */,
@@ -639,6 +659,7 @@
 				FA4F59172CCC82C7009F09F1 /* Validate.swift in Sources */,
 				FAADD7DC2CD4C7000067C5D9 /* ExploreViewModel.swift in Sources */,
 				FAADD7DF2CD4C79D0067C5D9 /* CategoryProduct.swift in Sources */,
+				FAE32DB22CE33F5300F1A822 /* OptionInCheckoutView.swift in Sources */,
 				FAA3BBD52CD342FD00A2EFA8 /* LoginViewModel.swift in Sources */,
 				FA3D74B42CD63161005487E4 /* AppConfig.swift in Sources */,
 				FAA3BBDD2CD3581F00A2EFA8 /* ProductDetailViewModel.swift in Sources */,
@@ -648,9 +669,11 @@
 				FAEB98252CD5CE2A00A3AA0A /* TokenResponse.swift in Sources */,
 				FA8D3BDA2CD1E58F005399F8 /* Area.swift in Sources */,
 				FA7E09992CCA2848001FA9C3 /* SelectLocationViewController.swift in Sources */,
+				FAE32DBA2CE3623200F1A822 /* OrderFailViewController.swift in Sources */,
 				FA489AFE2CDC7C4200FF52A3 /* AppService.swift in Sources */,
 				FAF2374D2CDDCEF10065317A /* AnimationLoadingView.swift in Sources */,
 				FA3D74B12CD5E557005487E4 /* NullResponse.swift in Sources */,
+				FAE32DB82CE3621C00F1A822 /* OrderAcceptedViewController.swift in Sources */,
 				FABC7AB02CC3F76C005C5BCB /* SignInViewController.swift in Sources */,
 				FA4F591C2CCCC1DD009F09F1 /* ButtonView.swift in Sources */,
 				FA3B6E522CC36D61004DD798 /* OnbordingViewController.swift in Sources */,
@@ -690,6 +713,7 @@
 				FAADD7E72CD4E9290067C5D9 /* Product.swift in Sources */,
 				FAAAB85F2CDF376700103C4C /* CartService.swift in Sources */,
 				FA952ADE2CCDE76E0077DFB6 /* ExploreViewController.swift in Sources */,
+				FAE32DB02CE3072700F1A822 /* CheckoutViewController.swift in Sources */,
 				FA9681E22CE1DE9300FC95FD /* FavoriteService.swift in Sources */,
 				FADE3C662CE09719007C594D /* Cart.swift in Sources */,
 				FA328A472CC54EC00026E843 /* NumberViewController.swift in Sources */,

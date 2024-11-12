@@ -10,16 +10,6 @@ import SDWebImage
 
 class AccountViewController: UIViewController {
     
-    private let topBorder: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor(hex: "#E2E2E2")
-        return view
-    }()
-    private let bottomBorder: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor(hex: "#E2E2E2")
-        return view
-    }()
     private let viewNoLogin = UIView()
     private let viewLogin = UIView()
     let buttonConfirmNoLogin = ButtonView.createSystemButton(
@@ -285,7 +275,7 @@ class AccountViewController: UIViewController {
             stackView.trailingAnchor.constraint(equalTo: subView.trailingAnchor)
         ])
         
-        stackView.addArrangedSubview(topBorder)
+        stackView.addArrangedSubview(UIView())
         
         accountViewModel.optionsViewAccount.forEach { option in
             
@@ -305,7 +295,7 @@ class AccountViewController: UIViewController {
             ])
         }
         
-        stackView.addArrangedSubview(bottomBorder)
+        stackView.addArrangedSubview(UIView())
         
         let viewEmpty = UIView()
         subView.addSubview(viewEmpty)

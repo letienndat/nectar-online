@@ -128,6 +128,14 @@ class MainTabViewController: UITabBarController {
             }
         }
     }
+    
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return .portrait
+    }
+
+    override var shouldAutorotate: Bool {
+        return false
+    }
 }
 
 extension MainTabViewController: UITabBarControllerDelegate {

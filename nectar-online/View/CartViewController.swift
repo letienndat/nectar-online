@@ -22,21 +22,21 @@ class CartViewController: UIViewController {
     }()
     private let viewNoLogin = UIView()
     private let viewLogin = UIView()
-    let buttonConfirmNoLogin = ButtonView.createSystemButton(
+    private let buttonConfirmNoLogin = ButtonView.createSystemButton(
         title: "Redirect To Signin",
         titleColor: UIColor(hex: "#FFF9FF"),
         titleFont: UIFont(name: "Gilroy-Semibold", size: 18),
         backgroundColor: UIColor(hex: "#53B175"),
         borderRadius: 19
     )
-    let buttonGoToCheckout = ButtonView.createSystemButton(
+    private let buttonGoToCheckout = ButtonView.createSystemButton(
         title: "Go to Checkout",
         titleColor: UIColor(hex: "#FFF9FF"),
         titleFont: UIFont(name: "Gilroy-Semibold", size: 18),
         backgroundColor: UIColor(hex: "#53B175"),
         borderRadius: 19
     )
-    let priceLabel = PaddedLabel(padding: UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5))
+    private let priceLabel = PaddedLabel(padding: UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5))
     private let loading = AnimationLoadingView()
     private let refreshControl = UIRefreshControl()
     private lazy var gridCollectionProduct: UICollectionView = {
@@ -184,7 +184,7 @@ class CartViewController: UIViewController {
         self.navigationItem.title = "My Cart"
         
         if AppConfig.isLogin {
-            self.fetchData()
+//            self.fetchData()
             
             self.viewLogin.isHidden = false
             self.viewNoLogin.isHidden = true
@@ -402,7 +402,9 @@ class CartViewController: UIViewController {
     
     // Hàm xử lý Go to Checkout
     @objc private func handleGoToCheckout(_ sender: AnyObject) {
-        //
+        let checkoutViewController = CheckoutViewController(tabBarController: self.tabBarController!, totalPrice: self.cartViewModel.cart?.totalPrice ?? 0)
+        checkoutViewController.modalPresentationStyle = .overFullScreen
+        self.present(checkoutViewController, animated: false, completion: nil)
     }
 }
 

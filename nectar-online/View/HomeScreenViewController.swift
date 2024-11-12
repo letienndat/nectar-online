@@ -300,7 +300,7 @@ class HomeScreenViewController: UIViewController {
         self.fetchData()
     }
     
-    private func fetchData() {
+    func fetchData() {
         homeScreenViewModel.fetchBanner()
         homeScreenViewModel.fetchProductClassifications()
     }

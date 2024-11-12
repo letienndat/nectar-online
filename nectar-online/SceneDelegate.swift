@@ -30,7 +30,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         
         AppConfig.isLogin = true
-        saveToken(token: "â", for: Const.KEYCHAIN_TOKEN)
+        saveToken(token: "it is token", for: Const.KEYCHAIN_TOKEN)
         
         if AppConfig.isLogin {
             let appService = AppService()
