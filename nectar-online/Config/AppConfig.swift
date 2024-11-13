@@ -35,11 +35,3 @@ struct AppConfig {
         }
     }
 }
-
-// Kiểm tra và cập nhật trạng thái lần đầu
-//if AppConfig.isFirstLaunch {
-//    print("Đây là lần đầu người dùng mở ứng dụng.")
-//    AppConfig.isFirstLaunch = false // Cập nhật lại sau lần đầu
-//} else {
-//    print("Người dùng đã mở ứng dụng trước đó.")
-//}

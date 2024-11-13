@@ -188,8 +188,6 @@ class HomeScreenViewController: UIViewController {
                         // Nếu người dùng chưa đăng nhập sẽ hiển thị thông báo đăng nhập để sử dụng tính năng này
                         if !AppConfig.isLogin {
                             
-                            SessionManager.shared.indexTabbarView = 0
-                            
                             // Tạo view controller của thông báo đăng nhập
                             let notifyRequireLoginViewController = NotifyRequireLoginViewController(content: "Login required before using this feature!")
                             
@@ -280,8 +278,6 @@ class HomeScreenViewController: UIViewController {
         
         self.homeScreenViewModel.closureNoAccess = { [weak self] in
             guard let self = self else { return }
-            
-            SessionManager.shared.indexTabbarView = 0
             
             // Tạo view controller của thông báo đăng nhập
             let notifyRequireLoginViewController = NotifyRequireLoginViewController(content: "Your session has expired. Please login to use this feature!")
@@ -594,8 +590,6 @@ class HomeScreenViewController: UIViewController {
                 viewProduct.closureAddToCart = { idProduct in
                     // Nếu người dùng chưa đăng nhập sẽ hiển thị thông báo đăng nhập để sử dụng tính năng này
                     if !AppConfig.isLogin {
-                        
-                        SessionManager.shared.indexTabbarView = 0
                         
                         // Tạo view controller của thông báo đăng nhập
                         let notifyRequireLoginViewController = NotifyRequireLoginViewController(content: "Login required before using this feature!")

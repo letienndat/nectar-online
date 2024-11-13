@@ -54,8 +54,6 @@ class CheckoutViewController: UIViewController {
         self.checkoutViewModel.closureNoAccess = { [weak self] in
             guard let self = self else { return }
             
-            SessionManager.shared.indexTabbarView = 0
-            
             // Tạo view controller của thông báo đăng nhập
             let notifyRequireLoginViewController = NotifyRequireLoginViewController(content: "Your session has expired. Please login to use this feature!")
             
@@ -193,7 +191,7 @@ class CheckoutViewController: UIViewController {
             
             if option.isChange {
                 let rightView = UILabel()
-                rightView.text = "$\(self.checkoutViewModel.totalCost)"
+                rightView.text = "$" + String(format: "%.2f", self.checkoutViewModel.totalCost)
                 rightView.font = UIFont(name: "Gilroy-Semibold", size: 16)
                 rightView.textColor = UIColor(hex: "#181725")
                 
@@ -320,6 +318,6 @@ class CheckoutViewController: UIViewController {
     }
     
     @objc private func handlePlaceOrder(_ sender: AnyObject) {
-        self.checkoutViewModel.order()
+        self.checkoutViewModel.checkout()
     }
 }

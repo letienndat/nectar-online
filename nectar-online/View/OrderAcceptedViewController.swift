@@ -9,6 +9,7 @@ import UIKit
 
 class OrderAcceptedViewController: UIViewController {
     
+    private let (blurTop, blurBottom) = BlurView.getBlur()
     private let tabBarController_: UITabBarController
     private let closureDismissSupperView: (() -> Void)?
     
@@ -31,6 +32,26 @@ class OrderAcceptedViewController: UIViewController {
     
     private func setupView() {
         view.backgroundColor = UIColor(hex: "#FFFFFF")
+        
+        self.view.addSubview(blurTop)
+        blurTop.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            blurTop.topAnchor.constraint(equalTo: view.topAnchor),
+            blurTop.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            blurTop.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            blurTop.widthAnchor.constraint(equalTo: view.widthAnchor)
+        ])
+        
+        self.view.addSubview(blurBottom)
+        blurBottom.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            blurBottom.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            blurBottom.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            blurBottom.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            blurBottom.widthAnchor.constraint(equalTo: view.widthAnchor)
+        ])
         
         let viewTop = UIView()
         viewTop.backgroundColor = .clear

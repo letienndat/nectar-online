@@ -30,12 +30,12 @@ class CheckoutViewModel {
         self.totalCost = 0
     }
     
-    func order() {
+    func checkout() {
         self.showLoading?()
 
         let token: String? = getToken(for: Const.KEYCHAIN_TOKEN)
 
-        self.checkoutService.order(token: token) { [weak self] result in
+        self.checkoutService.checkout(token: token) { [weak self] result in
             guard let self = self else { return }
 
             DispatchQueue.main.async {

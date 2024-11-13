@@ -401,7 +401,13 @@ class LogInViewController: UIViewController {
     
     // Hàm xử lý khi login thành công
     private func loginSuccess() {
-        self.tabBarController?.selectedIndex = SessionManager.shared.indexTabbarView
+        // Pop về màn hình gốc của UINavigationController bên trong tab Home
+        if let homeNavController = self.tabBarController?.viewControllers?[0] as? UINavigationController {
+            homeNavController.popToRootViewController(animated: true)
+            if let homeScreenViewController = homeNavController.viewControllers.first as? HomeScreenViewController {
+                homeScreenViewController.fetchData()
+            }
+        }
     }
     
     // Hiển thị lỗi

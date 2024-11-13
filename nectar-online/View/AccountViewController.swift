@@ -65,6 +65,17 @@ class AccountViewController: UIViewController {
             guard let self = self else { return }
             
             self.tabBarController?.selectedIndex = 0
+            
+            if let tabItems = self.tabBarController?.tabBar.items {
+                let cartTabItem = tabItems[2]
+                cartTabItem.badgeValue = nil
+            }
+            
+            if let navigationController = self.tabBarController?.viewControllers?[0] as? UINavigationController {
+                if let homeScreenViewController = navigationController.viewControllers.first as? HomeScreenViewController {
+                    homeScreenViewController.fetchData()
+                }
+            }
         }
         
         self.accountViewModel.closureLogOutFail = { [weak self] error in

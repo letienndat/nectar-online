@@ -97,8 +97,6 @@ class CartViewController: UIViewController {
         self.cartViewModel.closureNoAccess = { [weak self] in
             guard let self = self else { return }
             
-            SessionManager.shared.indexTabbarView = 0
-            
             // Tạo view controller của thông báo đăng nhập
             let notifyRequireLoginViewController = NotifyRequireLoginViewController(content: "Your session has expired. Please login to use this feature!")
             

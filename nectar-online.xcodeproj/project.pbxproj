@@ -25,7 +25,6 @@
 		FA3D74B62CD63A81005487E4 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3D74B52CD63A81005487E4 /* Image.swift */; };
 		FA489AFA2CDC70D500FF52A3 /* NotifyRequireLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA489AF92CDC70D500FF52A3 /* NotifyRequireLoginViewController.swift */; };
 		FA489AFE2CDC7C4200FF52A3 /* AppService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA489AFD2CDC7C4200FF52A3 /* AppService.swift */; };
-		FA489B002CDCA75F00FF52A3 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA489AFF2CDCA75F00FF52A3 /* SessionManager.swift */; };
 		FA489B022CDCB08200FF52A3 /* FavoriteProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA489B012CDCB08200FF52A3 /* FavoriteProduct.swift */; };
 		FA489B042CDCBB8200FF52A3 /* AddProductToCartResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA489B032CDCBB8200FF52A3 /* AddProductToCartResponse.swift */; };
 		FA4F59142CCBC9F4009F09F1 /* FormControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F59132CCBC9F4009F09F1 /* FormControlView.swift */; };
@@ -127,7 +126,6 @@
 		FA3D74B52CD63A81005487E4 /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
 		FA489AF92CDC70D500FF52A3 /* NotifyRequireLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifyRequireLoginViewController.swift; sourceTree = "<group>"; };
 		FA489AFD2CDC7C4200FF52A3 /* AppService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppService.swift; sourceTree = "<group>"; };
-		FA489AFF2CDCA75F00FF52A3 /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
 		FA489B012CDCB08200FF52A3 /* FavoriteProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteProduct.swift; sourceTree = "<group>"; };
 		FA489B032CDCBB8200FF52A3 /* AddProductToCartResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductToCartResponse.swift; sourceTree = "<group>"; };
 		FA4F59132CCBC9F4009F09F1 /* FormControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormControlView.swift; sourceTree = "<group>"; };
@@ -295,7 +293,6 @@
 				FA3B6E4D2CC36D61004DD798 /* AppDelegate.swift */,
 				FA3B6E4F2CC36D61004DD798 /* SceneDelegate.swift */,
 				FA75F24E2CDB95C400352D56 /* MainTabViewController.swift */,
-				FA489AFF2CDCA75F00FF52A3 /* SessionManager.swift */,
 				FABC7A842CC3F5D2005C5BCB /* Fonts */,
 				FA3D74B22CD6314A005487E4 /* Config */,
 				FA4F59152CCC82B4009F09F1 /* Core */,
@@ -616,7 +613,6 @@
 				FAADD7EB2CD525D30067C5D9 /* Response.swift in Sources */,
 				FA4F591E2CCCCD0F009F09F1 /* LogInViewController.swift in Sources */,
 				FA3D74B62CD63A81005487E4 /* Image.swift in Sources */,
-				FA489B002CDCA75F00FF52A3 /* SessionManager.swift in Sources */,
 				FA8D3BD82CD1E541005399F8 /* Zone.swift in Sources */,
 				FA3B6E4E2CC36D61004DD798 /* AppDelegate.swift in Sources */,
 				FA9681EE2CE2194F00FC95FD /* OptionInAccountView.swift in Sources */,

@@ -20,7 +20,7 @@ class CheckoutService {
         session = URLSession(configuration: configuration)
     }
     
-    func order(token: String?, completion: @escaping (Result<Bool ,Error>) -> Void) {
+    func checkout(token: String?, completion: @escaping (Result<Bool ,Error>) -> Void) {
         guard let token = token else {
             AppConfig.isLogin = false
             completion(.failure(NSError(domain: "", code: 401, userInfo: [NSLocalizedDescriptionKey: "Token is empty"])))
