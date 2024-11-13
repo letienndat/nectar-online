@@ -14,7 +14,7 @@ class AnimationLoadingView: UIView {
         stackView.distribution = .fill
         stackView.axis = .horizontal
         stackView.alignment = .center
-        stackView.spacing = 10
+        stackView.spacing = 8
         return stackView
     }()
 
@@ -50,7 +50,7 @@ class AnimationLoadingView: UIView {
             $0.layer.masksToBounds = true
             $0.backgroundColor = UIColor(hex: "#53B175")
             stackView.addArrangedSubview($0)
-            $0.widthAnchor.constraint(equalToConstant: 10).isActive = true
+            $0.widthAnchor.constraint(equalToConstant: 9).isActive = true
             $0.heightAnchor.constraint(equalTo: $0.widthAnchor).isActive = true
         }
     }
@@ -78,8 +78,8 @@ class AnimationLoadingView: UIView {
     }
 
     private func animate() {
-        let jumpDuration: Double = 0.20
-        let delayDuration: Double = 0.2
+        let jumpDuration: Double = 0.2
+        let delayDuration: Double = 0.1
         let totalDuration: Double = delayDuration + jumpDuration * 2
 
         let jumpRelativeDuration: Double = jumpDuration / totalDuration
