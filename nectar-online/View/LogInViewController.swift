@@ -402,6 +402,8 @@ class LogInViewController: UIViewController {
     // Hàm xử lý khi login thành công
     private func loginSuccess() {
         // Pop về màn hình gốc của UINavigationController bên trong tab Home
+        self.tabBarController?.selectedIndex = 0
+        
         if let homeNavController = self.tabBarController?.viewControllers?[0] as? UINavigationController {
             homeNavController.popToRootViewController(animated: true)
             if let homeScreenViewController = homeNavController.viewControllers.first as? HomeScreenViewController {

@@ -766,236 +766,240 @@ class DataTest {
         ),
     ]
     
-    public static let listProductCategory: [Product] = [
-        Product(
-            id: 1,
-            name: "Diet Coke",
-            description: "Apples are nutritious. Apples may be good for weight loss. apples may be good for your heart. As part of a healtful and varied diet.",
-            unitOfMeasure: "355ml, Price",
-            price: 24.99,
-            nutrients: "100gr",
-            review: 2.3,
-            rating: 1,
-            sold: 100,
-            stock: 1000,
-            category: Category(id: 1, name: "Category 1"),
-            thumbnail: Image(id: 1, title: "Title Image 1", imageUrl: "product-image-diet-coke"),
-            images: [
-                Image(id: 1, title: "Title Image 1", imageUrl: "product-image-diet-coke"),
-                Image(id: 2, title: "Title Image 2", imageUrl: "product-image-diet-coke"),
-                Image(id: 3, title: "Title Image 3", imageUrl: "product-image-diet-coke")
-            ]
-        ),
-        Product(
-            id: 2,
-            name: "Sprite Can",
-            description: "Apples are nutritious. Apples may be good for weight loss. apples may be good for your heart. As part of a healtful and varied diet.",
-            unitOfMeasure: "325ml, Price",
-            price: 4.99,
-            nutrients: "100gr",
-            review: 2.3,
-            rating: 3,
-            sold: 100,
-            stock: 1000,
-            category: Category(id: 2, name: "Category 2"),
-            thumbnail: Image(id: 1, title: "Title Image 1", imageUrl: "product-image-sprite-can"),
-            images: [
-                Image(id: 1, title: "Title Image 1", imageUrl: "product-image-sprite-can"),
-                Image(id: 2, title: "Title Image 2", imageUrl: "product-image-sprite-can"),
-                Image(id: 3, title: "Title Image 3", imageUrl: "product-image-sprite-can")
-            ]
-        ),
-        Product(
-            id: 3,
-            name: "Apple & Grape Juice",
-            description: "Apples are nutritious. Apples may be good for weight loss. apples may be good for your heart. As part of a healtful and varied diet.",
-            unitOfMeasure: "2L, Price",
-            price: 114.99,
-            nutrients: "100gr",
-            review: 2.3,
-            rating: 2,
-            sold: 100,
-            stock: 1000,
-            category: Category(id: 2, name: "Category 2"),
-            thumbnail: Image(id: 1, title: "Title Image 1", imageUrl: "product-image-apple-and-grape-juice"),
-            images: [
-                Image(id: 1, title: "Title Image 1", imageUrl: "product-image-apple-and-grape-juice"),
-                Image(id: 2, title: "Title Image 2", imageUrl: "product-image-apple-and-grape-juice"),
-                Image(id: 3, title: "Title Image 3", imageUrl: "product-image-apple-and-grape-juice")
-            ]
-        ),
-        Product(
-            id: 4,
-            name: "Orenge Juice",
-            description: "Apples are nutritious. Apples may be good for weight loss. apples may be good for your heart. As part of a healtful and varied diet.",
-            unitOfMeasure: "2L, Price",
-            price: 44.99,
-            nutrients: "100gr",
-            review: 2.3,
-            rating: 5,
-            sold: 100,
-            stock: 1000,
-            category: Category(id: 3, name: "Category 3"),
-            thumbnail: Image(id: 1, title: "Title Image 1", imageUrl: "product-image-orenge-juice"),
-            images: [
-                Image(id: 1, title: "Title Image 1", imageUrl: "product-image-orenge-juice"),
-                Image(id: 2, title: "Title Image 2", imageUrl: "product-image-orenge-juice"),
-                Image(id: 3, title: "Title Image 3", imageUrl: "product-image-orenge-juice")
-            ]
-        ),
-        Product(
-            id: 5,
-            name: "Coca Cola Can",
-            description: "Apples are nutritious. Apples may be good for weight loss. apples may be good for your heart. As part of a healtful and varied diet.",
-            unitOfMeasure: "325ml, Price",
-            price: 64.99,
-            nutrients: "100gr",
-            review: 2.3,
-            rating: 5,
-            sold: 100,
-            stock: 1000,
-            category: Category(id: 1, name: "Category 1"),
-            thumbnail: Image(id: 1, title: "Title Image 1", imageUrl: "product-image-coca-cola-can"),
-            images: [
-                Image(id: 1, title: "Title Image 1", imageUrl: "product-image-coca-cola-can"),
-                Image(id: 2, title: "Title Image 2", imageUrl: "product-image-coca-cola-can"),
-                Image(id: 3, title: "Title Image 3", imageUrl: "product-image-coca-cola-can")
-            ]
-        ),
-        Product(
-            id: 6,
-            name: "Pepsi Can",
-            description: "Apples are nutritious. Apples may be good for weight loss. apples may be good for your heart. As part of a healtful and varied diet.",
-            unitOfMeasure: "330ml, Price",
-            price: 14.99,
-            nutrients: "100gr",
-            review: 4,
-            rating: 4,
-            sold: 100,
-            stock: 1000,
-            category: Category(id: 4, name: "Category 4"),
-            thumbnail: Image(id: 1, title: "Title Image 1", imageUrl: "product-image-pepsi-can"),
-            images: [
-                Image(id: 1, title: "Title Image 1", imageUrl: "product-image-pepsi-can"),
-                Image(id: 2, title: "Title Image 2", imageUrl: "product-image-pepsi-can"),
-                Image(id: 3, title: "Title Image 3", imageUrl: "product-image-pepsi-can")
-            ]
-        ),
-        Product(
-            id: 7,
-            name: "Diet Coke",
-            description: "Apples are nutritious. Apples may be good for weight loss. apples may be good for your heart. As part of a healtful and varied diet.",
-            unitOfMeasure: "355ml, Price",
-            price: 24.99,
-            nutrients: "100gr",
-            review: 4,
-            rating: 5,
-            sold: 100,
-            stock: 1000,
-            category: Category(id: 4, name: "Category 4"),
-            thumbnail: Image(id: 1, title: "Title Image 1", imageUrl: "product-image-diet-coke"),
-            images: [
-                Image(id: 1, title: "Title Image 1", imageUrl: "product-image-diet-coke"),
-                Image(id: 2, title: "Title Image 2", imageUrl: "product-image-diet-coke"),
-                Image(id: 3, title: "Title Image 3", imageUrl: "product-image-diet-coke")
-            ]
-        ),
-        Product(
-            id: 8,
-            name: "Sprite Can",
-            description: "Apples are nutritious. Apples may be good for weight loss. apples may be good for your heart. As part of a healtful and varied diet.",
-            unitOfMeasure: "325ml, Price",
-            price: 94.99,
-            nutrients: "100gr",
-            review: 4,
-            rating: 3,
-            sold: 100,
-            stock: 1000,
-            category: Category(id: 3, name: "Category 3"),
-            thumbnail: Image(id: 1, title: "Title Image 1", imageUrl: "product-image-sprite-can"),
-            images: [
-                Image(id: 1, title: "Title Image 1", imageUrl: "product-image-sprite-can"),
-                Image(id: 2, title: "Title Image 2", imageUrl: "product-image-sprite-can"),
-                Image(id: 3, title: "Title Image 3", imageUrl: "product-image-sprite-can")
-            ]
-        ),
-        Product(
-            id: 9,
-            name: "Apple & Grape Juice",
-            description: "Apples are nutritious. Apples may be good for weight loss. apples may be good for your heart. As part of a healtful and varied diet.",
-            unitOfMeasure: "2L, Price",
-            price: 34.99,
-            nutrients: "100gr",
-            review: 4,
-            rating: 4,
-            sold: 100,
-            stock: 1000,
-            category: Category(id: 3, name: "Category 3"),
-            thumbnail: Image(id: 1, title: "Title Image 1", imageUrl: "product-image-apple-and-grape-juice"),
-            images: [
-                Image(id: 1, title: "Title Image 1", imageUrl: "product-image-apple-and-grape-juice"),
-                Image(id: 2, title: "Title Image 2", imageUrl: "product-image-apple-and-grape-juice"),
-                Image(id: 3, title: "Title Image 3", imageUrl: "product-image-apple-and-grape-juice")
-            ]
-        ),
-        Product(
-            id: 10,
-            name: "Orenge Juice",
-            description: "Apples are nutritious. Apples may be good for weight loss. apples may be good for your heart. As part of a healtful and varied diet.",
-            unitOfMeasure: "2L, Price",
-            price: 34.99,
-            nutrients: "100gr",
-            review: 4,
-            rating: 5,
-            sold: 100,
-            stock: 1000,
-            category: Category(id: 1, name: "Category 1"),
-            thumbnail: Image(id: 1, title: "Title Image 1", imageUrl: "product-image-orenge-juice"),
-            images: [
-                Image(id: 1, title: "Title Image 1", imageUrl: "product-image-orenge-juice"),
-                Image(id: 2, title: "Title Image 2", imageUrl: "product-image-orenge-juice"),
-                Image(id: 3, title: "Title Image 3", imageUrl: "product-image-orenge-juice")
-            ]
-        ),
-        Product(
-            id: 11,
-            name: "Coca Cola Can",
-            description: "Apples are nutritious. Apples may be good for weight loss. apples may be good for your heart. As part of a healtful and varied diet.",
-            unitOfMeasure: "325ml, Price",
-            price: 54.99,
-            nutrients: "100gr",
-            review: 4,
-            rating: 3,
-            sold: 100,
-            stock: 1000,
-            category: Category(id: 1, name: "Category 1"),
-            thumbnail: Image(id: 1, title: "Title Image 1", imageUrl: "product-image-coca-cola-can"),
-            images: [
-                Image(id: 1, title: "Title Image 1", imageUrl: "product-image-coca-cola-can"),
-                Image(id: 2, title: "Title Image 2", imageUrl: "product-image-coca-cola-can"),
-                Image(id: 3, title: "Title Image 3", imageUrl: "product-image-coca-cola-can")
-            ]
-        ),
-        Product(
-            id: 12,
-            name: "Pepsi Can",
-            description: "Apples are nutritious. Apples may be good for weight loss. apples may be good for your heart. As part of a healtful and varied diet.",
-            unitOfMeasure: "330ml, Price",
-            price: 74.99,
-            nutrients: "100gr",
-            review: 4,
-            rating: 4,
-            sold: 100,
-            stock: 1000,
-            category: Category(id: 1, name: "Category 1"),
-            thumbnail: Image(id: 1, title: "Title Image 1", imageUrl: "product-image-pepsi-can"),
-            images: [
-                Image(id: 1, title: "Title Image 1", imageUrl: "product-image-pepsi-can"),
-                Image(id: 2, title: "Title Image 2", imageUrl: "product-image-pepsi-can"),
-                Image(id: 3, title: "Title Image 3", imageUrl: "product-image-pepsi-can")
-            ]
-        ),
-    ]
+    public static let listProductCategory: ProductCategory = ProductCategory(
+        id: 1,
+        name: "Products Category",
+        products: [
+            Product(
+                id: 1,
+                name: "Diet Coke",
+                description: "Apples are nutritious. Apples may be good for weight loss. apples may be good for your heart. As part of a healtful and varied diet.",
+                unitOfMeasure: "355ml, Price",
+                price: 24.99,
+                nutrients: "100gr",
+                review: 2.3,
+                rating: 1,
+                sold: 100,
+                stock: 1000,
+                category: Category(id: 1, name: "Category 1"),
+                thumbnail: Image(id: 1, title: "Title Image 1", imageUrl: "product-image-diet-coke"),
+                images: [
+                    Image(id: 1, title: "Title Image 1", imageUrl: "product-image-diet-coke"),
+                    Image(id: 2, title: "Title Image 2", imageUrl: "product-image-diet-coke"),
+                    Image(id: 3, title: "Title Image 3", imageUrl: "product-image-diet-coke")
+                ]
+            ),
+            Product(
+                id: 2,
+                name: "Sprite Can",
+                description: "Apples are nutritious. Apples may be good for weight loss. apples may be good for your heart. As part of a healtful and varied diet.",
+                unitOfMeasure: "325ml, Price",
+                price: 4.99,
+                nutrients: "100gr",
+                review: 2.3,
+                rating: 3,
+                sold: 100,
+                stock: 1000,
+                category: Category(id: 2, name: "Category 2"),
+                thumbnail: Image(id: 1, title: "Title Image 1", imageUrl: "product-image-sprite-can"),
+                images: [
+                    Image(id: 1, title: "Title Image 1", imageUrl: "product-image-sprite-can"),
+                    Image(id: 2, title: "Title Image 2", imageUrl: "product-image-sprite-can"),
+                    Image(id: 3, title: "Title Image 3", imageUrl: "product-image-sprite-can")
+                ]
+            ),
+            Product(
+                id: 3,
+                name: "Apple & Grape Juice",
+                description: "Apples are nutritious. Apples may be good for weight loss. apples may be good for your heart. As part of a healtful and varied diet.",
+                unitOfMeasure: "2L, Price",
+                price: 114.99,
+                nutrients: "100gr",
+                review: 2.3,
+                rating: 2,
+                sold: 100,
+                stock: 1000,
+                category: Category(id: 2, name: "Category 2"),
+                thumbnail: Image(id: 1, title: "Title Image 1", imageUrl: "product-image-apple-and-grape-juice"),
+                images: [
+                    Image(id: 1, title: "Title Image 1", imageUrl: "product-image-apple-and-grape-juice"),
+                    Image(id: 2, title: "Title Image 2", imageUrl: "product-image-apple-and-grape-juice"),
+                    Image(id: 3, title: "Title Image 3", imageUrl: "product-image-apple-and-grape-juice")
+                ]
+            ),
+            Product(
+                id: 4,
+                name: "Orenge Juice",
+                description: "Apples are nutritious. Apples may be good for weight loss. apples may be good for your heart. As part of a healtful and varied diet.",
+                unitOfMeasure: "2L, Price",
+                price: 44.99,
+                nutrients: "100gr",
+                review: 2.3,
+                rating: 5,
+                sold: 100,
+                stock: 1000,
+                category: Category(id: 3, name: "Category 3"),
+                thumbnail: Image(id: 1, title: "Title Image 1", imageUrl: "product-image-orenge-juice"),
+                images: [
+                    Image(id: 1, title: "Title Image 1", imageUrl: "product-image-orenge-juice"),
+                    Image(id: 2, title: "Title Image 2", imageUrl: "product-image-orenge-juice"),
+                    Image(id: 3, title: "Title Image 3", imageUrl: "product-image-orenge-juice")
+                ]
+            ),
+            Product(
+                id: 5,
+                name: "Coca Cola Can",
+                description: "Apples are nutritious. Apples may be good for weight loss. apples may be good for your heart. As part of a healtful and varied diet.",
+                unitOfMeasure: "325ml, Price",
+                price: 64.99,
+                nutrients: "100gr",
+                review: 2.3,
+                rating: 5,
+                sold: 100,
+                stock: 1000,
+                category: Category(id: 1, name: "Category 1"),
+                thumbnail: Image(id: 1, title: "Title Image 1", imageUrl: "product-image-coca-cola-can"),
+                images: [
+                    Image(id: 1, title: "Title Image 1", imageUrl: "product-image-coca-cola-can"),
+                    Image(id: 2, title: "Title Image 2", imageUrl: "product-image-coca-cola-can"),
+                    Image(id: 3, title: "Title Image 3", imageUrl: "product-image-coca-cola-can")
+                ]
+            ),
+            Product(
+                id: 6,
+                name: "Pepsi Can",
+                description: "Apples are nutritious. Apples may be good for weight loss. apples may be good for your heart. As part of a healtful and varied diet.",
+                unitOfMeasure: "330ml, Price",
+                price: 14.99,
+                nutrients: "100gr",
+                review: 4,
+                rating: 4,
+                sold: 100,
+                stock: 1000,
+                category: Category(id: 4, name: "Category 4"),
+                thumbnail: Image(id: 1, title: "Title Image 1", imageUrl: "product-image-pepsi-can"),
+                images: [
+                    Image(id: 1, title: "Title Image 1", imageUrl: "product-image-pepsi-can"),
+                    Image(id: 2, title: "Title Image 2", imageUrl: "product-image-pepsi-can"),
+                    Image(id: 3, title: "Title Image 3", imageUrl: "product-image-pepsi-can")
+                ]
+            ),
+            Product(
+                id: 7,
+                name: "Diet Coke",
+                description: "Apples are nutritious. Apples may be good for weight loss. apples may be good for your heart. As part of a healtful and varied diet.",
+                unitOfMeasure: "355ml, Price",
+                price: 24.99,
+                nutrients: "100gr",
+                review: 4,
+                rating: 5,
+                sold: 100,
+                stock: 1000,
+                category: Category(id: 4, name: "Category 4"),
+                thumbnail: Image(id: 1, title: "Title Image 1", imageUrl: "product-image-diet-coke"),
+                images: [
+                    Image(id: 1, title: "Title Image 1", imageUrl: "product-image-diet-coke"),
+                    Image(id: 2, title: "Title Image 2", imageUrl: "product-image-diet-coke"),
+                    Image(id: 3, title: "Title Image 3", imageUrl: "product-image-diet-coke")
+                ]
+            ),
+            Product(
+                id: 8,
+                name: "Sprite Can",
+                description: "Apples are nutritious. Apples may be good for weight loss. apples may be good for your heart. As part of a healtful and varied diet.",
+                unitOfMeasure: "325ml, Price",
+                price: 94.99,
+                nutrients: "100gr",
+                review: 4,
+                rating: 3,
+                sold: 100,
+                stock: 1000,
+                category: Category(id: 3, name: "Category 3"),
+                thumbnail: Image(id: 1, title: "Title Image 1", imageUrl: "product-image-sprite-can"),
+                images: [
+                    Image(id: 1, title: "Title Image 1", imageUrl: "product-image-sprite-can"),
+                    Image(id: 2, title: "Title Image 2", imageUrl: "product-image-sprite-can"),
+                    Image(id: 3, title: "Title Image 3", imageUrl: "product-image-sprite-can")
+                ]
+            ),
+            Product(
+                id: 9,
+                name: "Apple & Grape Juice",
+                description: "Apples are nutritious. Apples may be good for weight loss. apples may be good for your heart. As part of a healtful and varied diet.",
+                unitOfMeasure: "2L, Price",
+                price: 34.99,
+                nutrients: "100gr",
+                review: 4,
+                rating: 4,
+                sold: 100,
+                stock: 1000,
+                category: Category(id: 3, name: "Category 3"),
+                thumbnail: Image(id: 1, title: "Title Image 1", imageUrl: "product-image-apple-and-grape-juice"),
+                images: [
+                    Image(id: 1, title: "Title Image 1", imageUrl: "product-image-apple-and-grape-juice"),
+                    Image(id: 2, title: "Title Image 2", imageUrl: "product-image-apple-and-grape-juice"),
+                    Image(id: 3, title: "Title Image 3", imageUrl: "product-image-apple-and-grape-juice")
+                ]
+            ),
+            Product(
+                id: 10,
+                name: "Orenge Juice",
+                description: "Apples are nutritious. Apples may be good for weight loss. apples may be good for your heart. As part of a healtful and varied diet.",
+                unitOfMeasure: "2L, Price",
+                price: 34.99,
+                nutrients: "100gr",
+                review: 4,
+                rating: 5,
+                sold: 100,
+                stock: 1000,
+                category: Category(id: 1, name: "Category 1"),
+                thumbnail: Image(id: 1, title: "Title Image 1", imageUrl: "product-image-orenge-juice"),
+                images: [
+                    Image(id: 1, title: "Title Image 1", imageUrl: "product-image-orenge-juice"),
+                    Image(id: 2, title: "Title Image 2", imageUrl: "product-image-orenge-juice"),
+                    Image(id: 3, title: "Title Image 3", imageUrl: "product-image-orenge-juice")
+                ]
+            ),
+            Product(
+                id: 11,
+                name: "Coca Cola Can",
+                description: "Apples are nutritious. Apples may be good for weight loss. apples may be good for your heart. As part of a healtful and varied diet.",
+                unitOfMeasure: "325ml, Price",
+                price: 54.99,
+                nutrients: "100gr",
+                review: 4,
+                rating: 3,
+                sold: 100,
+                stock: 1000,
+                category: Category(id: 1, name: "Category 1"),
+                thumbnail: Image(id: 1, title: "Title Image 1", imageUrl: "product-image-coca-cola-can"),
+                images: [
+                    Image(id: 1, title: "Title Image 1", imageUrl: "product-image-coca-cola-can"),
+                    Image(id: 2, title: "Title Image 2", imageUrl: "product-image-coca-cola-can"),
+                    Image(id: 3, title: "Title Image 3", imageUrl: "product-image-coca-cola-can")
+                ]
+            ),
+            Product(
+                id: 12,
+                name: "Pepsi Can",
+                description: "Apples are nutritious. Apples may be good for weight loss. apples may be good for your heart. As part of a healtful and varied diet.",
+                unitOfMeasure: "330ml, Price",
+                price: 74.99,
+                nutrients: "100gr",
+                review: 4,
+                rating: 4,
+                sold: 100,
+                stock: 1000,
+                category: Category(id: 1, name: "Category 1"),
+                thumbnail: Image(id: 1, title: "Title Image 1", imageUrl: "product-image-pepsi-can"),
+                images: [
+                    Image(id: 1, title: "Title Image 1", imageUrl: "product-image-pepsi-can"),
+                    Image(id: 2, title: "Title Image 2", imageUrl: "product-image-pepsi-can"),
+                    Image(id: 3, title: "Title Image 3", imageUrl: "product-image-pepsi-can")
+                ]
+            ),
+        ]
+    )
     
     public static let cart: Cart = Cart(
         totalPrice: 300.3,

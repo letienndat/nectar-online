@@ -20,7 +20,7 @@ class ProductsCategoryService {
         session = URLSession(configuration: configuration)
     }
     
-    func fetchListProductCategory(id: Int, completion: @escaping (Result<[Product], Error>) -> Void) {
+    func fetchListProductCategory(id: Int, completion: @escaping (Result<ProductCategory, Error>) -> Void) {
         guard let url = URL(string: "\(Const.BASE_URL)/product-categories/\(id)") else {
             return
         }
@@ -50,13 +50,13 @@ class ProductsCategoryService {
             
             do {
                 let coder = JSONDecoder()
-                let response = try coder.decode(Response<[Product]>.self, from: data)
+                let response = try coder.decode(Response<ProductCategory>.self, from: data)
                 
                 if response.status == 0 {
                     completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Fail"])))
                     return
                 } else if response.status == 1 {
-                    completion(.success(response.data ?? []))
+                    completion(.success(response.data ?? ProductCategory()))
                 }
             } catch {
                 completion(.failure(error))

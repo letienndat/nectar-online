@@ -77,14 +77,14 @@ class CartService {
         task.resume()
     }
     
-    func changeQuantity(token: String?, productId: Int, data: [String: Int], completion: @escaping (Result<UpdateQuantityProductInCartResponse ,Error>) -> Void) {
+    func changeQuantity(token: String?, data: [String: Int], completion: @escaping (Result<UpdateQuantityProductInCartResponse ,Error>) -> Void) {
         guard let token = token else {
             AppConfig.isLogin = false
             completion(.failure(NSError(domain: "", code: 401, userInfo: [NSLocalizedDescriptionKey: "Token is empty"])))
             return
         }
         
-        guard let url = URL(string: "\(Const.BASE_URL)/basket/\(productId)") else {
+        guard let url = URL(string: "\(Const.BASE_URL)/basket") else {
             return
         }
         
@@ -143,14 +143,14 @@ class CartService {
         task.resume()
     }
     
-    func removeProduct(token: String?, productId: Int, completion: @escaping (Result<RemoveProductInCartResponse ,Error>) -> Void) {
+    func removeProduct(token: String?, data: [String: Int], completion: @escaping (Result<RemoveProductInCartResponse ,Error>) -> Void) {
         guard let token = token else {
             AppConfig.isLogin = false
             completion(.failure(NSError(domain: "", code: 401, userInfo: [NSLocalizedDescriptionKey: "Token is empty"])))
             return
         }
         
-        guard let url = URL(string: "\(Const.BASE_URL)/basket/\(productId)") else {
+        guard let url = URL(string: "\(Const.BASE_URL)/basket") else {
             return
         }
         
@@ -160,6 +160,15 @@ class CartService {
         
         // Thêm token JWT vào header của request
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        // Chuyển đổi dữ liệu sang JSON
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: data, options: [])
+        } catch {
+            print("Error converting data to JSON:", error)
+            completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Don't convert to JSON"])))
+            return
+        }
         
         // Tạo task để gửi request
         let task = self.session.dataTask(with: request) { data, response, error in

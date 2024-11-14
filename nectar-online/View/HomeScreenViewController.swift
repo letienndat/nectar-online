@@ -101,12 +101,6 @@ class HomeScreenViewController: UIViewController {
             self.showErrorAlert(message: error, isReload: true, handleReload: { self.fetchData() })
         }
         
-        self.homeScreenViewModel.updateProductClassifications = { [weak self] in
-            if let _ = self {
-                
-            }
-        }
-        
         self.homeScreenViewModel.updateLocation = { [weak self] in
             var loc: [String] = []
             if let area = self?.homeScreenViewModel.location.areas.first?.name {
@@ -246,8 +240,6 @@ class HomeScreenViewController: UIViewController {
         
         self.homeScreenViewModel.showErrorSearch = { [weak self] error in
             guard let _ = self else { return }
-            
-//            self.showErrorAlert(message: error, handleReload: nil)
         }
         
         self.homeScreenViewModel.closureAddProductToCartSuccess = { [weak self] totalProduct in
@@ -670,7 +662,7 @@ class HomeScreenViewController: UIViewController {
     }
     
     @objc private func refreshProductClassificaions(_ sender: AnyObject) {
-        self.homeScreenViewModel.fetchProductClassifications(reload: true)
+        self.homeScreenViewModel.fetchProductClassifications(isRefresh: true)
     }
     
     // Hàm xử lý khi nhập nội dung vào tìm kiếm

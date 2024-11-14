@@ -35,7 +35,7 @@ class ProductsCategoryViewController: UIViewController {
     
     init(categoryProduct: CategoryProduct) {
         self.categoryProduct = categoryProduct
-        self.productsFilter = productsCategoryViewModel.listProductCategory
+        self.productsFilter = productsCategoryViewModel.listProductCategory.products
         self.filterViewModel = FilterViewModel(sourcesFilter: [])
         
         super.init(nibName: nil, bundle: nil)
@@ -54,7 +54,7 @@ class ProductsCategoryViewController: UIViewController {
         // Category
         let sourceFilterCategory = SourceFilter(filterCriteria: .category, title: EnumFilterCriteria.category.rawValue)
         var inputsCheckboxCategory: [InputCheckbox] = sourceFilterCategory.inputsCheckbox
-        self.productsCategoryViewModel.listProductCategory.forEach {
+        self.productsCategoryViewModel.listProductCategory.products.forEach {
             let category = $0.category
             if !inputsCheckboxCategory.contains(where: { $0.id == category.id }) {
                 inputsCheckboxCategory.append(InputCheckbox(id: category.id, name: category.name, checked: false, tempChecked: false))
@@ -79,7 +79,7 @@ class ProductsCategoryViewController: UIViewController {
         sourcesFilter.append(sourceFilterPrice)
         
         // Rating
-        let sourceFilterRating = SourceFilter(filterCriteria: .rating, title: EnumFilterCriteria.rating.rawValue)
+        let sourceFilterRating = SourceFilter(filterCriteria: .review, title: EnumFilterCriteria.review.rawValue)
         sourcesFilter.append(sourceFilterRating)
         
         self.filterViewModel.sourcesFilter = sourcesFilter
@@ -126,9 +126,11 @@ class ProductsCategoryViewController: UIViewController {
         }
         
         self.productsCategoryViewModel.updateListProductCategory = {
+            
+            self.navigationItem.title = self.productsCategoryViewModel.listProductCategory.name
             self.gridCollectionProduct.reloadData()
             
-            self.productsFilter = self.productsCategoryViewModel.listProductCategory
+            self.productsFilter = self.productsCategoryViewModel.listProductCategory.products
             self.addSourceFilter()
         }
         
@@ -323,7 +325,7 @@ class ProductsCategoryViewController: UIViewController {
         filterViewController.closureApplyFilter = { [weak self] in
             guard let self = self else { return }
             
-            self.productsFilter = self.productsCategoryViewModel.listProductCategory.filter { product in
+            self.productsFilter = self.productsCategoryViewModel.listProductCategory.products.filter { product in
                 var res: Bool = true
                 
                 // Category
@@ -352,8 +354,8 @@ class ProductsCategoryViewController: UIViewController {
                 }
                 
                 // Rating
-                let sourceFilterRating = self.filterViewModel.sourcesFilter.first(where: { $0.typeFilterCriteria == .rating })
-                res = product.rating >= sourceFilterRating?.rating ?? 0
+                let sourceFilterRating = self.filterViewModel.sourcesFilter.first(where: { $0.typeFilterCriteria == .review })
+                res = Int(product.review) >= sourceFilterRating?.rating ?? 0
                 
                 return res
             }

@@ -159,7 +159,7 @@ class FilterViewController: UIViewController {
                 }
             }
             
-            if source.typeFilterCriteria == .rating {
+            if source.typeFilterCriteria == .review {
                 filterCriteria.handleTapRating = { [weak self] star, state in
                     guard let _ = self else { return }
                     
@@ -206,7 +206,7 @@ class FilterViewController: UIViewController {
             } else if j.typeFilterCriteria == .price {
                 self.filterViewModel.sourcesFilter[i].tempStartRange = j.startRange
                 self.filterViewModel.sourcesFilter[i].tempEndRange = j.endRange
-            } else if j.typeFilterCriteria == .rating {
+            } else if j.typeFilterCriteria == .review {
                 self.filterViewModel.sourcesFilter[i].tempRating = 0
             }
         }
@@ -223,7 +223,7 @@ class FilterViewController: UIViewController {
             } else if j.typeFilterCriteria == .price {
                 self.filterViewModel.sourcesFilter[i].startRange = j.tempStartRange
                 self.filterViewModel.sourcesFilter[i].endRange = j.tempEndRange
-            } else if j.typeFilterCriteria == .rating {
+            } else if j.typeFilterCriteria == .review {
                 self.filterViewModel.sourcesFilter[i].rating = j.tempRating
             }
         }
@@ -245,7 +245,7 @@ class FilterViewController: UIViewController {
                 self.filterViewModel.sourcesFilter[i].endRange = Const.MAX_RANGE_PRICE
                 self.filterViewModel.sourcesFilter[i].tempStartRange = Const.MIN_RANGE_PRICE
                 self.filterViewModel.sourcesFilter[i].tempEndRange = Const.MAX_RANGE_PRICE
-            } else if j.typeFilterCriteria == .rating {
+            } else if j.typeFilterCriteria == .review {
                 self.filterViewModel.sourcesFilter[i].rating = 0
                 self.filterViewModel.sourcesFilter[i].tempRating = 0
             }
@@ -261,7 +261,7 @@ class FilterViewController: UIViewController {
                 element.rangeSlider.selectedMinValue = Const.MIN_RANGE_PRICE
                 element.rangeSlider.selectedMaxValue = Const.MAX_RANGE_PRICE
                 element.rangeSlider.layoutSubviews()
-            } else if element.typeFilterCriteria == .rating {
+            } else if element.typeFilterCriteria == .review {
                 for i in element.listRating {
                     i.backgroundColor = .clear
                 }
@@ -334,7 +334,7 @@ class FilterCriteria: UIView {
             rangeSlider.selectedMinValue = startRange // Giá trị bắt đầu của khoảng chọn
             rangeSlider.selectedMaxValue = endRange // Giá trị kết thúc của khoảng chọn
             
-        case .rating:
+        case .review:
             stride(from: 5, through: 1, by: -1).forEach { i in
                 let title = UILabel()
                 title.text = i == 5 ? "" : "and above"
@@ -408,7 +408,7 @@ class FilterCriteria: UIView {
             NSLayoutConstraint.activate([
                 rangeSlider.trailingAnchor.constraint(equalTo: stackView.trailingAnchor)
             ])
-        case .rating:
+        case .review:
             stackView.spacing = 0
             self.listRating.forEach { ratingView in
                 stackView.addArrangedSubview(ratingView)
@@ -446,7 +446,7 @@ extension FilterCriteria: RangeSeekSliderDelegate {
 enum EnumFilterCriteria: String {
     case category = "Categories"
     case price = "Price"
-    case rating = "Rating"
+    case review = "Review"
 }
 
 class LineCheckBoxView: UIView {

@@ -29,8 +29,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Khởi tạo UIWindow với kích thước của windowScene
         window = UIWindow(windowScene: windowScene)
         
-        AppConfig.isLogin = true
-        saveToken(token: "it is token", for: Const.KEYCHAIN_TOKEN)
+//        AppConfig.isLogin = true
+//        saveToken(token: "it is token", for: Const.KEYCHAIN_TOKEN)
         
         if AppConfig.isLogin {
             let appService = AppService()

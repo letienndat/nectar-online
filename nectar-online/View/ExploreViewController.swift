@@ -95,7 +95,7 @@ class ExploreViewController: UIViewController {
         sourcesFilter.append(sourceFilterPrice)
         
         // Rating
-        let sourceFilterRating = SourceFilter(filterCriteria: .rating, title: EnumFilterCriteria.rating.rawValue)
+        let sourceFilterRating = SourceFilter(filterCriteria: .review, title: EnumFilterCriteria.review.rawValue)
         sourcesFilter.append(sourceFilterRating)
         
         self.filterViewModel.sourcesFilter = sourcesFilter
@@ -474,8 +474,8 @@ class ExploreViewController: UIViewController {
                 }
                 
                 // Rating
-                let sourceFilterRating = self.filterViewModel.sourcesFilter.first(where: { $0.typeFilterCriteria == .rating })
-                res = product.rating >= sourceFilterRating?.rating ?? 0
+                let sourceFilterRating = self.filterViewModel.sourcesFilter.first(where: { $0.typeFilterCriteria == .review })
+                res = Int(product.review) >= sourceFilterRating?.rating ?? 0
                 
                 return res
             }

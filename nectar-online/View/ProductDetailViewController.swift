@@ -345,7 +345,7 @@ class ProductDetailViewController: UIViewController {
         NSLayoutConstraint.activate([
             labelNameProduct.topAnchor.constraint(equalTo: viewInfoMainTop.topAnchor),
             labelNameProduct.leadingAnchor.constraint(equalTo: viewInfoMainTop.leadingAnchor),
-            labelNameProduct.trailingAnchor.constraint(equalTo: viewInfoMainTop.trailingAnchor, constant: -(22.8 + 10)) // Tối đa phải cách icon yêu thích 10,
+            labelNameProduct.trailingAnchor.constraint(equalTo: viewInfoMainTop.trailingAnchor, constant: -(22.8 + 10))
         ])
         
         labelPieceAndPrice.text = productDetailViewModel.product?.unitOfMeasure
@@ -363,7 +363,7 @@ class ProductDetailViewController: UIViewController {
         ])
         
         buttonHeart.setImage(UIImage(named: "icon-heart"), for: .normal)
-        buttonHeart.tintColor = UIColor(hex: "#7C7C7C")
+        buttonHeart.tintColor = UIColor(hex: productDetailViewModel.isFavorite ? "#FF0000" : "#7C7C7C")
         viewInfoMainTop.addSubview(buttonHeart)
         
         buttonHeart.translatesAutoresizingMaskIntoConstraints = false
@@ -820,6 +820,7 @@ class ProductDetailViewController: UIViewController {
             self.slideShow.setImageInputs(self.imageSources)
         }
         
+        buttonHeart.tintColor = UIColor(hex: productDetailViewModel.isFavorite ? "#FF0000" : "#7C7C7C")
         labelNameProduct.text = self.productDetailViewModel.product?.name
         labelPieceAndPrice.text = self.productDetailViewModel.product?.unitOfMeasure
         labelNumberQuantity.text = "$\(self.productDetailViewModel.product?.quantity ?? 1)"

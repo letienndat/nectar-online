@@ -63,7 +63,10 @@ class CartViewModel {
         }
     }
     
-    func changeQuantity(productId: Int, data: [String: Int]) {
+    func changeQuantity(data: [String: Int]) {
+        
+        let productId = data["product_id"]!
+        let method = data["method"]!
         
         guard let quantity = self.cart?.products.first(where: { $0.id == productId })?.quantity else { return }
         guard let method = data.values.first else { return }
@@ -83,10 +86,10 @@ class CartViewModel {
             productViewModel.quantity += data.values.first == 0 ? -1 : 1
             self.cart?.totalPrice += 200
 
-            self.closureChangeQuantity?(productId, data.values.first ?? -1, productViewModel.quantity, productViewModel.price)
+            self.closureChangeQuantity?(productId, method, productViewModel.quantity, productViewModel.price)
         }
         
-//        self.cartService.changeQuantity(token: token, productId: productId, data: data) { [weak self] result in
+//        self.cartService.changeQuantity(token: token, data: data) { [weak self] result in
 //            guard let self = self else { return }
 //
 //            DispatchQueue.main.async {
@@ -106,7 +109,7 @@ class CartViewModel {
 //                        productViewModel.quantity = productFromServer.quantity
 //                        self.cart?.totalPrice = updateQuantityResponse.totalPrice
 //
-//                        self.closureChangeQuantity?(productId, data.values.first ?? -1, productFromServer.quantity, productViewModel.price)
+//                        self.closureChangeQuantity?(productId, method, productFromServer.quantity, productViewModel.price)
 //                    }
 //                case .failure(let error):
 //                    self.showError?(error.localizedDescription)
@@ -115,7 +118,10 @@ class CartViewModel {
 //        }
     }
     
-    func removeProduct(productId: Int) {
+    func removeProduct(data: [String: Int]) {
+        
+        let productId = data["product_id"]!
+        
         self.showLoading?()
         
         let token: String? = getToken(for: Const.KEYCHAIN_TOKEN)
@@ -133,7 +139,7 @@ class CartViewModel {
             }
         }
         
-//        self.cartService.removeProduct(token: token, productId: productId) { [weak self] result in
+//        self.cartService.removeProduct(token: token, data: data) { [weak self] result in
 //            guard let self = self else { return }
 //
 //            DispatchQueue.main.async {

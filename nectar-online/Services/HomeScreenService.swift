@@ -21,9 +21,13 @@ class HomeScreenService {
     }
     
     func fetchProductClassifications(completion: @escaping (Result<[ProductClassification], Error>) -> Void) {
-        guard let url = URL(string: "\(Const.BASE_URL)/product-classifications") else {
+        guard let url = URL(string: "\(Const.BASE_URL)/products") else {
             return
         }
+        
+//        guard let url = URL(string: "https://jsonplaceholder.typicode.com/todos/1") else {
+//            return
+//        }
         
         // Tạo task để gửi request
         let task = self.session.dataTask(with: url) { data, response, error in
@@ -56,6 +60,7 @@ class HomeScreenService {
                     completion(.success(response.data ?? []))
                 }
             } catch {
+                print(error as Any)
                 completion(.failure(error))
             }
         }
@@ -230,7 +235,7 @@ class HomeScreenService {
             return
         }
         
-        guard let url = URL(string: "\(Const.BASE_URL)/add-product-to-cart") else {
+        guard let url = URL(string: "\(Const.BASE_URL)/basket") else {
             return
         }
         
@@ -306,7 +311,7 @@ class HomeScreenService {
             return
         }
         
-        guard let url = URL(string: "\(Const.BASE_URL)/count-product-in-cart") else {
+        guard let url = URL(string: "\(Const.BASE_URL)/total-product-in-cart") else {
             return
         }
         
@@ -346,13 +351,13 @@ class HomeScreenService {
             
             do {
                 let coder = JSONDecoder()
-                let response = try coder.decode(Response<Int>.self, from: data)
+                let response = try coder.decode(Response<AddProductToCartResponse>.self, from: data)
                 
                 if response.status == 0 {
                     completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Fail"])))
                     return
                 } else if response.status == 1 {
-                    if let totalProductInCart = response.data {
+                    if let totalProductInCart = response.data?.totalProduct {
                         completion(.success(totalProductInCart))
                     } else {
                         completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Not login"])))

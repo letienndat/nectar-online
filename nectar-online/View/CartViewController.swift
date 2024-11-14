@@ -127,17 +127,15 @@ class CartViewController: UIViewController {
         self.cartViewModel.closureChangeQuantity = { [weak self] productId, method, quantity, price in
             guard let self = self else { return }
             
-            if method != -1 {
-                // Tìm indexPath của sản phẩm theo id
-                if let index = self.cartViewModel.cart?.products.firstIndex(where: { $0.id == productId }) {
-                    let indexPath = IndexPath(item: index, section: 0)
-                    
-                    // Cập nhật lại cell ở vị trí indexPath
-                    if let cell = self.gridCollectionProduct.cellForItem(at: indexPath) as? ProductCartViewCell {
-                        cell.quantityProduct.text = String(quantity)
-                        cell.canBeSubtracted(quantity > 1)
-                        cell.priceProduct.text = "$" + String(format: "%.2f", Double(quantity) * price)
-                    }
+            // Tìm indexPath của sản phẩm theo id
+            if let index = self.cartViewModel.cart?.products.firstIndex(where: { $0.id == productId }) {
+                let indexPath = IndexPath(item: index, section: 0)
+                
+                // Cập nhật lại cell ở vị trí indexPath
+                if let cell = self.gridCollectionProduct.cellForItem(at: indexPath) as? ProductCartViewCell {
+                    cell.quantityProduct.text = String(quantity)
+                    cell.canBeSubtracted(quantity > 1)
+                    cell.priceProduct.text = "$" + String(format: "%.2f", Double(quantity) * price)
                 }
             }
         }
@@ -481,20 +479,22 @@ extension CartViewController: UICollectionViewDataSource {
             guard let self = self else { return }
             
             let data: [String: Int] = [
+                "product_id": product!.id,
                 "method": 0
             ]
             
-            self.cartViewModel.changeQuantity(productId: product!.id, data: data)
+            self.cartViewModel.changeQuantity(data: data)
         }
         
         cell.closureAddOneQuantity = { [weak self] in
             guard let self = self else { return }
             
             let data: [String: Int] = [
+                "product_id": product!.id,
                 "method": 1
             ]
             
-            self.cartViewModel.changeQuantity(productId: product!.id, data: data)
+            self.cartViewModel.changeQuantity(data: data)
         }
         
         cell.closureRemoveProduct = { [weak self] in
@@ -503,7 +503,11 @@ extension CartViewController: UICollectionViewDataSource {
             self.showQuestionAlert(message: "Are you sure you want to remove product \(product?.name ?? "{}") from your cart?") { [weak self] in
                 guard let self = self else { return }
                 
-                self.cartViewModel.removeProduct(productId: product!.id)
+                let data: [String: Int] = [
+                    "product_id": product!.id
+                ]
+                
+                self.cartViewModel.removeProduct(data: data)
             }
         }
         

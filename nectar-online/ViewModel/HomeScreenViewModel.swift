@@ -75,14 +75,14 @@ class HomeScreenViewModel {
         }
     }
     
-    func fetchProductClassifications(reload: Bool = false) {
-        if !reload {
+    func fetchProductClassifications(isRefresh: Bool = false) {
+        if !isRefresh {
             self.showLoading?()
         }
         
         homeScreenService.fetchProductClassifications { [weak self] result in
             DispatchQueue.main.async {
-                if !reload {
+                if !isRefresh {
                     self?.hideLoading?()
                 } else {
                     self?.hideRefreshing?()
@@ -92,7 +92,7 @@ class HomeScreenViewModel {
                 case .success(let productClassifications):
                     self?.productClassifications = productClassifications
                 case .failure(let error):
-                    if !reload {
+                    if !isRefresh {
                         self?.showError?(error.localizedDescription)
                     }
                 }
