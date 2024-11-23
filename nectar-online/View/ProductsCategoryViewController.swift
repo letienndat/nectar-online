@@ -177,7 +177,7 @@ class ProductsCategoryViewController: UIViewController {
             self.present(navController, animated: true, completion: nil)
         }
         
-//        self.fetchData()
+        self.fetchData()
     }
     
     private func fetchData() {

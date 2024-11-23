@@ -10,7 +10,7 @@ import Foundation
 class HomeScreenViewModel {
     public static let shared: HomeScreenViewModel = HomeScreenViewModel()
     private let homeScreenService = HomeScreenService.shared
-    var productClassifications: [ProductClassification] = DataTest.productClassifications {
+    var productClassifications: [ProductClassification] = [] {
         didSet {
             self.updateProductClassifications?()
         }

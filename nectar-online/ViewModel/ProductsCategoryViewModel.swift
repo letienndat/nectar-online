@@ -10,7 +10,7 @@ import Foundation
 class ProductsCategoryViewModel {
     private let productsCategoryService: ProductsCategoryService!
     private let homeScreenService: HomeScreenService = HomeScreenService.shared
-    var listProductCategory: ProductCategory = DataTest.listProductCategory {
+    var listProductCategory: ProductCategory = ProductCategory() {
         didSet {
             self.updateListProductCategory?()
         }

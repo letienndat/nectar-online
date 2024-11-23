@@ -67,7 +67,9 @@ class ProductDetailViewModel {
             self.showLoading?()
         }
         
-        productDetailService.fetchProduct(id: id) { [weak self] result in
+        let token: String? = getToken(for: Const.KEYCHAIN_TOKEN)
+        
+        productDetailService.fetchProduct(token: token, id: id) { [weak self] result in
             DispatchQueue.main.async {
                 if !isRefresh {
                     self?.hideLoading?()
@@ -76,9 +78,11 @@ class ProductDetailViewModel {
                 }
                 switch result {
                 case .success(let product):
+                    self?.isFavorite = product.isFavorite
                     self?.product = product
                 case .failure(let error):
                     let _ = error
+                    print(error)
                 }
             }
         }

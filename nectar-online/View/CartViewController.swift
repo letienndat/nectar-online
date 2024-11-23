@@ -111,7 +111,7 @@ class CartViewController: UIViewController {
             self.present(navController, animated: true, completion: nil)
         }
         
-        self.cartViewModel.updateCart = { [weak self] in
+        self.cartViewModel.updateProducts = { [weak self] in
             guard let self = self else { return }
             
             self.gridCollectionProduct.reloadData()
@@ -140,14 +140,8 @@ class CartViewController: UIViewController {
             }
         }
         
-        self.cartViewModel.closureRemoveProuct = { [weak self] index in
+        self.cartViewModel.closureRemoveProduct = { [weak self] index in
             guard let self = self else { return }
-            
-            let indexPath = IndexPath(item: index, section: 0)
-            
-            self.gridCollectionProduct.performBatchUpdates({
-                self.gridCollectionProduct.deleteItems(at: [indexPath])
-            }, completion: nil)
             
             if let tabItems = self.tabBarController?.tabBar.items {
                 let cartTabItem = tabItems[2]
@@ -180,7 +174,7 @@ class CartViewController: UIViewController {
         self.navigationItem.title = "My Cart"
         
         if AppConfig.isLogin {
-//            self.fetchData()
+            self.fetchData()
             
             self.viewLogin.isHidden = false
             self.viewNoLogin.isHidden = true

@@ -94,8 +94,25 @@ class FavoriteViewController: UIViewController {
             self.showErrorAlert(message: error, isReload: true, handleReload: { self.fetchData() })
         }
         
+        self.favoriteViewModel.updateProductFavorites = { [weak self] in
+            self?.gridCollectionProduct.reloadData()
+        }
+        
         self.favoriteViewModel.closureAddProductToCartSuccess = { [weak self] totalProduct in
-            guard let _ = self else { return }
+            guard let self = self else { return }
+            
+            // Cập nhật lại số sản phẩm hiện có trong giỏ ở icon tabbar cart
+            if let tabItems = self.tabBarController?.tabBar.items {
+                let cartTabItem = tabItems[2]
+                
+                let resShow: String = totalProduct > 99 ? "99+" : String(totalProduct)
+                cartTabItem.badgeValue = resShow
+                
+                cartTabItem.setBadgeTextAttributes([
+                    .font: UIFont(name: "Gilroy-Semibold", size: 12) ?? .systemFont(ofSize: 12),
+                    .foregroundColor: UIColor(hex: "#FFFFFF")
+                ], for: .normal)
+            }
             
             let banner = NotificationBanner(message: "Product has been added to cart")
             banner.show()

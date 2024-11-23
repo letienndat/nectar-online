@@ -10,7 +10,7 @@ import Foundation
 class FavoriteViewModel {
     private let favoriteService: FavoriteService!
     private let homeScreenService: HomeScreenService = HomeScreenService.shared
-    var productFavorites: [Product] = DataTest.productFavorites {
+    var productFavorites: [Product] = [] {
         didSet {
             self.updateProductFavorites?()
         }

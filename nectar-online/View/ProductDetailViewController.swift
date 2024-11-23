@@ -156,6 +156,8 @@ class ProductDetailViewController: UIViewController {
             // Cập nhật số sao được đánh giá
             self.productDetailViewModel.product?.review = review
             self.productDetailViewModel.product?.rating = rating
+            self.showReview()
+            self.showStars()
         }
         
         self.productDetailViewModel.closureRatingProductFail = { [weak self] _ in
@@ -163,6 +165,8 @@ class ProductDetailViewController: UIViewController {
             
             self.showErrorAlert(message: "Sorry, there was an error while rating the product. Please try again later!", handleReload: nil)
         }
+        
+        self.productDetailViewModel.fetchProduct(id: self.productDetailViewModel.product!.id)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -823,7 +827,7 @@ class ProductDetailViewController: UIViewController {
         buttonHeart.tintColor = UIColor(hex: productDetailViewModel.isFavorite ? "#FF0000" : "#7C7C7C")
         labelNameProduct.text = self.productDetailViewModel.product?.name
         labelPieceAndPrice.text = self.productDetailViewModel.product?.unitOfMeasure
-        labelNumberQuantity.text = "$\(self.productDetailViewModel.product?.quantity ?? 1)"
+        labelNumberQuantity.text = "\(self.productDetailViewModel.product?.quantity ?? 1)"
         labelPrice.text = "$\(self.productDetailViewModel.product?.price ?? 0.00)"
         labelProductDetail.text = self.productDetailViewModel.product?.description
         labelNutritionalContent.text = self.productDetailViewModel.product?.nutrients

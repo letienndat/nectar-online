@@ -1,0 +1,8 @@
+# CocoaPods
+Pods/
+*.xcuserstate
+*.xcworkspace/xcuserdata/
+
+# Build files
+DerivedData/
+build/

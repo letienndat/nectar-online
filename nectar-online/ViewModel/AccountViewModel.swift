@@ -69,31 +69,27 @@ class AccountViewModel {
     }
     
     func logout() {
-        AppConfig.isLogin = false
-        deleteToken(for: Const.KEYCHAIN_TOKEN)
-        self.closureLogOutSuccess?()
-        
-//        self.showLoading?()
-//
-//        let token: String? = getToken(for: Const.KEYCHAIN_TOKEN)
-//
-//        self.accountService.logout(token: token) { [weak self] result in
-//            guard let self = self else { return }
-//
-//            DispatchQueue.main.async {
-//                self.hideLoading?()
-//
-//                switch result {
-//                case .success(_):
-//                    AppConfig.isLogin = false
-//                    deleteToken(for: Const.KEYCHAIN_TOKEN)
-//
-//                    self.closureLogOutSuccess?()
-//                case .failure(let error):
-//                    self.closureLogOutFail?(error.localizedDescription)
-//                }
-//            }
-//        }
+        self.showLoading?()
+
+        let token: String? = getToken(for: Const.KEYCHAIN_TOKEN)
+
+        self.accountService.logout(token: token) { [weak self] result in
+            guard let self = self else { return }
+
+            DispatchQueue.main.async {
+                self.hideLoading?()
+
+                switch result {
+                case .success(_):
+                    AppConfig.isLogin = false
+                    deleteToken(for: Const.KEYCHAIN_TOKEN)
+
+                    self.closureLogOutSuccess?()
+                case .failure(let error):
+                    self.closureLogOutFail?(error.localizedDescription)
+                }
+            }
+        }
     }
 }
 

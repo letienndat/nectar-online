@@ -10,7 +10,7 @@ import Foundation
 class ExploreViewModel {
     private let exploreService: ExploreService!
     private let homeScreenService = HomeScreenService.shared
-    var listCategoryProduct: [CategoryProduct] = DataTest.listCategoryProduct {
+    var listCategoryProduct: [CategoryProduct] = [] {
         didSet {
             self.updateListCategoryProduct?()
         }
@@ -80,18 +80,16 @@ class ExploreViewModel {
     
     func fetchProducts(keyword: String) {
         
-        testSearch(keyword: keyword)
-        
-//        homeScreenService.search(keyword: keyword) { [weak self] result in
-//            DispatchQueue.main.async {
-//                switch result {
-//                case .success(let products):
-//                    self?.listProductSearch = products
-//                case .failure(let error):
-//                    self?.showErrorSearch?(error.localizedDescription)
-//                }
-//            }
-//        }
+        homeScreenService.search(keyword: keyword) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let products):
+                    self?.listProductSearch = products
+                case .failure(let error):
+                    self?.showErrorSearch?(error.localizedDescription)
+                }
+            }
+        }
     }
     
     func testSearch(keyword: String) {

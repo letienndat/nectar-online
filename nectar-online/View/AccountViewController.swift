@@ -87,13 +87,7 @@ class AccountViewController: UIViewController {
         self.accountViewModel.updateAccount = { [weak self] in
             guard let self = self else { return }
             
-            loadImage(from: self.accountViewModel.account.image.imageUrl) {image in
-                if let downloadedImage = image {
-                    self.avatar.image = downloadedImage
-                } else {
-                    //
-                }
-            }
+            self.avatar.image = UIImage()
             self.labelUsername.text = self.accountViewModel.account.username
             self.labelEmail.text = self.accountViewModel.account.email
         }
@@ -194,13 +188,7 @@ class AccountViewController: UIViewController {
             viewProfile.widthAnchor.constraint(equalTo: subView.widthAnchor)
         ])
         
-        loadImage(from: self.accountViewModel.account.image.imageUrl) {image in
-            if let downloadedImage = image {
-                self.avatar.image = downloadedImage
-            } else {
-                //
-            }
-        }
+        avatar.image = UIImage()
         avatar.contentMode = .scaleAspectFit
         avatar.clipsToBounds = true
         avatar.layer.cornerRadius = 27

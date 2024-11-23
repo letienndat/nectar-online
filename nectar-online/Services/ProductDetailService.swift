@@ -20,13 +20,18 @@ class ProductDetailService {
         session = URLSession(configuration: configuration)
     }
     
-    func fetchProduct(id: Int, completion: @escaping (Result<Product, Error>) -> Void) {
+    func fetchProduct(token: String?, id: Int, completion: @escaping (Result<Product, Error>) -> Void) {
         guard let url = URL(string: "\(Const.BASE_URL)/product-detail/\(id)") else {
             return
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
+        
+        // Thêm token JWT vào header của request
+        if token != nil {
+            request.setValue("Bearer \(token!)", forHTTPHeaderField: "Authorization")
+        }
         
         // Tạo task để gửi request
         let task = self.session.dataTask(with: request) { data, response, error in
@@ -64,6 +69,8 @@ class ProductDetailService {
                 }
             } catch {
                 completion(.failure(error))
+                
+                print(error)
             }
         }
         // Thực thi task
@@ -148,7 +155,7 @@ class ProductDetailService {
             return
         }
         
-        guard let url = URL(string: "\(Const.BASE_URL)/rating-product") else {
+        guard let url = URL(string: "\(Const.BASE_URL)/product/rating") else {
             return
         }
         

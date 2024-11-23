@@ -25,10 +25,6 @@ class HomeScreenService {
             return
         }
         
-//        guard let url = URL(string: "https://jsonplaceholder.typicode.com/todos/1") else {
-//            return
-//        }
-        
         // Tạo task để gửi request
         let task = self.session.dataTask(with: url) { data, response, error in
             if let error = error {

@@ -13,9 +13,14 @@ class Cart: Decodable {
             self.updateTotalPrice?()
         }
     }
-    var products: [Product] = []
+    var products: [Product] = [] {
+        didSet {
+            self.updateProducts?()
+        }
+    }
     
     var updateTotalPrice: (() -> Void)?
+    var updateProducts: (() -> Void)?
     
     init() {
         self.totalPrice = 0

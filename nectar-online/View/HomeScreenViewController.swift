@@ -151,7 +151,15 @@ class HomeScreenViewController: UIViewController {
 
                 var viewsProduct: [ProductView] = []
                 productClassification.products.forEach { product in
-                    let imageProduct = UIImage(named: product.thumbnail.imageUrl)
+                    var imageProduct: UIImage? = nil
+                    loadImage(from: product.thumbnail.imageUrl) { img in
+                        if let downloadedImage = img {
+                            print(downloadedImage as Any)
+                            imageProduct = downloadedImage
+                        } else {
+                            //
+                        }
+                    }
 
                     let nameProduct = UILabel()
                     nameProduct.text = product.name
@@ -168,7 +176,7 @@ class HomeScreenViewController: UIViewController {
                     priceProduct.font = UIFont(name: "Gilroy-Semibold", size: 18)
                     priceProduct.textColor = UIColor(hex: "#181725")
 
-                    let viewProduct = ProductView(idProduct: product.id,imageProduct: imageProduct!, nameProduct: nameProduct, piecePriceProduct: piecePriceProduct, priceProduct: priceProduct)
+                    let viewProduct = ProductView(idProduct: product.id,imageProduct: imageProduct ?? UIImage(), nameProduct: nameProduct, piecePriceProduct: piecePriceProduct, priceProduct: priceProduct)
                     
                     viewProduct.translatesAutoresizingMaskIntoConstraints = false
                     NSLayoutConstraint.activate([
@@ -421,8 +429,6 @@ class HomeScreenViewController: UIViewController {
 
             viewLocation.heightAnchor.constraint(equalToConstant: 22.69)
         ])
-        
-        viewLocation.isHidden = true
 
         let iconLocation = UIImageView(image: UIImage(named: "icon-location"))
         viewLocation.addSubview(iconLocation)
@@ -506,6 +512,7 @@ class HomeScreenViewController: UIViewController {
 
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: stackView.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: stackView.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: stackView.trailingAnchor),
         ])
@@ -536,7 +543,7 @@ class HomeScreenViewController: UIViewController {
 
         slideShow.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            slideShow.topAnchor.constraint(equalTo: viewSlideShow.topAnchor, constant: 15),
+            slideShow.topAnchor.constraint(equalTo: viewSlideShow.topAnchor, constant: 5),
             slideShow.bottomAnchor.constraint(equalTo: viewSlideShow.bottomAnchor),
             slideShow.leadingAnchor.constraint(equalTo: viewSlideShow.leadingAnchor, constant: 23),
             slideShow.trailingAnchor.constraint(equalTo: viewSlideShow.trailingAnchor, constant: -23),
@@ -554,7 +561,14 @@ class HomeScreenViewController: UIViewController {
 
             var viewsProduct: [ProductView] = []
             productClassification.products.forEach { product in
-                let imageProduct = UIImage(named: product.thumbnail.imageUrl)
+                var imageProduct: UIImage? = nil
+                loadImage(from: product.thumbnail.imageUrl) { img in
+                    if let downloadedImage = img {
+                        imageProduct = downloadedImage
+                    } else {
+                        //
+                    }
+                }
 
                 let nameProduct = UILabel()
                 nameProduct.text = product.name
@@ -571,7 +585,7 @@ class HomeScreenViewController: UIViewController {
                 priceProduct.font = UIFont(name: "Gilroy-Semibold", size: 18)
                 priceProduct.textColor = UIColor(hex: "#181725")
 
-                let viewProduct = ProductView(idProduct: product.id,imageProduct: imageProduct!, nameProduct: nameProduct, piecePriceProduct: piecePriceProduct, priceProduct: priceProduct)
+                let viewProduct = ProductView(idProduct: product.id,imageProduct: imageProduct ?? UIImage(), nameProduct: nameProduct, piecePriceProduct: piecePriceProduct, priceProduct: priceProduct)
                 
                 viewProduct.translatesAutoresizingMaskIntoConstraints = false
                 NSLayoutConstraint.activate([
@@ -630,12 +644,10 @@ class HomeScreenViewController: UIViewController {
             stackViewContent.addArrangedSubview(productClassficationView)
         }
         
-        let viewPaddingBottom = UIView()
-        stackViewContent.addArrangedSubview(viewPaddingBottom)
+        stackViewContent.addArrangedSubview(UIView())
         
         stackView.addArrangedSubview(gridCollectionProductSearch)
-        
-//        gridCollectionProductSearch.isHidden = true
+        gridCollectionProductSearch.isHidden = true
         
         gridCollectionProductSearch.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -651,7 +663,7 @@ class HomeScreenViewController: UIViewController {
             viewEmpty.topAnchor.constraint(equalTo: stackView.bottomAnchor),
             viewEmpty.bottomAnchor.constraint(equalTo: subView.bottomAnchor),
             viewEmpty.leadingAnchor.constraint(equalTo: subView.leadingAnchor),
-            viewEmpty.trailingAnchor.constraint(equalTo: subView.trailingAnchor)
+            viewEmpty.trailingAnchor.constraint(equalTo: subView.trailingAnchor),
         ])
     }
     

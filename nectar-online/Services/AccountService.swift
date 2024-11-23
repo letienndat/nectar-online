@@ -84,7 +84,7 @@ class AccountService {
             return
         }
         
-        guard let url = URL(string: "\(Const.BASE_URL)/logout") else {
+        guard let url = URL(string: "\(Const.BASE_URL)/auth/logout") else {
             return
         }
         

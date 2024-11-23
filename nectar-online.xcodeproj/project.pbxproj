@@ -87,6 +87,25 @@
 		FAADD7ED2CD5BB230067C5D9 /* HomeScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAADD7EC2CD5BB230067C5D9 /* HomeScreenViewModel.swift */; };
 		FAADD7EF2CD5BB390067C5D9 /* HomeScreenService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAADD7EE2CD5BB390067C5D9 /* HomeScreenService.swift */; };
 		FAADD7F12CD5BC940067C5D9 /* ProductClassification.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAADD7F02CD5BC940067C5D9 /* ProductClassification.swift */; };
+		FAB67D072CF1A639009E0204 /* img-welcome-screen.png in Resources */ = {isa = PBXBuildFile; fileRef = FAB67D062CF1A639009E0204 /* img-welcome-screen.png */; };
+		FAB67D092CF1A681009E0204 /* img-number-screen.png in Resources */ = {isa = PBXBuildFile; fileRef = FAB67D082CF1A681009E0204 /* img-number-screen.png */; };
+		FAB67D0B2CF1A6AA009E0204 /* img-verification-screen.png in Resources */ = {isa = PBXBuildFile; fileRef = FAB67D0A2CF1A6AA009E0204 /* img-verification-screen.png */; };
+		FAB67D0D2CF1A6C6009E0204 /* img-select-location-screen.png in Resources */ = {isa = PBXBuildFile; fileRef = FAB67D0C2CF1A6C6009E0204 /* img-select-location-screen.png */; };
+		FAB67D0F2CF1A6E3009E0204 /* img-log-in-screen.png in Resources */ = {isa = PBXBuildFile; fileRef = FAB67D0E2CF1A6E3009E0204 /* img-log-in-screen.png */; };
+		FAB67D112CF1A6FE009E0204 /* img-sign-up-screen.png in Resources */ = {isa = PBXBuildFile; fileRef = FAB67D102CF1A6FE009E0204 /* img-sign-up-screen.png */; };
+		FAB67D132CF1A7D7009E0204 /* img-home-screen.png in Resources */ = {isa = PBXBuildFile; fileRef = FAB67D122CF1A7D7009E0204 /* img-home-screen.png */; };
+		FAB67D152CF1A7DF009E0204 /* img-product-detail-screen.png in Resources */ = {isa = PBXBuildFile; fileRef = FAB67D142CF1A7DF009E0204 /* img-product-detail-screen.png */; };
+		FAB67D192CF1A918009E0204 /* img-explore-screen.png in Resources */ = {isa = PBXBuildFile; fileRef = FAB67D182CF1A918009E0204 /* img-explore-screen.png */; };
+		FAB67D232CF1A939009E0204 /* img-account-screen.png in Resources */ = {isa = PBXBuildFile; fileRef = FAB67D1A2CF1A938009E0204 /* img-account-screen.png */; };
+		FAB67D242CF1A939009E0204 /* img-favorites-screen.png in Resources */ = {isa = PBXBuildFile; fileRef = FAB67D1B2CF1A938009E0204 /* img-favorites-screen.png */; };
+		FAB67D252CF1A939009E0204 /* img-order-accepted-screen.png in Resources */ = {isa = PBXBuildFile; fileRef = FAB67D1C2CF1A938009E0204 /* img-order-accepted-screen.png */; };
+		FAB67D262CF1A939009E0204 /* img-order-error-screen.png in Resources */ = {isa = PBXBuildFile; fileRef = FAB67D1D2CF1A938009E0204 /* img-order-error-screen.png */; };
+		FAB67D272CF1A939009E0204 /* img-search-screen.png in Resources */ = {isa = PBXBuildFile; fileRef = FAB67D1E2CF1A938009E0204 /* img-search-screen.png */; };
+		FAB67D282CF1A939009E0204 /* img-checkout-screen.png in Resources */ = {isa = PBXBuildFile; fileRef = FAB67D1F2CF1A938009E0204 /* img-checkout-screen.png */; };
+		FAB67D292CF1A939009E0204 /* img-cart-screen.png in Resources */ = {isa = PBXBuildFile; fileRef = FAB67D202CF1A939009E0204 /* img-cart-screen.png */; };
+		FAB67D2A2CF1A939009E0204 /* img-filters-screen.png in Resources */ = {isa = PBXBuildFile; fileRef = FAB67D212CF1A939009E0204 /* img-filters-screen.png */; };
+		FAB67D2B2CF1A939009E0204 /* img-products-in-category-screen.png in Resources */ = {isa = PBXBuildFile; fileRef = FAB67D222CF1A939009E0204 /* img-products-in-category-screen.png */; };
+		FAB67D2F2CF1AC6F009E0204 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = FAB67D2E2CF1AC6F009E0204 /* .gitignore */; };
 		FABC7A9A2CC3F5D2005C5BCB /* Gilroy-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FABC7A862CC3F5D2005C5BCB /* Gilroy-Medium.ttf */; };
 		FABC7AA22CC3F5D2005C5BCB /* Gilroy-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FABC7A8E2CC3F5D2005C5BCB /* Gilroy-Regular.ttf */; };
 		FABC7AAA2CC3F5D2005C5BCB /* Gilroy-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FABC7A962CC3F5D2005C5BCB /* Gilroy-SemiBold.ttf */; };
@@ -188,6 +207,25 @@
 		FAADD7EC2CD5BB230067C5D9 /* HomeScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreenViewModel.swift; sourceTree = "<group>"; };
 		FAADD7EE2CD5BB390067C5D9 /* HomeScreenService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreenService.swift; sourceTree = "<group>"; };
 		FAADD7F02CD5BC940067C5D9 /* ProductClassification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductClassification.swift; sourceTree = "<group>"; };
+		FAB67D062CF1A639009E0204 /* img-welcome-screen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "img-welcome-screen.png"; sourceTree = "<group>"; };
+		FAB67D082CF1A681009E0204 /* img-number-screen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "img-number-screen.png"; sourceTree = "<group>"; };
+		FAB67D0A2CF1A6AA009E0204 /* img-verification-screen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "img-verification-screen.png"; sourceTree = "<group>"; };
+		FAB67D0C2CF1A6C6009E0204 /* img-select-location-screen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "img-select-location-screen.png"; sourceTree = "<group>"; };
+		FAB67D0E2CF1A6E3009E0204 /* img-log-in-screen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "img-log-in-screen.png"; sourceTree = "<group>"; };
+		FAB67D102CF1A6FE009E0204 /* img-sign-up-screen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "img-sign-up-screen.png"; sourceTree = "<group>"; };
+		FAB67D122CF1A7D7009E0204 /* img-home-screen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "img-home-screen.png"; sourceTree = "<group>"; };
+		FAB67D142CF1A7DF009E0204 /* img-product-detail-screen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "img-product-detail-screen.png"; sourceTree = "<group>"; };
+		FAB67D182CF1A918009E0204 /* img-explore-screen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "img-explore-screen.png"; sourceTree = "<group>"; };
+		FAB67D1A2CF1A938009E0204 /* img-account-screen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "img-account-screen.png"; sourceTree = "<group>"; };
+		FAB67D1B2CF1A938009E0204 /* img-favorites-screen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "img-favorites-screen.png"; sourceTree = "<group>"; };
+		FAB67D1C2CF1A938009E0204 /* img-order-accepted-screen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "img-order-accepted-screen.png"; sourceTree = "<group>"; };
+		FAB67D1D2CF1A938009E0204 /* img-order-error-screen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "img-order-error-screen.png"; sourceTree = "<group>"; };
+		FAB67D1E2CF1A938009E0204 /* img-search-screen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "img-search-screen.png"; sourceTree = "<group>"; };
+		FAB67D1F2CF1A938009E0204 /* img-checkout-screen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "img-checkout-screen.png"; sourceTree = "<group>"; };
+		FAB67D202CF1A939009E0204 /* img-cart-screen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "img-cart-screen.png"; sourceTree = "<group>"; };
+		FAB67D212CF1A939009E0204 /* img-filters-screen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "img-filters-screen.png"; sourceTree = "<group>"; };
+		FAB67D222CF1A939009E0204 /* img-products-in-category-screen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "img-products-in-category-screen.png"; sourceTree = "<group>"; };
+		FAB67D2E2CF1AC6F009E0204 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		FABC7A862CC3F5D2005C5BCB /* Gilroy-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gilroy-Medium.ttf"; sourceTree = "<group>"; };
 		FABC7A8E2CC3F5D2005C5BCB /* Gilroy-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gilroy-Regular.ttf"; sourceTree = "<group>"; };
 		FABC7A962CC3F5D2005C5BCB /* Gilroy-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gilroy-SemiBold.ttf"; sourceTree = "<group>"; };
@@ -280,6 +318,7 @@
 		FA3B6E412CC36D60004DD798 = {
 			isa = PBXGroup;
 			children = (
+				FAB67D2E2CF1AC6F009E0204 /* .gitignore */,
 				FA3B6E4C2CC36D61004DD798 /* nectar-online */,
 				FABDD5A22CD65E1400AC88CD /* nectar-online.app */,
 				F322314E3DDA29AA62101FD3 /* Pods */,
@@ -293,6 +332,7 @@
 				FA3B6E4D2CC36D61004DD798 /* AppDelegate.swift */,
 				FA3B6E4F2CC36D61004DD798 /* SceneDelegate.swift */,
 				FA75F24E2CDB95C400352D56 /* MainTabViewController.swift */,
+				FAB67D052CF1A604009E0204 /* Public */,
 				FABC7A842CC3F5D2005C5BCB /* Fonts */,
 				FA3D74B22CD6314A005487E4 /* Config */,
 				FA4F59152CCC82B4009F09F1 /* Core */,
@@ -418,6 +458,31 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
+		FAB67D052CF1A604009E0204 /* Public */ = {
+			isa = PBXGroup;
+			children = (
+				FAB67D062CF1A639009E0204 /* img-welcome-screen.png */,
+				FAB67D082CF1A681009E0204 /* img-number-screen.png */,
+				FAB67D0A2CF1A6AA009E0204 /* img-verification-screen.png */,
+				FAB67D0C2CF1A6C6009E0204 /* img-select-location-screen.png */,
+				FAB67D0E2CF1A6E3009E0204 /* img-log-in-screen.png */,
+				FAB67D102CF1A6FE009E0204 /* img-sign-up-screen.png */,
+				FAB67D122CF1A7D7009E0204 /* img-home-screen.png */,
+				FAB67D142CF1A7DF009E0204 /* img-product-detail-screen.png */,
+				FAB67D182CF1A918009E0204 /* img-explore-screen.png */,
+				FAB67D222CF1A939009E0204 /* img-products-in-category-screen.png */,
+				FAB67D1E2CF1A938009E0204 /* img-search-screen.png */,
+				FAB67D212CF1A939009E0204 /* img-filters-screen.png */,
+				FAB67D202CF1A939009E0204 /* img-cart-screen.png */,
+				FAB67D1B2CF1A938009E0204 /* img-favorites-screen.png */,
+				FAB67D1F2CF1A938009E0204 /* img-checkout-screen.png */,
+				FAB67D1C2CF1A938009E0204 /* img-order-accepted-screen.png */,
+				FAB67D1D2CF1A938009E0204 /* img-order-error-screen.png */,
+				FAB67D1A2CF1A938009E0204 /* img-account-screen.png */,
+			);
+			path = Public;
+			sourceTree = "<group>";
+		};
 		FABC7A842CC3F5D2005C5BCB /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
@@ -507,11 +572,30 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAB67D092CF1A681009E0204 /* img-number-screen.png in Resources */,
+				FAB67D132CF1A7D7009E0204 /* img-home-screen.png in Resources */,
 				FABC7AAB2CC3F5D2005C5BCB /* Gilroy-Bold.ttf in Resources */,
 				FA3B6E5A2CC36D61004DD798 /* LaunchScreen.storyboard in Resources */,
+				FAB67D2A2CF1A939009E0204 /* img-filters-screen.png in Resources */,
+				FAB67D152CF1A7DF009E0204 /* img-product-detail-screen.png in Resources */,
+				FAB67D112CF1A6FE009E0204 /* img-sign-up-screen.png in Resources */,
 				FABC7A9A2CC3F5D2005C5BCB /* Gilroy-Medium.ttf in Resources */,
+				FAB67D2B2CF1A939009E0204 /* img-products-in-category-screen.png in Resources */,
+				FAB67D292CF1A939009E0204 /* img-cart-screen.png in Resources */,
+				FAB67D2F2CF1AC6F009E0204 /* .gitignore in Resources */,
 				FABC7AA22CC3F5D2005C5BCB /* Gilroy-Regular.ttf in Resources */,
+				FAB67D0B2CF1A6AA009E0204 /* img-verification-screen.png in Resources */,
 				FA3B6E572CC36D61004DD798 /* Assets.xcassets in Resources */,
+				FAB67D242CF1A939009E0204 /* img-favorites-screen.png in Resources */,
+				FAB67D0F2CF1A6E3009E0204 /* img-log-in-screen.png in Resources */,
+				FAB67D072CF1A639009E0204 /* img-welcome-screen.png in Resources */,
+				FAB67D272CF1A939009E0204 /* img-search-screen.png in Resources */,
+				FAB67D262CF1A939009E0204 /* img-order-error-screen.png in Resources */,
+				FAB67D192CF1A918009E0204 /* img-explore-screen.png in Resources */,
+				FAB67D232CF1A939009E0204 /* img-account-screen.png in Resources */,
+				FAB67D252CF1A939009E0204 /* img-order-accepted-screen.png in Resources */,
+				FAB67D282CF1A939009E0204 /* img-checkout-screen.png in Resources */,
+				FAB67D0D2CF1A6C6009E0204 /* img-select-location-screen.png in Resources */,
 				FABC7AAA2CC3F5D2005C5BCB /* Gilroy-SemiBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

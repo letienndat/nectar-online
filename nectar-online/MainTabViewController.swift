@@ -110,9 +110,7 @@ class MainTabViewController: UITabBarController {
                             if error.code == 401 {
                                 cartTabItem.badgeValue = nil
                             } else {
-//                                cartTabItem.badgeValue = "0"
-                                
-                                cartTabItem.badgeValue = String(DataTest.cart.products.count)
+                                cartTabItem.badgeValue = "0"
                                 
                                 cartTabItem.setBadgeTextAttributes([
                                     .font: UIFont(name: "Gilroy-Semibold", size: 12) ?? .systemFont(ofSize: 12),

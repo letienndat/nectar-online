@@ -21,7 +21,7 @@ class ProductsCategoryService {
     }
     
     func fetchListProductCategory(id: Int, completion: @escaping (Result<ProductCategory, Error>) -> Void) {
-        guard let url = URL(string: "\(Const.BASE_URL)/product-categories/\(id)") else {
+        guard let url = URL(string: "\(Const.BASE_URL)/product/category/\(id)") else {
             return
         }
         
@@ -60,6 +60,8 @@ class ProductsCategoryService {
                 }
             } catch {
                 completion(.failure(error))
+                
+                print(error)
             }
         }
         // Thực thi task

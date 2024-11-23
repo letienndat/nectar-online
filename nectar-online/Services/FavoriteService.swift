@@ -27,7 +27,7 @@ class FavoriteService {
             return
         }
         
-        guard let url = URL(string: "\(Const.BASE_URL)/product-favorites") else {
+        guard let url = URL(string: "\(Const.BASE_URL)/favorite-products") else {
             return
         }
         

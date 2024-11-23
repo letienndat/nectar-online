@@ -198,7 +198,7 @@ class CartService {
                     completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Fail"])))
                     return
                 } else if response.status == 1 {
-                    let removeProductInCartResponse: RemoveProductInCartResponse = response.data ?? RemoveProductInCartResponse(totalProduct: 0, totalPrice: 0, product: Product())
+                    let removeProductInCartResponse: RemoveProductInCartResponse = response.data ?? RemoveProductInCartResponse(totalProduct: 0, totalPrice: 0)
                     completion(.success(removeProductInCartResponse))
                 }
             } catch {

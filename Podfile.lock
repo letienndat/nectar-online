@@ -1,0 +1,28 @@
+PODS:
+  - ImageSlideshow (1.9.2):
+    - ImageSlideshow/Core (= 1.9.2)
+  - ImageSlideshow/Core (1.9.2)
+  - RangeSeekSlider (1.8.0)
+  - SDWebImage (5.20.0):
+    - SDWebImage/Core (= 5.20.0)
+  - SDWebImage/Core (5.20.0)
+
+DEPENDENCIES:
+  - ImageSlideshow (~> 1.9.0)
+  - RangeSeekSlider
+  - SDWebImage (~> 5.0)
+
+SPEC REPOS:
+  trunk:
+    - ImageSlideshow
+    - RangeSeekSlider
+    - SDWebImage
+
+SPEC CHECKSUMS:
+  ImageSlideshow: be305b54eaf2b2cfc7a7141c7c734605d44dc07d
+  RangeSeekSlider: 650b11fa1edcb92e1e0ede797669d98622570fb5
+  SDWebImage: 73c6079366fea25fa4bb9640d5fb58f0893facd8
+
+PODFILE CHECKSUM: 546715219ab13e276c301969130e59a608d9beff
+
+COCOAPODS: 1.16.2
