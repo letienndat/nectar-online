@@ -106,6 +106,7 @@
 		FAB67D2A2CF1A939009E0204 /* img-filters-screen.png in Resources */ = {isa = PBXBuildFile; fileRef = FAB67D212CF1A939009E0204 /* img-filters-screen.png */; };
 		FAB67D2B2CF1A939009E0204 /* img-products-in-category-screen.png in Resources */ = {isa = PBXBuildFile; fileRef = FAB67D222CF1A939009E0204 /* img-products-in-category-screen.png */; };
 		FAB67D2F2CF1AC6F009E0204 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = FAB67D2E2CF1AC6F009E0204 /* .gitignore */; };
+		FAB67D312CF1ACF1009E0204 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = FAB67D302CF1ACF1009E0204 /* README.md */; };
 		FABC7A9A2CC3F5D2005C5BCB /* Gilroy-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FABC7A862CC3F5D2005C5BCB /* Gilroy-Medium.ttf */; };
 		FABC7AA22CC3F5D2005C5BCB /* Gilroy-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FABC7A8E2CC3F5D2005C5BCB /* Gilroy-Regular.ttf */; };
 		FABC7AAA2CC3F5D2005C5BCB /* Gilroy-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FABC7A962CC3F5D2005C5BCB /* Gilroy-SemiBold.ttf */; };
@@ -226,6 +227,7 @@
 		FAB67D212CF1A939009E0204 /* img-filters-screen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "img-filters-screen.png"; sourceTree = "<group>"; };
 		FAB67D222CF1A939009E0204 /* img-products-in-category-screen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "img-products-in-category-screen.png"; sourceTree = "<group>"; };
 		FAB67D2E2CF1AC6F009E0204 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		FAB67D302CF1ACF1009E0204 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		FABC7A862CC3F5D2005C5BCB /* Gilroy-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gilroy-Medium.ttf"; sourceTree = "<group>"; };
 		FABC7A8E2CC3F5D2005C5BCB /* Gilroy-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gilroy-Regular.ttf"; sourceTree = "<group>"; };
 		FABC7A962CC3F5D2005C5BCB /* Gilroy-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gilroy-SemiBold.ttf"; sourceTree = "<group>"; };
@@ -318,8 +320,9 @@
 		FA3B6E412CC36D60004DD798 = {
 			isa = PBXGroup;
 			children = (
-				FAB67D2E2CF1AC6F009E0204 /* .gitignore */,
 				FA3B6E4C2CC36D61004DD798 /* nectar-online */,
+				FAB67D2E2CF1AC6F009E0204 /* .gitignore */,
+				FAB67D302CF1ACF1009E0204 /* README.md */,
 				FABDD5A22CD65E1400AC88CD /* nectar-online.app */,
 				F322314E3DDA29AA62101FD3 /* Pods */,
 				C39AC8A6874F53B5A60510CC /* Frameworks */,
@@ -576,6 +579,7 @@
 				FAB67D132CF1A7D7009E0204 /* img-home-screen.png in Resources */,
 				FABC7AAB2CC3F5D2005C5BCB /* Gilroy-Bold.ttf in Resources */,
 				FA3B6E5A2CC36D61004DD798 /* LaunchScreen.storyboard in Resources */,
+				FAB67D312CF1ACF1009E0204 /* README.md in Resources */,
 				FAB67D2A2CF1A939009E0204 /* img-filters-screen.png in Resources */,
 				FAB67D152CF1A7DF009E0204 /* img-product-detail-screen.png in Resources */,
 				FAB67D112CF1A6FE009E0204 /* img-sign-up-screen.png in Resources */,
