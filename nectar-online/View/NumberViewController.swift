@@ -248,7 +248,6 @@ class NumberViewController: UIViewController, UITextFieldDelegate {
             inputMobileNumber.trailingAnchor.constraint(equalTo: viewEnterMobilePhone.trailingAnchor),
             inputMobileNumber.heightAnchor.constraint(equalToConstant: 29)
         ])
-        
         inputMobileNumber.addTarget(self, action: #selector(handleInput(_:)), for: .editingChanged)
 
         inputMobileNumber.onDeleteBackward = {
